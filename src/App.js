@@ -7,7 +7,6 @@ import {
     Redirect,
 } from "react-router-dom";
 import Login from "./screens/Login";
-import Signin from "./screens/Signin";
 import Navigation from "./components/Navigation";
 import Home from "./screens/Home";
 import Error from "./screens/Error";
@@ -20,7 +19,7 @@ import Footer from "./components/Footer";
 toast.configure();
 
 function App() {
-    const [isAuthenticated, setIsAuthenticated] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const setAuth = (boolean) => {
         setIsAuthenticated(boolean);
@@ -85,7 +84,7 @@ function App() {
                             )
                         }
                     />
-                    {/* <Route
+                    <Route
                         exact
                         path="/dashboard"
                         render={(props) =>
@@ -99,28 +98,13 @@ function App() {
                     <Route
                         exact
                         path="/login"
-                        render={(props) =>
-                            !isAuthenticated ? (
-                                <Login {...props} setAuth={setAuth} />
-                            ) : (
-                                <Redirect to="/" />
-                            )
-                        }
+                        render={(props) => (
+                            <Login {...props} setAuth={setAuth} />
+                        )}
                     />
-                    <Route
-                        exact
-                        path="/register"
-                        render={(props) =>
-                            !isAuthenticated ? (
-                                <Signin {...props} setAuth={setAuth} />
-                            ) : (
-                                <Redirect to="/" />
-                            )
-                        }
-                    />
-                    <Route path="/:someString" component={Error} /> */}
+                    <Route path="/:someString" component={Error} />
                 </Switch>
-                <Footer />
+                {isAuthenticated ? <Footer /> : null}
             </Router>
         </Fragment>
     );

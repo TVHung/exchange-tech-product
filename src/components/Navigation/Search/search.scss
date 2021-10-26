@@ -5,8 +5,8 @@
     justify-content: center;
     display: flex;
     border-radius: 60px;
-    margin-left: 20%;
-    margin-right: 20%;
+    margin-left: 25%;
+    margin-right: 25%;
     min-width: 200px;
     width: 100%;
     transition: all 0.2s ease-in-out;
@@ -17,6 +17,14 @@
     &:focus-within {
         box-shadow: 0 5px 10px 3px rgba(0, 0, 0, 0.3);
         transform: scale(1.05);
+    }
+}
+
+//mobile nav
+@media (max-width: 500px) {
+    #boxSearch {
+        margin-left: 10%;
+        margin-right: 10%;
     }
 }
 

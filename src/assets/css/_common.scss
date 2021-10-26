@@ -10,6 +10,12 @@
     justify-content: left;
 }
 
+@mixin makeRight {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
 @mixin deleteSpace {
     margin: 0px;
     padding: 0px;
