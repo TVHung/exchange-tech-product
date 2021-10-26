@@ -1,12 +1,11 @@
-import React from 'react'
-import useStyles from './styles';
-import Navigation from '../../components/Navigation';
+import React from "react";
+import Navigation from "../../components/Navigation";
+import "./home.scss";
 
 export default function Home() {
-    const classes = useStyles();
     return (
-        <div>
-            Home page
+        <div id="home">
+            <p>Đây là trang chủ</p>
         </div>
-    )
+    );
 }

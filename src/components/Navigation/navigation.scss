@@ -1,0 +1,164 @@
+@import "../../assets/css/valiables";
+@import "../../assets/css/common";
+
+// .topNav {
+//     width: 100%;
+//     height: 80px;
+//     background-color: $nav-color;
+//     display: flex;
+//     @include deleteSpace();
+//     ul {
+//         height: 100%;
+//         width: 100%;
+//         list-style: none;
+//         @include deleteSpace();
+//         @include makeLeft();
+//         li {
+//             float: left;
+//             a {
+//                 display: block;
+//                 padding: 20px;
+//                 text-decoration: none;
+//                 color: white;
+//                 @include makeCenter();
+//                 &:hover {
+//                     background-color: $main-color;
+//                 }
+//             }
+//         }
+//     }
+// }
+
+.header {
+    display: flex;
+    background: $nav-color;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 40px;
+    height: 80px;
+}
+.logo-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.logo {
+    width: 45px;
+    height: 45px;
+}
+.nav-options {
+    padding-left: 25px;
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    grid-gap: 50px;
+    list-style-type: none;
+}
+.mobile-option {
+    display: none;
+}
+
+a {
+    color: white;
+    @include makeCenter();
+    text-decoration: none;
+}
+
+.option :hover {
+    color: $main-color;
+}
+.signin-up {
+    display: flex;
+    list-style-type: none;
+}
+.sign-in {
+    padding-right: 20px;
+    align-self: center;
+}
+.sign-in :hover {
+    color: $main-color;
+}
+.signup-btn {
+    padding: 10px 10px;
+    height: 2.4rem;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    align-items: center;
+    float: right;
+}
+.mobile-menu {
+    display: none;
+}
+@media (max-width: 900px) {
+    /*Mobile View */
+    .header {
+        padding: 0px 10px;
+    }
+    .logo {
+        width: 45px;
+        height: 45px;
+    }
+    .nav-options {
+        display: flex;
+        width: 100%;
+        // height: 350px;
+        position: absolute;
+        top: 80px;
+        left: -100%;
+        opacity: 0;
+        transition: all 0.5s ease;
+        flex-direction: column;
+        list-style-type: none;
+        grid-gap: 0px;
+        z-index: 4;
+    }
+    .nav-options.active {
+        background: grey;
+        left: 0;
+        opacity: 1;
+        transition: all 0.5s ease;
+        z-index: 4;
+        align-content: center;
+        padding-left: 0px;
+    }
+
+    .menu-icon {
+        width: 45px;
+        height: 45px;
+    }
+    .option {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 10vw;
+    }
+    .sign-up {
+        color: white;
+        width: 100%;
+        align-self: center;
+        border-radius: 3px;
+    }
+
+    .signin-up {
+        display: none;
+    }
+}
+.mobile-menu {
+    display: block;
+}
+
+#bottomNav {
+    width: 100%;
+    height: 100px;
+    position: sticky;
+    top: 0px;
+    background-color: $nav-color;
+    @include deleteSpace();
+    @include makeCenter();
+    z-index: 3;
+}
