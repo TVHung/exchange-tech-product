@@ -1,0 +1,16 @@
+.container {
+    width: 100%;
+    height: 100vh;
+    margin: 0px;
+    padding: 0px;
+    // background-image: url("../../assets/image/pagenotfound.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

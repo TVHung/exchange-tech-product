@@ -1,0 +1,58 @@
+@import "../../../assets/css/common";
+
+#boxSearch {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    border-radius: 60px;
+    margin-left: 20%;
+    margin-right: 20%;
+    min-width: 200px;
+    width: 100%;
+    transition: all 0.2s ease-in-out;
+    &:hover {
+        box-shadow: 0 5px 10px 3px rgba(0, 0, 0, 0.3);
+        transform: scale(1.05);
+    }
+    &:focus-within {
+        box-shadow: 0 5px 10px 3px rgba(0, 0, 0, 0.3);
+        transform: scale(1.05);
+    }
+}
+
+#header-search {
+    width: 100%;
+    height: 60px;
+    background-color: #f4f4f4;
+    border-top-left-radius: 60px;
+    border-bottom-left-radius: 60px;
+    padding-left: 40px;
+    border: none;
+    outline: none;
+    font-size: 20px;
+}
+
+// input::-webkit-input-placeholder {
+//     font-size: 20px;
+//     @include makeLeft();
+// }
+
+#button {
+    width: 80px;
+    height: 62px;
+    border-top-right-radius: 60px;
+    border-bottom-right-radius: 60px;
+    background-color: linear-gradient(45deg, #2196f3 30%, #21cbf3 90%);
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+#iconSearch {
+    color: white;
+    font-size: 30;
+    transition: all 0.1s ease-in-out;
+    &:hover {
+        transform: scale(1.2);
+    }
+}

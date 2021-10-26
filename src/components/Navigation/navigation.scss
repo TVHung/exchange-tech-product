@@ -1,0 +1,40 @@
+@import "../../assets/css/valiables";
+@import "../../assets/css/common";
+
+.topNav {
+    width: 100%;
+    height: 80px;
+    background-color: $nav-color;
+    display: flex;
+    @include deleteSpace();
+    ul {
+        height: 100%;
+        width: 100%;
+        list-style: none;
+        @include deleteSpace();
+        @include makeLeft();
+        li {
+            float: left;
+            a {
+                display: block;
+                padding: 20px;
+                text-decoration: none;
+                color: white;
+                @include makeCenter();
+                &:hover {
+                    background-color: $main-color;
+                }
+            }
+        }
+    }
+}
+
+#bottomNav {
+    width: 100%;
+    height: 100px;
+    position: sticky;
+    top: 0px;
+    background-color: $nav-color;
+    @include deleteSpace();
+    @include makeCenter();
+}

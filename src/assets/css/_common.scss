@@ -1,0 +1,16 @@
+@mixin makeCenter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin makeLeft {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+@mixin deleteSpace {
+    margin: 0px;
+    padding: 0px;
+}
