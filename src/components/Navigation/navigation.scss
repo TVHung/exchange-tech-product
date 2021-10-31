@@ -1,41 +1,21 @@
 @import "../../assets/css/valiables";
 @import "../../assets/css/common";
 
-// .topNav {
-//     width: 100%;
-//     height: 80px;
-//     background-color: $nav-color;
-//     display: flex;
-//     @include deleteSpace();
-//     ul {
-//         height: 100%;
-//         width: 100%;
-//         list-style: none;
-//         @include deleteSpace();
-//         @include makeLeft();
-//         li {
-//             float: left;
-//             a {
-//                 display: block;
-//                 padding: 20px;
-//                 text-decoration: none;
-//                 color: white;
-//                 @include makeCenter();
-//                 &:hover {
-//                     background-color: $main-color;
-//                 }
-//             }
-//         }
-//     }
-// }
+.nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    transition: top 0.3s ease-in-out;
+    z-index: 10;
+}
 
 .header {
     display: flex;
-    background: $nav-color;
+    background: $nav-top-color;
     justify-content: space-between;
     align-items: center;
-    padding: 0px 40px;
-    height: 80px;
+    padding: 0px 80px;
+    height: $height-top-nav;
 }
 .logo-nav {
     display: flex;
@@ -63,38 +43,68 @@
 }
 
 a {
-    color: white;
-    @include makeCenter();
     text-decoration: none;
 }
 
 .option :hover {
-    color: $main-color;
+    color: #0abfd2;
+    transform: scale(1.05);
 }
 .signin-up {
     display: flex;
     list-style-type: none;
 }
 .sign-in {
-    padding-right: 20px;
     align-self: center;
+    position: relative;
+    a {
+        color: #05042c;
+    }
 }
 .sign-in :hover {
-    color: $main-color;
+    color: #0abfd2;
+    transform: scale(1.05);
 }
+
+.sign-in::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0abfd2;
+    transform-origin: center;
+    transform: translate(-50%, 0) scaleX(0);
+    transition: transform 0.3s ease-in-out;
+}
+
+.sign-in:hover::before {
+    transform: translate(-50%, 0) scaleX(1);
+}
+
 .signup-btn {
-    padding: 10px 10px;
-    height: 2.4rem;
-    border-radius: 3px;
-    color: white;
+    margin-left: 20px;
     cursor: pointer;
-    align-items: center;
-    float: right;
+    padding: 10px 15px 10px 15px;
+    background: $button-color;
+    border-radius: 10px;
+    transition: all 0.5 ease-in-out;
+    a {
+        color: white;
+    }
+    &:hover {
+        transform: scale(1.05);
+    }
 }
+.icon-btn {
+    padding-right: 5px;
+}
+
 .mobile-menu {
     display: none;
 }
-@media (max-width: 900px) {
+@media (max-width: 1040px) {
     /*Mobile View */
     .header {
         padding: 0px 10px;
@@ -130,6 +140,7 @@ a {
     .menu-icon {
         width: 45px;
         height: 45px;
+        color: #05042c;
     }
     .option {
         display: flex;
@@ -148,17 +159,96 @@ a {
         display: none;
     }
 }
+
 .mobile-menu {
     display: block;
 }
 
-#bottomNav {
-    width: 100%;
-    height: 100px;
-    position: sticky;
-    top: 0px;
-    background-color: $nav-color;
-    @include deleteSpace();
+.bottomNav {
+    display: flex;
+    background: $nav-top-color;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 80px;
+    height: $height-bottom-nav;
+    // position: sticky;
+    // top: 0px;
     @include makeCenter();
     z-index: 3;
+    .searchContainer {
+        // @include makeCenter();
+    }
+
+    .upContrainer {
+        @include makeRight();
+        .up-btn {
+            cursor: pointer;
+            height: 45px;
+            width: 140px;
+            float: left;
+            background: $button-color;
+            color: white;
+            margin-left: 10px;
+            @include makeCenter();
+            border-radius: 10px;
+            transition: all 0.5 ease-in-out;
+            a {
+                color: white;
+            }
+            &:hover {
+                transform: scale(1.05);
+            }
+        }
+    }
+}
+
+.underline {
+    position: relative;
+    @include makeCenter();
+    text-decoration: none;
+    color: #05042c;
+}
+
+.underline::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0abfd2;
+    transform-origin: center;
+    transform: translate(-50%, 0) scaleX(0);
+    transition: transform 0.3s ease-in-out;
+}
+
+.underline:hover::before {
+    transform: translate(-50%, 0) scaleX(1);
+}
+
+@media (min-width: 1500px) {
+    .header {
+        padding: 0px 200px;
+    }
+    .bottomNav {
+        padding: 0px 200px;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        transform: scale(0, 0.025);
+    }
+    50% {
+        transform: scale(1, 0.025);
+    }
 }

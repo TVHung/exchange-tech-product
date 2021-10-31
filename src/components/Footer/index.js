@@ -6,11 +6,11 @@ import InstagramIcon from "@material-ui/icons/Instagram";
 import TwitterIcon from "@material-ui/icons/Twitter";
 import "./footer.scss";
 
-export default function Footer() {
+function Footer() {
     return (
         <Grid container id="footer">
             <hr style={{ width: "100%" }} />
-            <Grid item xs={12} md={4} className="support">
+            <Grid item xs={12} sm={4} className="support">
                 <span>
                     <h3>Hỗ trợ khách hàng</h3>
                     <ul>
@@ -32,7 +32,7 @@ export default function Footer() {
                     </ul>
                 </span>
             </Grid>
-            <Grid item xs={12} md={4} className="support">
+            <Grid item xs={12} sm={4} className="support">
                 <span>
                     <h3>Về chợ công nghệ</h3>
                     <ul>
@@ -51,7 +51,7 @@ export default function Footer() {
                     </ul>
                 </span>
             </Grid>
-            <Grid item xs={12} md={4} className="support">
+            <Grid item xs={12} sm={4} className="support">
                 <span>
                     <h3>Liên kết</h3>
                     <ul>
@@ -77,7 +77,7 @@ export default function Footer() {
             <Grid item xs={12} id="nocopyright">
                 <p style={{ color: "white" }}>
                     @2021 - Truong Hung. All Right Reserved. Designed and
-                    Developed by{" "}
+                    Developed by
                     <a
                         href="https://www.facebook.com/hung.tv99"
                         rel="name noreferrer"
@@ -91,3 +91,5 @@ export default function Footer() {
         </Grid>
     );
 }
+
+export default React.memo(Footer);

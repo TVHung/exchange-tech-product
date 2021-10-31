@@ -1,3 +1,5 @@
+@import "../css/valiables.scss";
+
 @mixin makeCenter {
     display: flex;
     align-items: center;
@@ -19,4 +21,16 @@
 @mixin deleteSpace {
     margin: 0px;
     padding: 0px;
+}
+
+@mixin styleButton {
+    cursor: pointer;
+    color: white;
+    padding: 10px 15px 10px 15px;
+    background: $button-color;
+    border-radius: 10px;
+    transition: all 0.3 ease-in-out;
+    &:hover {
+        transform: scale(1.05);
+    }
 }

@@ -4,7 +4,6 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import { TextField, InputAdornment, IconButton } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import useStyles from "./styles";
 import Container from "@material-ui/core/Container";
 import axios from "axios";
 import Visibility from "@material-ui/icons/Visibility";
@@ -12,6 +11,7 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import GoogleLogin from "react-google-login";
 import logoGoogle from "../../assets/image/google.png";
 import logo from "../../assets/image/logopersonal2.png";
+import "./login.scss";
 
 const getParam = (param) => {
     var url_string = window.location.href;
@@ -34,7 +34,6 @@ const UseFocus = () => {
     return [htmlElRef, setFocus];
 };
 export default function Signin() {
-    const classes = useStyles();
     directLink = getParam("continue") + "/signin?ticket=";
     const [user, setUser] = useState({
         email: "",
@@ -131,7 +130,7 @@ export default function Signin() {
                 fullWidth
                 variant="contained"
                 color="primary"
-                className={classes.submit}
+                className="submitLogin"
                 onClick={(e) => handleSubmitContinue(e)}
             >
                 Continue
@@ -144,7 +143,7 @@ export default function Signin() {
                 fullWidth
                 variant="contained"
                 color="primary"
-                className={classes.submit}
+                className="submitLogin"
                 onClick={(e) => handleSubmitLogin(e)}
             >
                 Log in
@@ -157,7 +156,7 @@ export default function Signin() {
                 fullWidth
                 variant="contained"
                 color="primary"
-                className={classes.submit}
+                className="submitLogin"
                 onClick={(e) => handleSubmitSignup(e)}
             >
                 Sign up
@@ -173,13 +172,13 @@ export default function Signin() {
     };
 
     return (
-        <div className={classes.container}>
+        <div className="containerLogin">
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
-                <div className={classes.avatar}>
-                    <img src={logo} alt="Logo" className={classes.logo} />
+                <div className="avatarLogin">
+                    <img src={logo} alt="Logo" className="logoLogin" />
                 </div>
-                <div className={classes.paper}>
+                <div className="paperLogin">
                     <Typography
                         style={{
                             color: "#4150b5",
@@ -191,7 +190,7 @@ export default function Signin() {
                     >
                         {title}
                     </Typography>
-                    <form className={classes.form} noValidate>
+                    <form className="formLogin" noValidate>
                         <TextField
                             error={errorEmail != "" ? true : false}
                             variant="outlined"
@@ -204,13 +203,13 @@ export default function Signin() {
                             autoComplete="email"
                             autoFocus
                             onChange={(e) => handleOnChange(e)}
-                            className={classes.input}
+                            className="inputLogin"
                             inputProps={{
                                 style: {},
                             }}
                             inputRef={inputEmailRef}
                         />
-                        <p id="validateEmail" className={classes.nofi}>
+                        <p id="validateEmail" className="nofiLogin">
                             {errorEmail}
                         </p>
 
@@ -226,12 +225,12 @@ export default function Signin() {
                                 type="text"
                                 id="name"
                                 onChange={(e) => handleOnChange(e)}
-                                className={classes.input}
+                                className="inputLogin"
                                 inputRef={inputUsernameRef}
                             />
                         ) : null}
 
-                        <p id="validateEmail" className={classes.nofi}>
+                        <p id="validateEmail" className="nofiLogin">
                             {errorName}
                         </p>
                         {switchState == "signup" ? (
@@ -246,12 +245,12 @@ export default function Signin() {
                                 type="text"
                                 id="mobile"
                                 onChange={(e) => handleOnChange(e)}
-                                className={classes.input}
+                                className="inputLogin"
                                 inputRef={inputPhoneRef}
                             />
                         ) : null}
 
-                        <p id="validateMobile" className={classes.nofi}>
+                        <p id="validateMobile" className="nofiLogin">
                             {errorMobile}
                         </p>
                         {switchState == "signup" || switchState == "login" ? (
@@ -268,7 +267,7 @@ export default function Signin() {
                                     id="password"
                                     autoComplete="current-password"
                                     onChange={(e) => handleOnChange(e)}
-                                    className={classes.input}
+                                    className="inputLogin"
                                     inputRef={inputPassRef}
                                     InputProps={{
                                         endAdornment: (
@@ -295,10 +294,10 @@ export default function Signin() {
                                 <span></span>
                             </div>
                         ) : null}
-                        <p id="validateEmail" className={classes.nofi}>
+                        <p id="validateEmail" className="nofiLogin">
                             {errorPassword}
                         </p>
-                        {button}
+                        <div style={{ marginTop: 10 }}>{button}</div>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <GoogleLogin
@@ -313,10 +312,11 @@ export default function Signin() {
                                             type="submit"
                                             fullWidth
                                             variant="contained"
-                                            className={classes.submit}
+                                            className="submitLogin"
                                             style={{
                                                 color: "rgb(66 82 110)",
                                                 backgroundColor: "#fafafa",
+                                                marginTop: 20,
                                             }}
                                             startIcon={
                                                 <img
@@ -328,7 +328,7 @@ export default function Signin() {
                                             }
                                             onClick={renderProps.onClick}
                                             // disabled={renderProps.disabled}
-                                            disabled={true}
+                                            // disabled={true}
                                         >
                                             Continue with Google
                                         </Button>
@@ -339,20 +339,19 @@ export default function Signin() {
                         <hr style={{ marginTop: 20, opacity: 0.5 }} />
                         <Grid container>
                             {/* {switchState != "signup" ? (
-                                <p className={classes.text}>Can't log in?</p>
+                                <p className="textLogin">Can't log in?</p>
                             ) : null} */}
-
                             {switchState == "signup" ? (
                                 <p
                                     onClick={() => onClickChangeLogin()}
-                                    className={classes.text}
+                                    className="textLogin"
                                 >
                                     Have an account? Login
                                 </p>
                             ) : (
                                 <p
                                     onClick={() => onClickChangeSignup()}
-                                    className={classes.text}
+                                    className="textLogin"
                                 >
                                     Sign up for an account
                                 </p>
