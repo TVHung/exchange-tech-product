@@ -11,11 +11,14 @@ import Navigation from "./components/Navigation";
 import Home from "./screens/Home";
 import Error from "./screens/Error";
 import { Fragment } from "react";
-import Dashboard from "./screens/Dashboard";
+import Dashboard from "./screens/admin/Dashboard";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import Footer from "./components/Footer";
+import Chat from "./screens/Chat";
+import CreatePost from "./screens/CreatePost";
+// import "bootstrap/dist/css/bootstrap.min.css";
 toast.configure();
 
 function App() {
@@ -34,7 +37,22 @@ function App() {
                             <Dashboard />;
                         }}
                     />
-                    <Route exact path="/login" render={(props) => <Login />} />
+                    <Route exact path="/chat" render={(props) => <Chat />} />
+                    <Route
+                        exact
+                        path="/create-post"
+                        render={(props) => <CreatePost />}
+                    />
+                    <Route
+                        exact
+                        path="/login"
+                        render={(props) => <Login type={"login"} />}
+                    />
+                    <Route
+                        exact
+                        path="/register"
+                        render={(props) => <Login type={"register"} />}
+                    />
                     <Route path="/:someString" component={Error} />
                 </Switch>
                 <Footer />

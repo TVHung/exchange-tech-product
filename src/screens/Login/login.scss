@@ -1,6 +1,10 @@
+@import "../../assets/css/common";
+@import "../../assets/css/valiables";
+
 .containerLogin {
     padding-top: 50px;
     padding-bottom: 50px;
+    min-height: 100vh;
 }
 
 .logoLogin {
@@ -25,10 +29,18 @@
     align-items: center;
 }
 
+.titleLogin {
+    color: $base-color-1;
+    font-size: 20px;
+    margin-top: 20px;
+    font-family: inherit;
+    font-weight: bold;
+}
+
 .formLogin {
-    margin-top: 50px;
+    // margin-top: 50px;
     width: 330px;
-    margin: 40px;
+    // margin: 40px;
 }
 
 .submitLogin {
@@ -38,6 +50,8 @@
     font-weight: bold;
     text-transform: capitalize;
     margin-top: 10px;
+    background: $button-color;
+    color: white;
 }
 
 .nofiLogin {
@@ -47,7 +61,7 @@
 }
 
 .textLogin {
-    color: blue;
+    color: $base-color-1;
     margin-right: 20px;
     text-decoration: underline;
     &:hover {

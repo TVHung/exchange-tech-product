@@ -1,0 +1,25 @@
+@import "../../assets/css/common";
+@import "../../assets/css/valiables";
+
+.chatContainer {
+    @include page-frame();
+    @include width-container();
+}
+
+@media (min-width: 1500px) {
+    #homeContainer {
+        @include width-lg-container();
+    }
+}
+
+.chat-left {
+    height: 100%;
+    width: 100%;
+    background-color: green;
+}
+
+.chat-right {
+    height: 100%;
+    width: 100%;
+    background-color: red;
+}

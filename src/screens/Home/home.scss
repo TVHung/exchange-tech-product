@@ -2,15 +2,13 @@
 @import "../../assets/css/valiables";
 
 #homeContainer {
-    min-height: 100vh;
-    margin: 0px;
-    padding: 0px;
+    @include width-container();
+    @include page-frame();
     padding: 0px 80px;
-    margin-top: $height-sum;
 }
 
 @media (min-width: 1500px) {
     #homeContainer {
-        padding: 0px 200px;
+        @include width-lg-container();
     }
 }

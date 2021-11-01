@@ -14,7 +14,7 @@
     background: $nav-top-color;
     justify-content: space-between;
     align-items: center;
-    padding: 0px 80px;
+    @include width-container();
     height: $height-top-nav;
 }
 .logo-nav {
@@ -48,7 +48,7 @@ a {
 
 .option :hover {
     color: #0abfd2;
-    transform: scale(1.05);
+    // transform: scale(1.05);
 }
 .signin-up {
     display: flex;
@@ -98,7 +98,34 @@ a {
     }
 }
 .icon-btn {
-    padding-right: 5px;
+    padding-right: 10px;
+}
+
+.nofi-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: red;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 3;
+    margin-left: 8px;
+    margin-top: -13px;
+    animation: nofi-animation 2s infinite linear;
+    .nofi-num {
+        // position: absolute;
+        // top: 0px;
+        width: 20px;
+        height: 20px;
+        color: white;
+        margin: 0px;
+        padding: 0px;
+        margin-top: 1.5px;
+        font-size: 15px;
+        font-weight: bold;
+        text-align: center;
+    }
 }
 
 .mobile-menu {
@@ -169,7 +196,7 @@ a {
     background: $nav-top-color;
     justify-content: space-between;
     align-items: center;
-    padding: 0px 80px;
+    @include width-container();
     height: $height-bottom-nav;
     // position: sticky;
     // top: 0px;
@@ -227,11 +254,9 @@ a {
 }
 
 @media (min-width: 1500px) {
-    .header {
-        padding: 0px 200px;
-    }
+    .header,
     .bottomNav {
-        padding: 0px 200px;
+        @include width-lg-container();
     }
 }
 
@@ -251,4 +276,45 @@ a {
     50% {
         transform: scale(1, 0.025);
     }
+}
+
+@keyframes nofi-animation {
+    0% {
+        transform: rotate(-5deg) scale(1);
+    }
+    25% {
+        transform: rotate(-5deg) scale(1.1);
+    }
+    50% {
+        transform: rotate(-5deg) scale(1);
+    }
+    75% {
+        transform: rotate(5deg) scale(1.1);
+    }
+    100% {
+        transform: rotate(-5deg) scale(1);
+    }
+}
+
+.drop-layout-function {
+    margin: 0px;
+    padding: 0px;
+    .dot-menu-icon {
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
+
+.menu-container {
+    .menu-content {
+        color: $base-color-1;
+        &:hover {
+            color: $base-color-2;
+        }
+    }
+}
+
+.menu-icon-btn {
+    margin-right: 10px;
 }

@@ -1,14 +1,12 @@
 import { Button } from "@material-ui/core";
 import React, { Fragment } from "react";
 import { toast } from "react-toastify";
-import useStyles from "./styles";
+import "./dashboard.scss";
 
 export default function Dashboard({ setAuth }) {
-    const classes = useStyles();
-
     return (
-        <Fragment>
+        <div id="dashboardContainer">
             <div>Dashboard page</div>
-        </Fragment>
+        </div>
     );
 }

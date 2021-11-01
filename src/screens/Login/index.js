@@ -13,19 +13,6 @@ import logoGoogle from "../../assets/image/google.png";
 import logo from "../../assets/image/logopersonal2.png";
 import "./login.scss";
 
-const getParam = (param) => {
-    var url_string = window.location.href;
-    var url = new URL(url_string);
-    var para = url.searchParams.get(param);
-    return para;
-};
-
-const openLink = (url) => {
-    const win = window.open(url, "_self");
-};
-
-var directLink;
-
 const UseFocus = () => {
     const htmlElRef = useRef(null);
     const setFocus = () => {
@@ -33,8 +20,7 @@ const UseFocus = () => {
     };
     return [htmlElRef, setFocus];
 };
-export default function Signin() {
-    directLink = getParam("continue") + "/signin?ticket=";
+export default function Login({ type }) {
     const [user, setUser] = useState({
         email: "",
         name: "",
@@ -122,6 +108,14 @@ export default function Signin() {
         document.title = title;
     }, [title]);
 
+    useEffect(() => {
+        if (type == "login") {
+            setswitchState("signin");
+        } else {
+            setswitchState("signup");
+        }
+    }, []);
+
     let button;
     if (indexElement == 1) {
         button = (
@@ -179,17 +173,7 @@ export default function Signin() {
                     <img src={logo} alt="Logo" className="logoLogin" />
                 </div>
                 <div className="paperLogin">
-                    <Typography
-                        style={{
-                            color: "#4150b5",
-                            fontSize: 20,
-                            marginTop: 20,
-                            fontFamily: "inherit",
-                            fontWeight: "bold",
-                        }}
-                    >
-                        {title}
-                    </Typography>
+                    <p className="titleLogin">{title}</p>
                     <form className="formLogin" noValidate>
                         <TextField
                             error={errorEmail != "" ? true : false}
@@ -314,9 +298,9 @@ export default function Signin() {
                                             variant="contained"
                                             className="submitLogin"
                                             style={{
-                                                color: "rgb(66 82 110)",
-                                                backgroundColor: "#fafafa",
                                                 marginTop: 20,
+                                                color: "#05042c",
+                                                background: "#fafafa",
                                             }}
                                             startIcon={
                                                 <img

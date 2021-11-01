@@ -34,3 +34,18 @@
         transform: scale(1.05);
     }
 }
+
+@mixin width-container {
+    padding: 0px 80px;
+}
+
+@mixin width-lg-container {
+    padding: 0px 200px;
+}
+
+@mixin page-frame {
+    min-height: 100vh;
+    margin: 0px;
+    padding: 0px;
+    margin-top: $height-sum;
+}

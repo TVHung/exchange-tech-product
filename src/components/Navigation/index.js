@@ -5,12 +5,21 @@ import { toast } from "react-toastify";
 import Logo from "../../assets/image/logopersonal2.png";
 import "./navigation.scss";
 import Search from "./Search";
-import HomeIcon from "@material-ui/icons/Home";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import ChatBubbleIcon from "@material-ui/icons/ChatBubble";
-import DevicesIcon from "@material-ui/icons/Devices";
 import { ReactComponent as CloseMenu } from "../../assets/image/x.svg";
 import { ReactComponent as MenuIcon } from "../../assets/image/menu.svg";
+
+import Box from "@material-ui/core/Box";
+import Avatar from "@material-ui/core/Avatar";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import Tooltip from "@material-ui/core/Tooltip";
+import PersonAdd from "@material-ui/icons/PersonAdd";
+import Settings from "@material-ui/icons/Settings";
+// import Logout from "@material-ui/icons/Logout";
 
 function getWindowDimensions() {
     const { innerWidth: width, innerHeight: height } = window;
@@ -47,7 +56,7 @@ export default function Navigation({ isAuthenticated, setAuth }) {
         toast.success("Logout is successfully!");
     };
     const [click, setClick] = useState(false);
-    const handleClick = () => setClick(!click);
+    const handleClickMobile = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
     const [isSmall, setIsSmall] = useState(false);
     const [isScroll, setIsScroll] = useState({
@@ -86,6 +95,15 @@ export default function Navigation({ isAuthenticated, setAuth }) {
         console.log("cuon xuong:", isScroll.onTop);
     }, [isScroll]);
 
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     return (
         <div
             className="nav"
@@ -120,25 +138,33 @@ export default function Navigation({ isAuthenticated, setAuth }) {
                     >
                         <li className="option" onClick={closeMobileMenu}>
                             <a href="/" className="underline">
-                                <HomeIcon className="icon-btn" />
+                                <i className="fas fa-home icon-btn"></i>
                                 Trang chủ
                             </a>
                         </li>
                         <li className="option" onClick={closeMobileMenu}>
                             <a href="/" className="underline">
-                                <DevicesIcon className="icon-btn" />
+                                <i className="fas fa-user-cog icon-btn"></i>
                                 Quản lý
                             </a>
                         </li>
                         <li className="option" onClick={closeMobileMenu}>
                             <a href="/" className="underline">
-                                <NotificationsIcon className="icon-btn" />
+                                <i className="fas fa-bell icon-btn">
+                                    <div className="nofi-dot">
+                                        <p className="nofi-num">3</p>
+                                    </div>
+                                </i>
                                 Thông báo
                             </a>
                         </li>
                         <li className="option" onClick={closeMobileMenu}>
-                            <a href="/" className="underline">
-                                <ChatBubbleIcon className="icon-btn" />
+                            <a href="/chat" className="underline">
+                                <i className="fas fa-comments icon-btn">
+                                    <div className="nofi-dot">
+                                        <p className="nofi-num">10</p>
+                                    </div>
+                                </i>
                                 Tin nhắn
                             </a>
                         </li>
@@ -154,13 +180,13 @@ export default function Navigation({ isAuthenticated, setAuth }) {
                             className="option mobile-option"
                             onClick={closeMobileMenu}
                         >
-                            <a href="/login" className="underline">
+                            <a href="/register" className="underline">
                                 Đăng ký
                             </a>
                         </li>
                     </ul>
                 </div>
-                <div className="mobile-menu" onClick={handleClick}>
+                <div className="mobile-menu" onClick={handleClickMobile}>
                     {click ? (
                         <CloseMenu className="menu-icon" />
                     ) : (
@@ -175,9 +201,15 @@ export default function Navigation({ isAuthenticated, setAuth }) {
                         </a>
                     </li>
                     <li className="signup-btn" onClick={closeMobileMenu}>
-                        <a href="/login">Đăng ký</a>
+                        <a href="/register">Đăng ký</a>
                     </li>
                 </ul>
+                {/* <div className="drop-layout-function">
+                    <i
+                        className="fas fa-ellipsis-v dot-menu-icon"
+                        onClick={handleClick}
+                    ></i>
+                </div> */}
             </div>
             <div className="bottomNav">
                 {!isSmall ? (
@@ -193,7 +225,7 @@ export default function Navigation({ isAuthenticated, setAuth }) {
                                 </a>
                             </div>
                             <div className="up-btn">
-                                <a href="/">
+                                <a href="/create-post">
                                     <i className="fas fa-edit icon-btn"></i>Đăng
                                     bài
                                 </a>
@@ -208,6 +240,73 @@ export default function Navigation({ isAuthenticated, setAuth }) {
                     </Grid>
                 )}
             </div>
+            <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                onClick={handleClose}
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        overflow: "visible",
+                        filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                        mt: 1.5,
+                        "& .MuiAvatar-root": {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                        },
+                        "&:before": {
+                            content: '""',
+                            display: "block",
+                            position: "absolute",
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: "background.paper",
+                            transform: "translateY(-50%) rotate(45deg)",
+                            zIndex: 0,
+                        },
+                    },
+                }}
+                transformOrigin={{
+                    horizontal: "right",
+                    vertical: "top",
+                }}
+                anchorOrigin={{
+                    horizontal: "right",
+                    vertical: "bottom",
+                }}
+                className="menu-container"
+            >
+                <MenuItem className="menu-content">
+                    <Avatar className="menu-icon-btn" /> Profile
+                </MenuItem>
+                <MenuItem className="menu-content">
+                    <Avatar className="menu-icon-btn" /> My account
+                </MenuItem>
+                <Divider />
+                <MenuItem className="menu-content">
+                    <ListItemIcon>
+                        <PersonAdd fontSize="small" />
+                    </ListItemIcon>
+                    Add another account
+                </MenuItem>
+                <MenuItem className="menu-content">
+                    <ListItemIcon>
+                        <Settings fontSize="small" />
+                    </ListItemIcon>
+                    Settings
+                </MenuItem>
+                <MenuItem className="menu-content">
+                    <ListItemIcon>
+                        <i class="fas fa-sign-out-alt"></i>
+                    </ListItemIcon>
+                    Logout
+                </MenuItem>
+            </Menu>
         </div>
     );
 }
