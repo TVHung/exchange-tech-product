@@ -12,6 +12,8 @@ import GoogleLogin from "react-google-login";
 import logoGoogle from "../../assets/image/google.png";
 import logo from "../../assets/image/logopersonal2.png";
 import "./login.scss";
+import MetaTag from "../../components/MetaTag";
+import Preloading from "../../components/Loading";
 
 const UseFocus = () => {
     const htmlElRef = useRef(null);
@@ -42,6 +44,7 @@ export default function Login({ type }) {
     const [inputUsernameRef, setInputUsernameRefFocus] = UseFocus();
     const [inputPhoneRef, setInputPhoneRefFocus] = UseFocus();
 
+    const [preload, setPreload] = useState(false);
     const handleOnChange = (e) => {
         setUser((prevState) => ({
             ...prevState,
@@ -165,185 +168,205 @@ export default function Login({ type }) {
         console.log("Login Failed", response);
     };
 
+    useEffect(() => {
+        setTimeout(() => {
+            setPreload(true);
+        }, 500);
+        return () => {};
+    }, []);
+
     return (
         <div className="containerLogin">
-            <Container component="main" maxWidth="xs">
-                <CssBaseline />
-                <div className="avatarLogin">
-                    <img src={logo} alt="Logo" className="logoLogin" />
-                </div>
-                <div className="paperLogin">
-                    <p className="titleLogin">{title}</p>
-                    <form className="formLogin" noValidate>
-                        <TextField
-                            error={errorEmail != "" ? true : false}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
-                            onChange={(e) => handleOnChange(e)}
-                            className="inputLogin"
-                            inputProps={{
-                                style: {},
-                            }}
-                            inputRef={inputEmailRef}
-                        />
-                        <p id="validateEmail" className="nofiLogin">
-                            {errorEmail}
-                        </p>
-
-                        {switchState == "signup" ? (
+            <MetaTag
+                title={switchState}
+                description={"Đăng nhập, đăng kí để trao đổi, mua bán sản phẩm"}
+            />
+            {!preload ? (
+                <Preloading />
+            ) : (
+                <Container component="main" maxWidth="xs">
+                    <CssBaseline />
+                    <div className="avatarLogin">
+                        <img src={logo} alt="Logo" className="logoLogin" />
+                    </div>
+                    <div className="paperLogin">
+                        <p className="titleLogin">{title}</p>
+                        <form className="formLogin" noValidate>
                             <TextField
-                                error={errorName != "" ? true : false}
+                                error={errorEmail != "" ? true : false}
                                 variant="outlined"
                                 margin="normal"
                                 required
                                 fullWidth
-                                name="name"
-                                label="Username"
-                                type="text"
-                                id="name"
+                                id="email"
+                                label="Email"
+                                name="email"
+                                autoComplete="email"
+                                autoFocus
                                 onChange={(e) => handleOnChange(e)}
                                 className="inputLogin"
-                                inputRef={inputUsernameRef}
+                                inputProps={{
+                                    style: {},
+                                }}
+                                inputRef={inputEmailRef}
                             />
-                        ) : null}
+                            <p id="validateEmail" className="nofiLogin">
+                                {errorEmail}
+                            </p>
 
-                        <p id="validateEmail" className="nofiLogin">
-                            {errorName}
-                        </p>
-                        {switchState == "signup" ? (
-                            <TextField
-                                error={errorMobile != "" ? true : false}
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="mobile"
-                                label="Mobile"
-                                type="text"
-                                id="mobile"
-                                onChange={(e) => handleOnChange(e)}
-                                className="inputLogin"
-                                inputRef={inputPhoneRef}
-                            />
-                        ) : null}
-
-                        <p id="validateMobile" className="nofiLogin">
-                            {errorMobile}
-                        </p>
-                        {switchState == "signup" || switchState == "login" ? (
-                            <div>
+                            {switchState == "signup" ? (
                                 <TextField
-                                    error={errorPassword != "" ? true : false}
+                                    error={errorName != "" ? true : false}
                                     variant="outlined"
                                     margin="normal"
                                     required
                                     fullWidth
-                                    name="password"
-                                    label="Password"
-                                    type={showPassword ? "text" : "password"}
-                                    id="password"
-                                    autoComplete="current-password"
+                                    name="name"
+                                    label="Username"
+                                    type="text"
+                                    id="name"
                                     onChange={(e) => handleOnChange(e)}
                                     className="inputLogin"
-                                    inputRef={inputPassRef}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    aria-label="toggle password visibility"
-                                                    onClick={() =>
-                                                        handleClickShowPassword()
-                                                    }
-                                                    onMouseDown={() =>
-                                                        handleMouseDownPassword()
-                                                    }
-                                                >
-                                                    {showPassword ? (
-                                                        <Visibility />
-                                                    ) : (
-                                                        <VisibilityOff />
-                                                    )}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
-                                    }}
+                                    inputRef={inputUsernameRef}
                                 />
-                                <span></span>
-                            </div>
-                        ) : null}
-                        <p id="validateEmail" className="nofiLogin">
-                            {errorPassword}
-                        </p>
-                        <div style={{ marginTop: 10 }}>{button}</div>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <GoogleLogin
-                                    clientId={
-                                        "943683537472-djj3f68jb2spj4f7vgrr7hevsd28u7tk.apps.googleusercontent.com"
-                                    }
-                                    onSuccess={loginSuccess}
-                                    onFailure={loginFailure}
-                                    isSignedIn={true}
-                                    render={(renderProps) => (
-                                        <Button
-                                            type="submit"
-                                            fullWidth
-                                            variant="contained"
-                                            className="submitLogin"
-                                            style={{
-                                                marginTop: 20,
-                                                color: "#05042c",
-                                                background: "#fafafa",
-                                            }}
-                                            startIcon={
-                                                <img
-                                                    alt="googleIcon"
-                                                    src={logoGoogle}
-                                                    width="20px"
-                                                    height="20px"
-                                                />
-                                            }
-                                            onClick={renderProps.onClick}
-                                            // disabled={renderProps.disabled}
-                                            // disabled={true}
-                                        >
-                                            Continue with Google
-                                        </Button>
-                                    )}
-                                ></GoogleLogin>
+                            ) : null}
+
+                            <p id="validateEmail" className="nofiLogin">
+                                {errorName}
+                            </p>
+                            {switchState == "signup" ? (
+                                <TextField
+                                    error={errorMobile != "" ? true : false}
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    name="mobile"
+                                    label="Mobile"
+                                    type="text"
+                                    id="mobile"
+                                    onChange={(e) => handleOnChange(e)}
+                                    className="inputLogin"
+                                    inputRef={inputPhoneRef}
+                                />
+                            ) : null}
+
+                            <p id="validateMobile" className="nofiLogin">
+                                {errorMobile}
+                            </p>
+                            {switchState == "signup" ||
+                            switchState == "login" ? (
+                                <div>
+                                    <TextField
+                                        error={
+                                            errorPassword != "" ? true : false
+                                        }
+                                        variant="outlined"
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        name="password"
+                                        label="Password"
+                                        type={
+                                            showPassword ? "text" : "password"
+                                        }
+                                        id="password"
+                                        autoComplete="current-password"
+                                        onChange={(e) => handleOnChange(e)}
+                                        className="inputLogin"
+                                        inputRef={inputPassRef}
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        onClick={() =>
+                                                            handleClickShowPassword()
+                                                        }
+                                                        onMouseDown={() =>
+                                                            handleMouseDownPassword()
+                                                        }
+                                                    >
+                                                        {showPassword ? (
+                                                            <Visibility />
+                                                        ) : (
+                                                            <VisibilityOff />
+                                                        )}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
+                                    <span></span>
+                                </div>
+                            ) : null}
+                            <p id="validateEmail" className="nofiLogin">
+                                {errorPassword}
+                            </p>
+                            <div style={{ marginTop: 10 }}>{button}</div>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <GoogleLogin
+                                        clientId={
+                                            "943683537472-djj3f68jb2spj4f7vgrr7hevsd28u7tk.apps.googleusercontent.com"
+                                        }
+                                        onSuccess={loginSuccess}
+                                        onFailure={loginFailure}
+                                        isSignedIn={true}
+                                        render={(renderProps) => (
+                                            <Button
+                                                type="submit"
+                                                fullWidth
+                                                variant="contained"
+                                                className="submitLogin"
+                                                style={{
+                                                    marginTop: 20,
+                                                    color: "#05042c",
+                                                    background: "#fafafa",
+                                                }}
+                                                startIcon={
+                                                    <img
+                                                        alt="googleIcon"
+                                                        src={logoGoogle}
+                                                        width="20px"
+                                                        height="20px"
+                                                    />
+                                                }
+                                                onClick={renderProps.onClick}
+                                                // disabled={renderProps.disabled}
+                                                // disabled={true}
+                                            >
+                                                Continue with Google
+                                            </Button>
+                                        )}
+                                    ></GoogleLogin>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                        <hr style={{ marginTop: 20, opacity: 0.5 }} />
-                        <Grid container>
-                            {/* {switchState != "signup" ? (
+                            <hr style={{ marginTop: 20, opacity: 0.5 }} />
+                            <Grid container>
+                                {/* {switchState != "signup" ? (
                                 <p className="textLogin">Can't log in?</p>
                             ) : null} */}
-                            {switchState == "signup" ? (
-                                <p
-                                    onClick={() => onClickChangeLogin()}
-                                    className="textLogin"
-                                >
-                                    Have an account? Login
-                                </p>
-                            ) : (
-                                <p
-                                    onClick={() => onClickChangeSignup()}
-                                    className="textLogin"
-                                >
-                                    Sign up for an account
-                                </p>
-                            )}
-                        </Grid>
-                    </form>
-                </div>
-            </Container>
+                                {switchState == "signup" ? (
+                                    <p
+                                        onClick={() => onClickChangeLogin()}
+                                        className="textLogin"
+                                    >
+                                        Have an account? Login
+                                    </p>
+                                ) : (
+                                    <p
+                                        onClick={() => onClickChangeSignup()}
+                                        className="textLogin"
+                                    >
+                                        Sign up for an account
+                                    </p>
+                                )}
+                            </Grid>
+                        </form>
+                    </div>
+                </Container>
+            )}
         </div>
     );
 }

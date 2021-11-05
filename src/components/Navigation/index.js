@@ -84,7 +84,10 @@ export default function Navigation({ isAuthenticated, setAuth }) {
         if (typeof window !== "undefined") {
             window.onscroll = () => {
                 let currentScrollPos = window.pageYOffset;
-                if (currentScrollPos > lastScrollTop) {
+                if (
+                    currentScrollPos > lastScrollTop &&
+                    currentScrollPos > 150
+                ) {
                     setIsScroll({ onTop: true });
                 } else {
                     setIsScroll({ onTop: false });
@@ -219,7 +222,7 @@ export default function Navigation({ isAuthenticated, setAuth }) {
                         </Grid>
                         <Grid item xs={4} className="upContrainer">
                             <div className="up-btn">
-                                <a href="/">
+                                <a href="/profile">
                                     <i className="fas fa-user icon-btn"></i>
                                     Trang cá nhân
                                 </a>

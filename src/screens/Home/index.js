@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ListItem from "../../components/ListItem";
 import SlideShow from "../../components/SlideShow";
 import "./home.scss";
 import imgTest1 from "../../assets/image/imgtest.png";
 import imgTest2 from "../../assets/image/imageTest2.jpg";
+import MetaTag from "../../components/MetaTag";
+import Preloading from "../../components/Loading";
 
 const dataList = [
     {
@@ -138,10 +140,29 @@ const dataSlides = [
 ];
 
 export default function Home() {
+    const [preload, setPreload] = useState(false);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setPreload(true);
+        }, 500);
+        return () => {};
+    }, []);
+
     return (
         <div id="homeContainer">
-            <SlideShow dataSlides={dataSlides} />
-            <ListItem dataList={dataList} />
+            <MetaTag
+                title={"Trang chủ"}
+                description={"Trang web buôn bán, trao đổi sản phẩm cũ"}
+            />
+            {!preload ? (
+                <Preloading />
+            ) : (
+                <>
+                    <SlideShow dataSlides={dataSlides} />
+                    <ListItem dataList={dataList} />
+                </>
+            )}
         </div>
     );
 }
