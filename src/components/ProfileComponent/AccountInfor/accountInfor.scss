@@ -105,6 +105,9 @@
       }
       .text-input {
         width: 100%;
+        :focus {
+          border-color: $base-color-2;
+        }
       }
       .account-password-button {
         padding: 20px;
