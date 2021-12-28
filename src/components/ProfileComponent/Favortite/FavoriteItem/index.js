@@ -7,6 +7,7 @@ export default function FavoriteItem({ item }) {
   return (
     <div className="favorite-item-container">
       <Grid container className="favorite-item-content">
+        <i className="fas fa-heart favorite-heart" style={{ color: "red" }}></i>
         <Grid item xs={4} className="favorite-item-left">
           <img src={avt} alt="avt" className="favorite-post-image" />
         </Grid>

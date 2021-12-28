@@ -1,70 +1,65 @@
 @import "../../../../assets/css/valiables";
 @import "../../../../assets/css/common";
 
-.favorite-item-container {
+.user-post-container {
   width: 100%;
   height: auto;
   border-radius: 20px;
   border: 3px solid;
   border-color: $base-color-2;
-  position: relative;
-  .favorite-heart {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 3;
-  }
-  .favorite-item-content {
+  .user-post-content {
     margin: 10px 0 10px;
     padding-left: 10px;
-    .favorite-item-left {
-      .favorite-post-image {
+    .user-post-left {
+      .user-post-image {
         width: 100%;
         height: auto;
         @include makeCenter();
         border-radius: 10px;
       }
     }
-    .favorite-item-right {
+
+    .user-post-right {
       padding-left: 10px;
       padding-right: 10px;
-      .item-name {
+      position: relative;
+      .post-name {
         margin-top: 0px;
         margin-bottom: 10px;
       }
-      .item-value {
+      .post-value {
         color: red;
         font-size: 15px;
         font-weight: bold;
         margin-top: 0px;
         margin-bottom: 10px;
       }
-      .item-create-location {
+      .post-create-location {
         width: 100%;
         font-size: 12px;
-        .item-createAt {
+        .post-createAt {
           float: left;
           padding-right: 20px;
         }
-        .item-loaction {
+        .post-loaction {
           padding-right: 5px;
         }
       }
-      .item-connect {
+      .post-connect {
         padding-top: 30px;
-        .group-btn {
-          .item-btn-connect {
-            cursor: pointer;
-            color: white;
-            margin-right: 5px;
-            background: $button-color;
-            border-radius: 10px;
-            transition: all 0.3 ease-in-out;
-            padding-left: 5px;
-            &:hover {
-              transform: scale(1.05);
-            }
-          }
+        position: absolute;
+        width: 100%;
+        bottom: 0px;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        .post-btn-connect {
+          cursor: pointer;
+          color: white;
+          width: 90%;
+          background: $button-color;
+          border-radius: 10px;
+          transition: all 0.3 ease-in-out;
         }
       }
     }
