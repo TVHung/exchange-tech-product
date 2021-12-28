@@ -1,12 +1,8 @@
 import "./App.css";
 import { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  Redirect,
-} from "react-router-dom";
-import Login from "./screens/Login";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Login from "./screens/Auth/login";
+import Register from "./screens/Auth/register";
 import Navigation from "./components/Navigation";
 import Home from "./screens/Home";
 import Error from "./screens/Error";
@@ -20,7 +16,7 @@ import Chat from "./screens/Chat";
 import CreatePost from "./screens/CreatePost";
 import Profile from "./screens/Profile";
 import { ProfileEdit } from "./components/ProfileComponent";
-// import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 toast.configure();
 
 function App() {
@@ -41,16 +37,8 @@ function App() {
           />
           <Route exact path="/chat" render={(props) => <Chat />} />
           <Route exact path="/create-post" render={(props) => <CreatePost />} />
-          <Route
-            exact
-            path="/login"
-            render={(props) => <Login type={"login"} />}
-          />
-          <Route
-            exact
-            path="/register"
-            render={(props) => <Login type={"register"} />}
-          />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/register" component={Register} />
           <Route exact path="/profile" render={(props) => <Profile />} />
           <Route
             exact

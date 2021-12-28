@@ -1,7 +1,7 @@
 @import "../../assets/css/valiables";
 @import "../../assets/css/common";
 
-.nav {
+.nav-container {
   position: fixed;
   top: 0;
   width: 100%;
@@ -10,7 +10,7 @@
   box-shadow: 0 10px 10px 3px rgba(0, 0, 0, 0.3);
 }
 
-.header {
+.nav-header {
   display: flex;
   background: $nav-top-color;
   justify-content: space-between;
@@ -44,7 +44,7 @@
 }
 
 a {
-  text-decoration: none;
+  text-decoration: none !important;
 }
 
 .option :hover {

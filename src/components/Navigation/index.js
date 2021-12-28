@@ -102,13 +102,13 @@ export default function Navigation({ isAuthenticated, setAuth }) {
 
   return (
     <div
-      className="nav"
+      className="nav-container"
       style={{
         height: 140,
         top: isScroll.onTop ? -150 : 0,
       }}
     >
-      <div className="header">
+      <div className="nav-header">
         <div className="logo-nav">
           <div className="logo-container">
             <a
