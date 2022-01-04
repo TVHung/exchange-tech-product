@@ -9,9 +9,12 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import GoogleLogin from "react-google-login";
 import logoGoogle from "../../assets/image/google.png";
-import logo from "../../assets/image/logopersonal2.png";
+import { toast } from "react-toastify";
 import "./auth.scss";
 import MetaTag from "../../components/MetaTag";
+import { apiLogin } from "../../constants";
+import { setCookie } from "./../../utils/cookie";
+import { validateEmail, validatePassword } from "../../validations";
 
 const UseFocus = () => {
   const htmlElRef = useRef(null);
@@ -41,12 +44,33 @@ export default function Login() {
   };
 
   //check login
-  const handleSubmitLogin = (e) => {
+  const handleSubmitLogin = async (e) => {
     e.preventDefault();
     let userLogin = {
       email: user.email,
       password: user.password,
     };
+    setErrorEmail(validateEmail(user.email));
+    setErrorPassword(validatePassword(user.password));
+    if (
+      validateEmail(user.email) == "" &&
+      validatePassword(user.password) == ""
+    )
+      await axios
+        .post(apiLogin, userLogin)
+        .then((res) => {
+          const data = res.data;
+          if (data.access_token) {
+            toast.success("正常にログインしました！");
+            setCookie("access_token", data.access_token, 3600);
+          }
+          // setLoginFaild("");
+          window.location.href = `/`;
+        })
+        .catch((error) => {
+          toast.error("ログインに失敗しました！");
+          // setLoginFaild("メールアドレスまたはパスワードが間違っています！");
+        });
   };
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);

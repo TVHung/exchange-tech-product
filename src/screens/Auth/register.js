@@ -1,19 +1,22 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { TextField, InputAdornment, IconButton } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import axios from "axios";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import GoogleLogin from "react-google-login";
 import logoGoogle from "../../assets/image/google.png";
-import logo from "../../assets/image/logopersonal2.png";
+import { toast } from "react-toastify";
 import "./auth.scss";
 import MetaTag from "../../components/MetaTag";
-import Preloading from "../../components/Loading";
+import {
+  validateName,
+  validateEmail,
+  validatePassword,
+  equalPassword,
+} from "../../validations";
+import { apiRegister } from "./../../constants";
 
 const UseFocus = () => {
   const htmlElRef = useRef(null);
@@ -27,12 +30,12 @@ export default function Login({ type }) {
     email: "",
     name: "",
     password: "",
+    password_confirmation: "",
   });
   const [errorEmail, setErrorEmail] = useState("");
   const [errorName, setErrorName] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
-
-  const [showPassword, setShowPassword] = useState(false);
+  const [errorPasswordConfirm, setErrorPasswordConfirm] = useState("");
 
   const handleOnChange = (e) => {
     setUser((prevState) => ({
@@ -46,18 +49,51 @@ export default function Login({ type }) {
   };
 
   //check sign up
-  const handleSubmitSignup = (e) => {
+  const handleSubmitSignup = async (e) => {
     e.preventDefault();
-  };
+    let userRegister = {
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      password_confirmation: user.password_confirmation,
+    };
 
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const handleMouseDownPassword = () => setShowPassword(!showPassword);
+    let valiName = validateName(user.name);
+    let valiEmail = validateEmail(user.email);
+    let valiPassword = validatePassword(user.password);
+    let valiPassConfirm = equalPassword(
+      user.password,
+      user.password_confirmation
+    );
+    setErrorName(valiName);
+    setErrorEmail(valiEmail);
+    setErrorPassword(valiPassword);
+    setErrorPasswordConfirm(valiPassConfirm);
+    if (
+      valiName == "" &&
+      valiEmail == "" &&
+      valiPassword == "" &&
+      valiPassConfirm == ""
+    )
+      await axios
+        .post(apiRegister, userRegister)
+        .then((res) => {
+          const data = res.data;
+          setErrorPassword("");
+          toast.success("サインアップ成功！");
+          window.location.href = `/login`;
+        })
+        .catch((error) => {
+          console.error(error);
+          toast.error("サインアップに失敗しました！");
+        });
+  };
 
   const loginSuccess = (response) => {
-    console.log("Login success", response);
+    console.log("Register success", response);
   };
   const loginFailure = (response) => {
-    console.log("Login Failed", response);
+    console.log("Register Failed", response);
   };
 
   return (
@@ -71,6 +107,22 @@ export default function Login({ type }) {
         <div className="paperLogin">
           <p className="titleLogin">Register</p>
           <form className="formLogin" noValidate>
+            <TextField
+              error={errorName != "" ? true : false}
+              variant="filled"
+              margin="normal"
+              required
+              fullWidth
+              name="name"
+              label="Username"
+              type="text"
+              id="name"
+              onChange={(e) => handleOnChange(e)}
+              className="inputLogin"
+            />
+            <p id="validateEmail" className="nofiLogin">
+              {errorName}
+            </p>
             <TextField
               error={errorEmail != "" ? true : false}
               variant="filled"
@@ -92,52 +144,38 @@ export default function Login({ type }) {
               {errorEmail}
             </p>
             <TextField
-              error={errorName != "" ? true : false}
+              error={errorPassword != "" ? true : false}
               variant="filled"
               margin="normal"
               required
               fullWidth
-              name="name"
-              label="Username"
-              type="text"
-              id="name"
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
               onChange={(e) => handleOnChange(e)}
               className="inputLogin"
             />
             <p id="validateEmail" className="nofiLogin">
-              {errorName}
-            </p>
-            <div>
-              <TextField
-                error={errorPassword != "" ? true : false}
-                variant="filled"
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type={showPassword ? "text" : "password"}
-                id="password"
-                autoComplete="current-password"
-                onChange={(e) => handleOnChange(e)}
-                className="inputLogin"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={() => handleClickShowPassword()}
-                        onMouseDown={() => handleMouseDownPassword()}
-                      >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
-            <p id="validateEmail" className="nofiLogin">
               {errorPassword}
+            </p>
+            <TextField
+              error={errorPassword != "" ? true : false}
+              variant="filled"
+              margin="normal"
+              required
+              fullWidth
+              name="password_confirmation"
+              label="Confirm password"
+              type="password"
+              id="password-confirm"
+              autoComplete="current-password"
+              onChange={(e) => handleOnChange(e)}
+              className="inputLogin"
+            />
+            <p id="validateEmail" className="nofiLogin">
+              {errorPasswordConfirm}
             </p>
             <div style={{ marginTop: 10 }}>
               <Button

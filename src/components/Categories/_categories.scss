@@ -1,0 +1,28 @@
+@import "../../assets/css/valiables";
+@import "../../assets/css/common";
+
+.cagoriesContainer {
+  height: 250px;
+  width: 100%;
+  border: 1px solid #dfe1e3;
+
+  .category-title {
+    margin-left: 20px;
+  }
+
+  .container {
+    min-height: 250px;
+    .category-item {
+      border: 1px solid #dfe1e3;
+      padding-top: 20px;
+      &:hover {
+        cursor: pointer;
+        background-color: antiquewhite;
+      }
+      img {
+        width: 100px;
+        height: 100px;
+      }
+    }
+  }
+}

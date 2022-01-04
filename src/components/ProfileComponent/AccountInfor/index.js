@@ -126,7 +126,7 @@ export default function AccountInfor() {
             </Grid>
             <Grid item xs={12} className="account-password-button">
               <Button className="account-password-update-button">
-                Cập nhật <i class="fas fa-save"></i>
+                Cập nhật <i className="fas fa-save"></i>
               </Button>
             </Grid>
           </Grid>

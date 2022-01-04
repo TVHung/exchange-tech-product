@@ -273,6 +273,9 @@ export default function Navigation({ isAuthenticated, setAuth }) {
         <MenuItem className="menu-content">
           <Avatar className="menu-icon-btn" /> My account
         </MenuItem>
+        <MenuItem className="menu-content">
+          <Avatar className="menu-icon-btn" /> My favorite
+        </MenuItem>
         <Divider />
         <MenuItem className="menu-content">
           <ListItemIcon>

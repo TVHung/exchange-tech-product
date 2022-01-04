@@ -6,6 +6,7 @@ import imgTest1 from "../../assets/image/imgtest.png";
 import imgTest2 from "../../assets/image/imageTest2.jpg";
 import MetaTag from "../../components/MetaTag";
 import Preloading from "../../components/Loading";
+import Categories from "../../components/Categories";
 
 const dataList = [
   {
@@ -163,6 +164,10 @@ export default function Home() {
       ) : (
         <>
           <SlideShow dataSlides={dataSlides} />
+          <Categories />
+          <h3>Tin mới đăng</h3>
+          <ListItem dataList={dataList} />
+          <h3>Bài viết nổi bật</h3>
           <ListItem dataList={dataList} />
         </>
       )}
