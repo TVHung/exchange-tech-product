@@ -1,6 +1,5 @@
 import { Grid } from "@material-ui/core";
 import React from "react";
-import { Link } from "react-router-dom";
 import FacebookIcon from "@material-ui/icons/Facebook";
 import InstagramIcon from "@material-ui/icons/Instagram";
 import TwitterIcon from "@material-ui/icons/Twitter";
@@ -9,7 +8,7 @@ import "./footer.scss";
 function Footer() {
   return (
     <Grid container id="footer">
-      <hr style={{ width: "100%" }} />
+      <hr className="line-top" />
       <Grid item xs={12} sm={4} className="support">
         <span>
           <h3>Hỗ trợ khách hàng</h3>
@@ -73,7 +72,7 @@ function Footer() {
           </ul>
         </span>
       </Grid>
-      <hr style={{ width: "80%" }} />
+      <hr className="line-bottom" />
       <Grid item xs={12} id="nocopyright">
         <p style={{ color: "white" }}>
           @2021 - Truong Hung. All Right Reserved. Designed and Developed by

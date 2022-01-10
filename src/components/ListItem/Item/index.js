@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "./item.scss";
-import imgTest from "../../../assets/image/imgtest.png";
 import { Button } from "@material-ui/core";
 
 export default function Item({ data }) {
@@ -44,6 +43,10 @@ export default function Item({ data }) {
     return () => {};
   }, [favorite]);
 
+  const toDetail = () => {
+    window.location.href = `detail/${data.id}`;
+  };
+
   return (
     <div className="itemContainer">
       <div className="itemHeader">
@@ -54,23 +57,25 @@ export default function Item({ data }) {
           style={{ color: favorite ? "grey" : "red" }}
         ></i>
       </div>
-      <div className="itemContent">
-        <h4>{data.nameProduct}</h4>
-        <p className="item-value">Giá: 8.990.000đ</p>
-        <div className="item-create-location">
-          <span className="item-createAt">
-            {handleCalculateTime(data.createAt || null)}
-          </span>
-          <span className="item-location">{data.location}</span>
+      <div onClick={() => toDetail()}>
+        <div className="itemContent">
+          <h4>{data.nameProduct}</h4>
+          <p className="item-value">Giá: 8.990.000đ</p>
+          <div className="item-create-location">
+            <span className="item-createAt">
+              {handleCalculateTime(data.createAt || null)}
+            </span>
+            <span className="item-location">{data.location}</span>
+          </div>
         </div>
-      </div>
-      <div className="itemDrop">
-        <div className="itemDrop-content">
-          <p>{data.infor}</p>
-        </div>
-        <div className="itemDrop-btn">
-          <Button className="item-btn-care">Quan tâm</Button>
-          <Button className="item-btn-chat">Nhắn tin</Button>
+        <div className="itemDrop">
+          <div className="itemDrop-content">
+            <p>{data.infor}</p>
+          </div>
+          <div className="itemDrop-btn">
+            <Button className="item-btn-care">Quan tâm</Button>
+            <Button className="item-btn-chat">Nhắn tin</Button>
+          </div>
         </div>
       </div>
     </div>

@@ -255,7 +255,7 @@ a {
 }
 
 @media (min-width: 1500px) {
-  .header,
+  .nav-header,
   .bottomNav {
     @include width-lg-container();
   }

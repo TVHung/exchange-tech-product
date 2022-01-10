@@ -1,20 +1,19 @@
 import React, { useEffect } from "react";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
-import { Grid } from "@material-ui/core";
-import "./slideShow.scss";
+import "./slideDetail.scss";
 
-export default function SlideShow({ dataSlides }) {
+export default function SlideDetail({ dataSlides }) {
   const properties = {
     duration: 5000,
-    transitionDuration: 1000,
+    transitionDuration: 500,
     infinite: true,
-    indicators: false,
-    arrows: false,
+    indicators: true,
+    arrows: true,
   };
 
   return (
-    <div className="slideShowContainer">
+    <div className="slideDetailContainer">
       <Slide {...properties}>
         {dataSlides.map((data) => (
           <div key="{data.id}">
@@ -22,7 +21,7 @@ export default function SlideShow({ dataSlides }) {
               style={{
                 backgroundImage: `url(${data.image})`,
               }}
-              className="slide-show-image"
+              className="slide-detail-image"
             ></div>
           </div>
         ))}

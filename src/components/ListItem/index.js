@@ -13,9 +13,6 @@ export default function ListItem({ dataList }) {
           </Grid>
         ))}
       </Grid>
-      <div className="list-more-btn">
-        <Button className="more-btn">Xem thêm</Button>
-      </div>
     </div>
   );
 }

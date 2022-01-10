@@ -10,6 +10,7 @@ import Dashboard from "./screens/admin/Dashboard";
 import Footer from "./components/Footer";
 import Chat from "./screens/Chat";
 import CreatePost from "./screens/CreatePost";
+import Detail from "./screens/Detail";
 import Profile from "./screens/Profile";
 import { ProfileEdit } from "./components/ProfileComponent";
 import { Fragment } from "react";
@@ -40,6 +41,7 @@ function App() {
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/profile" render={(props) => <Profile />} />
+          <Route exact path="/detail/:id" render={(props) => <Detail />} />
           <Route
             exact
             path="/profile/edit"
