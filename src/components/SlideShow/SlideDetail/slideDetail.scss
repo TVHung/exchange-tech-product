@@ -1,0 +1,14 @@
+.slideDetailContainer {
+  overflow: hidden;
+  .slide-detail-image {
+    border-radius: 10px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #eeeeee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    object-fit: contain;
+    height: 500px;
+  }
+}

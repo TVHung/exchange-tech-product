@@ -1,6 +1,14 @@
-#home {
-    width: 100%;
-    min-height: 100vh;
-    margin: 0px;
-    padding: 0px;
+@import "../../assets/css/common";
+@import "../../assets/css/valiables";
+
+#homeContainer {
+  @include page-frame();
+  @include width-container();
+  //   padding: 0px 80px;
+}
+
+@media (min-width: 1500px) {
+  #homeContainer {
+    @include width-lg-container();
+  }
 }

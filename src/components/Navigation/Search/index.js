@@ -20,14 +20,7 @@ export default function Search() {
                     console.log(inputVal);
                 }}
             />
-            <button
-                type="submit"
-                id="button"
-                style={{
-                    background:
-                        "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
-                }}
-            >
+            <button type="submit" id="button">
                 <SearchIcon id="iconSearch" />
             </button>
         </div>
