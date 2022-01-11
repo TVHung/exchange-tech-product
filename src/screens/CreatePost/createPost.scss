@@ -2,21 +2,79 @@
 @import "../../assets/css/common";
 
 .createPostContainer {
-    @include page-frame();
-    @include width-container();
+  @include page-frame();
+  @include width-container();
 
+  .form-container {
+    padding-top: 20px;
     .create-post-images {
-        height: 100%;
-        background-color: red;
+      padding: 10px;
+      height: 100%;
+      .custom-file {
+        input[type="file"] {
+          display: none;
+        }
+        .custom-file-upload {
+          border: $base-color-1 2px solid;
+          border-radius: 5px;
+          padding: 5px;
+          width: 100%;
+          text-align: center;
+        }
+      }
+      .view-preview {
+        .image-preview {
+          position: relative;
+          .delete-image {
+            position: absolute;
+            top: 0px;
+            right: 10px;
+          }
+          .title-cover-image {
+            position: absolute;
+            bottom: 0px;
+            background-color: rgba($color: #000000, $alpha: 0.7);
+            width: 85%;
+            text-align: center;
+            padding: 0px;
+            margin: 0px;
+            p {
+              color: white;
+              margin: 2px;
+              padding: 0px;
+            }
+          }
+        }
+      }
     }
     .create-post-detail {
-        height: 100%;
-        background-color: blue;
+      padding: 10px;
+      height: 100%;
+      .btn-submit,
+      .btn-preview {
+        width: 100%;
+        border: none;
+      }
+      .btn-submit {
+        @include button-common();
+      }
+      .form-outline {
+        .form-label {
+          font-weight: bold;
+        }
+        input[readonly] {
+          background-color: transparent;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
     }
+  }
 }
 
 @media (min-width: 1500px) {
-    .createPostContainer {
-        @include width-lg-container();
-    }
+  .createPostContainer {
+    @include width-lg-container();
+  }
 }

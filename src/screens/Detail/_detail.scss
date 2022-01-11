@@ -15,12 +15,13 @@
 
 .copy-check-mark {
   position: fixed;
-  top: 50%;
-  right: 50%;
+  top: 40%;
+  right: 45%;
 }
 
 .detail-bread-crumb {
   width: 100%;
+  padding-top: 10px;
   ul {
     list-style: none;
     margin-left: 0px;
@@ -44,6 +45,20 @@
   .detail-left-image {
     width: 100%;
     height: 500px;
+    position: relative;
+    .detail-time-createat {
+      position: absolute;
+      bottom: 0px;
+      height: auto;
+      width: 100%;
+      background-color: rgba($color: #000000, $alpha: 0.5);
+      @include makeRight();
+      p {
+        color: white;
+        margin: 10px;
+        font-size: 20px;
+      }
+    }
   }
   .detail-left-content {
     position: relative;

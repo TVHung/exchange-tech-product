@@ -6,3 +6,9 @@ export const formatPrice = (num) => {
     p < 0 || i < p ? `${m}.` : m
   );
 };
+
+export const POST_TYPES = {
+  MOBILE: "mobile",
+  LAPTOP: "alptop",
+  PC: "pc",
+};

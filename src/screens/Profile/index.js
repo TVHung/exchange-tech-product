@@ -6,7 +6,6 @@ import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import {
   AccountInfor,
   Favorite,
-  History,
   ListPost,
 } from "../../components/ProfileComponent";
 import MetaTag from "../../components/MetaTag";
@@ -50,11 +49,6 @@ export default function Profile() {
                   value="3"
                   className="profile-tab"
                 />
-                <Tab
-                  label="Lịch sử mua hàng"
-                  value="4"
-                  className="profile-tab"
-                />
               </TabList>
             </Box>
             <TabPanel value="1">
@@ -65,9 +59,6 @@ export default function Profile() {
             </TabPanel>
             <TabPanel value="3">
               <Favorite />
-            </TabPanel>
-            <TabPanel value="4">
-              <History />
             </TabPanel>
           </TabContext>
         </Box>

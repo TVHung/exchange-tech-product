@@ -132,7 +132,10 @@ export default function Navigation({ isAuthenticated, setAuth }) {
               />
             </a>
           </div>
-          <ul className={click ? "nav-options active" : "nav-options"}>
+          <ul
+            className={click ? "nav-options active" : "nav-options"}
+            style={{ marginBottom: 0 }}
+          >
             <li className="option" onClick={closeMobileMenu}>
               <a href="/" className="underline">
                 <i className="fas fa-home icon-btn"></i>
@@ -184,7 +187,7 @@ export default function Navigation({ isAuthenticated, setAuth }) {
             <MenuIcon className="menu-icon" />
           )}
         </div>
-        <ul className="signin-up">
+        <ul className="signin-up" style={{ marginBottom: 0 }}>
           <li className="sign-in" onClick={closeMobileMenu}>
             <a href="/login">
               <i className="fas fa-sign-in-alt icon-btn"></i>Đăng nhập

@@ -35,6 +35,15 @@
   }
 }
 
+@mixin button-common {
+  background-color: $base-color-1;
+  color: white;
+  &:hover {
+    background-color: $base-color-2;
+    color: $base-color-1;
+  }
+}
+
 @mixin width-container {
   padding: 0px 80px;
   min-width: 500px;

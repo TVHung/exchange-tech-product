@@ -159,6 +159,9 @@ export default function Detail() {
               <div className="detail-left">
                 <div className="detail-left-image">
                   <SlideDetail dataSlides={dataSlides} />
+                  <div className="detail-time-createat">
+                    <p>Bài đăng cách đây 5 phút</p>
+                  </div>
                 </div>
                 <div className="detail-left-content">
                   <h4>Iphone 13 promax xanh ngọc</h4>
