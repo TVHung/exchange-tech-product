@@ -73,7 +73,7 @@ export default function Item({ data }) {
             <p>{data.infor}</p>
           </div>
           <div className="itemDrop-btn">
-            <Button className="item-btn-care">Quan tâm</Button>
+            <Button className="item-btn-care">Chi tiết</Button>
             <Button className="item-btn-chat">Nhắn tin</Button>
           </div>
         </div>

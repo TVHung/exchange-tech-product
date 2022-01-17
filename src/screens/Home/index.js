@@ -7,6 +7,9 @@ import imgTest2 from "../../assets/image/imageTest2.jpg";
 import MetaTag from "../../components/MetaTag";
 import Preloading from "../../components/Loading";
 import Categories from "../../components/Categories";
+import banner1 from "../../assets/image/banner1.jpg";
+import banner2 from "../../assets/image/banner2.jpg";
+import banner3 from "../../assets/image/banner3.jpg";
 
 const dataList = [
   {
@@ -125,26 +128,25 @@ const dataSlides = [
     id: 1,
     tite: "We are team ssv",
     bio: "Blog chia sẻ về những thông tin của nhóm và những kiến thức bổ ích khác",
-    image:
-      "https://monkeymedia.com.vn/storage/2020/06/757b505cfd34c64c85ca5b5690ee5293/c/16a17bdd79859ddbc494.jpg-large.jpg",
+    image: banner1,
   },
   {
     id: 2,
     tite: "We are team ssv",
     bio: "Blog chia sẻ về những thông tin của nhóm và những kiến thức bổ ích khác",
-    image: "https://cn24h.net/uploads/img_nd/dinh-dang-anh-tiff-la-gi-1.jpg",
+    image: banner2,
   },
   {
     id: 3,
     tite: "We are team ssv",
     bio: "Blog chia sẻ về những thông tin của nhóm và những kiến thức bổ ích khác",
-    image:
-      "http://cdn2.tieudungplus.vn/upload/TgBSumXIHarRW68IEfydSA/files/bst-hinh-anh-phong-canh-thien-nhien-tuyet-dep-lang-man-tho-mong-hung-vi-nhat-the-gioi-1.jpeg",
+    image: banner3,
   },
 ];
 
 export default function Home() {
   const [preload, setPreload] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -152,6 +154,23 @@ export default function Home() {
     }, 500);
     return () => {};
   }, []);
+
+  //handle scroll to top
+  const toggleVisible = () => {
+    const scrolled = document.documentElement.scrollTop;
+    if (scrolled > 300) {
+      setVisible(true);
+    } else if (scrolled <= 300) {
+      setVisible(false);
+    }
+  };
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+  window.addEventListener("scroll", toggleVisible);
 
   return (
     <div id="homeContainer">
@@ -163,11 +182,18 @@ export default function Home() {
         <Preloading />
       ) : (
         <>
+          {visible && (
+            <div className="scroll-to-top" onClick={() => scrollToTop()}>
+              <i className="fas fa-chevron-up fa-2x"></i>
+            </div>
+          )}
           <SlideShow dataSlides={dataSlides} />
           <Categories />
           <h3>Tin mới đăng</h3>
           <ListItem dataList={dataList} />
           <h3>Bài viết nổi bật</h3>
+          <ListItem dataList={dataList} />
+          <h3>Bài viết đổi sản phẩm</h3>
           <ListItem dataList={dataList} />
         </>
       )}

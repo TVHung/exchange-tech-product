@@ -7,16 +7,15 @@ import "./navigation.scss";
 import Search from "./Search";
 import { ReactComponent as CloseMenu } from "../../assets/image/x.svg";
 import { ReactComponent as MenuIcon } from "../../assets/image/menu.svg";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
-import Avatar from "@material-ui/core/Avatar";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Divider from "@material-ui/core/Divider";
-import PersonAdd from "@material-ui/icons/PersonAdd";
-import Settings from "@material-ui/icons/Settings";
-// import Logout from "@material-ui/icons/Logout";
-import DropdownNofi from "./../DropdownNofi";
+import { getCookie, deleteCookie } from "../../utils/cookie";
+import { headers, apiLogout } from "../../constants";
 
 function getWindowDimensions() {
   const { innerWidth: width, innerHeight: height } = window;
@@ -45,12 +44,27 @@ function useWindowDimensions() {
 
 var lastScrollTop = 0;
 
-export default function Navigation({ isAuthenticated, setAuth }) {
-  const logout = (e) => {
+export default function Navigation() {
+  const logout = async (e) => {
     e.preventDefault();
-    localStorage.removeItem("token");
-    setAuth(false);
-    toast.success("Logout is successfully!");
+    if (getCookie("access_token") != "") {
+      try {
+        await axios
+          .post(apiLogout, { data: "mydata" }, { headers: headers })
+          .then((res) => {
+            toast.success("Đăng xuất thành công");
+            deleteCookie("access_token");
+            setTimeout(() => {
+              window.location.href = `/`;
+            }, 1000);
+          });
+      } catch (error) {
+        deleteCookie("access_token");
+        return { statusCode: 500, body: error.toString() };
+      }
+    } else {
+      window.location.href = `/`;
+    }
   };
   const [click, setClick] = useState(false);
   const handleClickMobile = () => setClick(!click);
@@ -59,6 +73,7 @@ export default function Navigation({ isAuthenticated, setAuth }) {
   const [isScroll, setIsScroll] = useState({
     onTop: false,
   });
+  const [isAuth, setIsAuth] = useState(false);
   //choose the screen size
   const handleResize = () => {
     if (window.innerWidth < 1040) {
@@ -99,6 +114,13 @@ export default function Navigation({ isAuthenticated, setAuth }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const isLogin = useSelector((state) => state.user.isLogin);
+
+  useEffect(() => {
+    setIsAuth(isLogin);
+    return () => {};
+  }, [isLogin]);
 
   return (
     <div
@@ -187,22 +209,25 @@ export default function Navigation({ isAuthenticated, setAuth }) {
             <MenuIcon className="menu-icon" />
           )}
         </div>
-        <ul className="signin-up" style={{ marginBottom: 0 }}>
-          <li className="sign-in" onClick={closeMobileMenu}>
-            <a href="/login">
-              <i className="fas fa-sign-in-alt icon-btn"></i>Đăng nhập
-            </a>
-          </li>
-          <li className="signup-btn" onClick={closeMobileMenu}>
-            <a href="/register">Đăng ký</a>
-          </li>
-        </ul>
-        {/* <div className="drop-layout-function">
-          <i
-            className="fas fa-ellipsis-v dot-menu-icon"
-            onClick={handleClick}
-          ></i>
-        </div> */}
+        {isAuth ? (
+          <div className="drop-layout-function">
+            <i
+              className="fas fa-ellipsis-v dot-menu-icon"
+              onClick={handleClick}
+            ></i>
+          </div>
+        ) : (
+          <ul className="signin-up" style={{ marginBottom: 0 }}>
+            <li className="sign-in" onClick={closeMobileMenu}>
+              <a href="/login">
+                <i className="fas fa-sign-in-alt icon-btn"></i>Đăng nhập
+              </a>
+            </li>
+            <li className="signup-btn" onClick={closeMobileMenu}>
+              <a href="/register">Đăng ký</a>
+            </li>
+          </ul>
+        )}
       </div>
       <div className="bottomNav">
         {!isSmall ? (
@@ -234,35 +259,10 @@ export default function Navigation({ isAuthenticated, setAuth }) {
       </div>
       <Menu
         anchorEl={anchorEl}
+        getContentAnchorEl={null}
         open={open}
         onClose={handleClose}
         onClick={handleClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: "visible",
-            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-            mt: 1.5,
-            "& .MuiAvatar-root": {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            "&:before": {
-              content: '""',
-              display: "block",
-              position: "absolute",
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: "background.paper",
-              transform: "translateY(-50%) rotate(45deg)",
-              zIndex: 0,
-            },
-          },
-        }}
         transformOrigin={{
           horizontal: "right",
           vertical: "top",
@@ -273,31 +273,32 @@ export default function Navigation({ isAuthenticated, setAuth }) {
         }}
         className="menu-container"
       >
-        <MenuItem className="menu-content">
-          <Avatar className="menu-icon-btn" /> Profile
-        </MenuItem>
-        <MenuItem className="menu-content">
-          <Avatar className="menu-icon-btn" /> My account
-        </MenuItem>
-        <MenuItem className="menu-content">
-          <Avatar className="menu-icon-btn" /> My favorite
-        </MenuItem>
-        <Divider />
+        <Link to="/profile">
+          <MenuItem className="menu-content">
+            <ListItemIcon>
+              <i className="fas fa-user"></i>
+            </ListItemIcon>
+            Trang cá nhân
+          </MenuItem>
+        </Link>
+        <Link to="/profile">
+          <MenuItem className="menu-content">
+            <ListItemIcon>
+              <i className="fas fa-bookmark"></i>
+            </ListItemIcon>
+            Sản phẩm quan tâm
+          </MenuItem>
+        </Link>
+        <Divider style={{ height: 2 }} />
         <MenuItem className="menu-content">
           <ListItemIcon>
-            <PersonAdd fontSize="small" />
+            <i className="fas fa-cog"></i>
           </ListItemIcon>
-          Add another account
+          Cài đặt
         </MenuItem>
-        <MenuItem className="menu-content">
+        <MenuItem className="menu-content" onClick={(e) => logout(e)}>
           <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
-        <MenuItem className="menu-content">
-          <ListItemIcon>
-            <i class="fas fa-sign-out-alt"></i>
+            <i className="fas fa-sign-out-alt"></i>
           </ListItemIcon>
           Logout
         </MenuItem>

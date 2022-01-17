@@ -186,6 +186,9 @@ a {
   .signin-up {
     display: none;
   }
+  .drop-layout-function {
+    display: none;
+  }
 }
 
 .mobile-menu {
@@ -298,8 +301,7 @@ a {
 }
 
 .drop-layout-function {
-  margin: 0px;
-  padding: 0px;
+  @include deleteSpace();
   .dot-menu-icon {
     &:hover {
       cursor: pointer;

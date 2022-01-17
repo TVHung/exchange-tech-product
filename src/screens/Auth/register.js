@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { TextField } from "@material-ui/core";
@@ -36,6 +36,23 @@ export default function Login({ type }) {
   const [errorName, setErrorName] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
   const [errorPasswordConfirm, setErrorPasswordConfirm] = useState("");
+  const [errorRegister, setErrorRegister] = useState("");
+
+  useEffect(() => {
+    return () => {
+      setUser({
+        email: "",
+        name: "",
+        password: "",
+        password_confirmation: "",
+      });
+      setErrorEmail("");
+      setErrorName("");
+      setErrorPassword("");
+      setErrorPasswordConfirm("");
+      setErrorRegister("");
+    };
+  }, []);
 
   const handleOnChange = (e) => {
     setUser((prevState) => ({
@@ -80,12 +97,14 @@ export default function Login({ type }) {
         .then((res) => {
           const data = res.data;
           setErrorPassword("");
-          toast.success("サインアップ成功！");
+          setErrorEmail("");
+          toast.success("Đăng ký thành công");
           window.location.href = `/login`;
         })
         .catch((error) => {
           console.error(error);
-          toast.error("サインアップに失敗しました！");
+          setErrorEmail("Email đã tồn tại, vui lòng sử dụng email khác");
+          toast.error("Đăng ký không thành công");
         });
   };
 
@@ -99,7 +118,7 @@ export default function Login({ type }) {
   return (
     <div className="containerLogin">
       <MetaTag
-        title="Register"
+        title="Đăng ký"
         description={"Đăng nhập, đăng kí để trao đổi, mua bán sản phẩm"}
       />
       <Container component="main" maxWidth="xs">
@@ -176,6 +195,9 @@ export default function Login({ type }) {
             />
             <p id="validateEmail" className="nofiLogin">
               {errorPasswordConfirm}
+            </p>
+            <p id="validateEmail" className="nofiLogin">
+              {errorRegister}
             </p>
             <div style={{ marginTop: 10 }}>
               <Button

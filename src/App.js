@@ -10,6 +10,7 @@ import Dashboard from "./screens/admin/Dashboard";
 import Footer from "./components/Footer";
 import Chat from "./screens/Chat";
 import CreatePost from "./screens/CreatePost";
+import PreviewPost from "./screens/CreatePost/PreviewPost";
 import Detail from "./screens/Detail";
 import Profile from "./screens/Profile";
 import { ProfileEdit } from "./components/ProfileComponent";
@@ -18,10 +19,25 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+import PrivateRoute from "./routes/auth/PrivateRoute";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "./redux/actions/userActions";
 toast.configure();
 
 function App() {
-  useEffect(() => {});
+  const [isAuth, setIsAuth] = useState(false);
+  const dispatch = useDispatch();
+  const isAuthenticated = () => {
+    dispatch(fetchUser());
+  };
+  useEffect(() => {
+    isAuthenticated();
+  }, []);
+  const isLogin = useSelector((state) => state.user.isLogin);
+  useEffect(() => {
+    setIsAuth(isLogin);
+    return () => {};
+  }, [isLogin]);
 
   return (
     <Fragment>
@@ -38,14 +54,37 @@ function App() {
           />
           <Route exact path="/chat" render={(props) => <Chat />} />
           <Route exact path="/create-post" render={(props) => <CreatePost />} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/register" component={Register} />
-          <Route exact path="/profile" render={(props) => <Profile />} />
-          <Route exact path="/detail/:id" render={(props) => <Detail />} />
           <Route
             exact
+            path="/create-post/preview"
+            render={(props) => <PreviewPost />}
+          />
+          {/* <PrivateRoute
+            path="/create-post"
+            exact
+            component={CreatePost}
+            isAuth={isAuth}
+          />
+          <PrivateRoute
+            path="/create-post/preview"
+            exact
+            component={PreviewPost}
+            isAuth={isAuth}
+          /> */}
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/register" component={Register} />
+          <Route exact path="/detail/:id" render={(props) => <Detail />} />
+          <PrivateRoute
+            path="/profile"
+            exact
+            component={Profile}
+            isAuth={isAuth}
+          />
+          <PrivateRoute
             path="/profile/edit"
-            render={(props) => <ProfileEdit />}
+            exact
+            component={ProfileEdit}
+            isAuth={isAuth}
           />
           <Route path="/:someString" component={Error} />
         </Switch>

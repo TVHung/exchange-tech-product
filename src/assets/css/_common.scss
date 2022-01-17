@@ -59,3 +59,13 @@
   //   padding: 0px;
   margin-top: $height-sum;
 }
+
+@mixin borderContent {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  border: 3px solid;
+  border-color: $base-color-2;
+  color: $base-color-1;
+  padding: 20px;
+}
