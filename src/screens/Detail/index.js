@@ -193,8 +193,24 @@ export default function Detail() {
                       <span>Tình trạng: Mới</span>
                     </div>
                     <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                      <i className="fas fa-microchip"></i>
+                      <span>CPU: I7</span>
+                    </div>
+                    <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                      <i className="fas fa-memory"></i>
+                      <span>Ram: 32gb</span>
+                    </div>
+                    <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                       <i className="fas fa-tags"></i>
                       <span>Màu sắc: Apple</span>
+                    </div>
+                    <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                      <i className="fas fa-hdd"></i>
+                      <span>Loại ổ cứng: HDD</span>
+                    </div>
+                    <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                      <i className="fas fa-palette"></i>
+                      <span>Màu sắc: Vàng</span>
                     </div>
                     <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                       <i className="fas fa-tags"></i>
@@ -204,13 +220,47 @@ export default function Detail() {
                       <i className="fas fa-tags"></i>
                       <span>Màu sắc: Apple</span>
                     </div>
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <div className="detail-left">
+                <div className="detail-left-content">
+                  <h3>Sản phẩm mong muốn được đổi qua</h3>
+                  <h4>Iphone 12 promax</h4>
+                </div>
+                <div className="detail-left-description">
+                  <p>Sản phẩm yêu cầu còn mới, không móp méo</p>
+                </div>
+                <div className="detail-properties">
+                  <div className="row">
+                    <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                      <i className="fas fa-tags"></i>
+                      <span>Hãng: Apple</span>
+                    </div>
+                    <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                      <i className="fas fa-tags"></i>
+                      <span>Tình trạng: Mới</span>
+                    </div>
+                    <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                      <i className="fas fa-microchip"></i>
+                      <span>CPU: I7</span>
+                    </div>
+                    <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                      <i className="fas fa-memory"></i>
+                      <span>Ram: 32gb</span>
+                    </div>
                     <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                       <i className="fas fa-tags"></i>
                       <span>Màu sắc: Apple</span>
                     </div>
                     <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                      <i className="fas fa-tags"></i>
-                      <span>Màu sắc: Apple</span>
+                      <i className="fas fa-hdd"></i>
+                      <span>Loại ổ cứng: HDD</span>
+                    </div>
+                    <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                      <i className="fas fa-palette"></i>
+                      <span>Màu sắc: Vàng</span>
                     </div>
                     <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                       <i className="fas fa-tags"></i>

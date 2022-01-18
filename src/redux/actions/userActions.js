@@ -10,13 +10,11 @@ export const fetchUser = () => async (dispatch) => {
         headers: headers,
       })
       .then((res) => {
-        console.log("Login roi");
         const user = res.data;
         dispatch({ type: USER_PROFILE, payload: user });
         dispatch({ type: IS_LOGIN, payload: true });
       });
   } catch (error) {
-    console.log("Login chua");
     dispatch({ type: USER_PROFILE, payload: null });
     dispatch({ type: IS_LOGIN, payload: false });
     return { statusCode: 500, body: error.toString() };

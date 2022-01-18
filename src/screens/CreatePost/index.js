@@ -451,13 +451,17 @@ export default function CreatePost() {
                       key={index}
                       className="col-lg-6 col-md-4 col-sm-6 image-preview mb-2 "
                     >
-                      <img src={item} alt="" width="100%" />
-                      <i
-                        className="fas fa-times-circle fa delete-image"
-                        onClick={() => deleteFile(index)}
-                      ></i>
-                      <div className="title-cover-image">
-                        <p>Ảnh bìa</p>
+                      <div className="image-selected">
+                        <img src={item} alt="" width="100%" />
+                        <i
+                          className="fas fa-times-circle fa delete-image"
+                          onClick={() => deleteFile(index)}
+                        ></i>
+                        {index === 0 ? (
+                          <div className="title-cover-image">
+                            <p>Ảnh bìa</p>
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                   );
@@ -549,17 +553,16 @@ export default function CreatePost() {
                       <label className="form-label" htmlFor="form6Example2">
                         Bảo hành&nbsp;<span style={{ color: "red" }}>*</span>
                       </label>
-                      <select
-                        className="form-select"
-                        aria-label="Disabled select example"
+                      <input
+                        type="number"
+                        id="form6Example4"
+                        className="form-control"
+                        placeholder="Thời gian bảo hành"
+                        min={0}
+                        defaultValue={0}
                         name="guarantee"
                         onChange={(e) => handleOnChange(e)}
-                      >
-                        <option>Bảo hành</option>
-                        <option value="1">1 tháng</option>
-                        <option value="2">2 tháng</option>
-                        <option value="3">3 tháng</option>
-                      </select>
+                      />
                     </div>
                     <p className="validate-form-text">
                       {validatePost.guarantee}
@@ -894,18 +897,17 @@ export default function CreatePost() {
                       <div className="col">
                         <div className="form-outline">
                           <label className="form-label" htmlFor="form6Example2">
-                            Bảo hành&nbsp;
+                            Bảo hành (Tháng)&nbsp;
                             <span style={{ color: "red" }}>*</span>
                           </label>
-                          <select
-                            className="form-select"
-                            aria-label="Disabled select example"
-                          >
-                            <option>Bảo hành</option>
-                            <option value="1">1 tháng</option>
-                            <option value="2">2 tháng</option>
-                            <option value="3">3 tháng</option>
-                          </select>
+                          <input
+                            type="number"
+                            id="form6Example4"
+                            className="form-control"
+                            placeholder="Thời gian bảo hành"
+                            min={0}
+                            defaultValue={0}
+                          />
                           <p className="validate-form-text">
                             {validatePostTrade.guarantee}
                           </p>

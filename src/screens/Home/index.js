@@ -10,6 +10,7 @@ import Categories from "../../components/Categories";
 import banner1 from "../../assets/image/banner1.jpg";
 import banner2 from "../../assets/image/banner2.jpg";
 import banner3 from "../../assets/image/banner3.jpg";
+import axios from "axios";
 
 const dataList = [
   {
@@ -172,6 +173,18 @@ export default function Home() {
   };
   window.addEventListener("scroll", toggleVisible);
 
+  const [fileSelected, setFileSelected] = useState("");
+  const upload = async () => {
+    const formData = new FormData();
+    formData.append("file", fileSelected);
+    formData.append("upload_preset", "weedzflm");
+    await axios
+      .post("https://api.cloudinary.com/v1_1/trhung/image/upload", formData)
+      .then((res) => {
+        console.log(res);
+      });
+  };
+
   return (
     <div id="homeContainer">
       <MetaTag
@@ -187,6 +200,15 @@ export default function Home() {
               <i className="fas fa-chevron-up fa-2x"></i>
             </div>
           )}
+          {/* <div>
+            <input
+              type="file"
+              onChange={(event) => {
+                setFileSelected(event.target.files[0]);
+              }}
+            />
+            <button onClick={() => upload()}>upload</button>
+          </div> */}
           <SlideShow dataSlides={dataSlides} />
           <Categories />
           <h3>Tin mới đăng</h3>

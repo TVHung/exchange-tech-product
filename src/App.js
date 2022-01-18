@@ -22,6 +22,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import PrivateRoute from "./routes/auth/PrivateRoute";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUser } from "./redux/actions/userActions";
+import { getCookie } from "./utils/cookie";
 toast.configure();
 
 function App() {
@@ -31,7 +32,7 @@ function App() {
     dispatch(fetchUser());
   };
   useEffect(() => {
-    isAuthenticated();
+    if (getCookie("access_token") !== "") isAuthenticated();
   }, []);
   const isLogin = useSelector((state) => state.user.isLogin);
   useEffect(() => {
