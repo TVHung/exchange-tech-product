@@ -19,7 +19,7 @@ export default function SlideDetail({ dataSlides }) {
           <div key="{data.id}">
             <div
               style={{
-                backgroundImage: `url(${data.image})`,
+                backgroundImage: `url(${data.image_url})`,
               }}
               className="slide-detail-image"
             ></div>

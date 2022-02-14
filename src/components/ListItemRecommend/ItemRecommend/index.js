@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./item.scss";
-import { Button } from "@material-ui/core";
 import { formatPrice, handleCalculateTime } from "./../../../utils/common";
 
 export default function Item({ data }) {
   const [favorite, setfavorite] = useState(data.favorite);
-
   const toggleFavorite = () => {
     setfavorite(!favorite);
   };
@@ -39,7 +37,7 @@ export default function Item({ data }) {
         ></i>
       </div>
       <div>
-        <div className="itemContent">
+        <div className="itemContent" onClick={() => toDetail()}>
           <h4>{data.name}</h4>
           <p className="item-value">Giá: {formatPrice(data.price)}đ</p>
           <div className="item-create-location">
@@ -49,17 +47,6 @@ export default function Item({ data }) {
             <span className="item-location">
               {data.address.city ? data.address.city : ""}
             </span>
-          </div>
-        </div>
-        <div className="itemDrop">
-          <div className="itemDrop-content">
-            <p>{data.description}</p>
-          </div>
-          <div className="itemDrop-btn">
-            <Button className="item-btn-care" onClick={() => toDetail()}>
-              Chi tiết
-            </Button>
-            <Button className="item-btn-chat">Nhắn tin</Button>
           </div>
         </div>
       </div>

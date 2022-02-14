@@ -95,7 +95,6 @@ export default function CreatePost() {
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
     setPostInfor((prevState) => ({
       ...prevState,
       [name]: value,
@@ -160,7 +159,6 @@ export default function CreatePost() {
         storage_capacity: "",
       });
     }
-    console.log(postInfor);
   };
 
   const [file, setFile] = useState([]);
@@ -302,7 +300,6 @@ export default function CreatePost() {
       ...prevState,
       [trade]: isTrade ? 1 : 0,
     }));
-    console.log(isTrade);
   };
 
   const onClickFree = () => {
@@ -338,7 +335,7 @@ export default function CreatePost() {
   window.addEventListener("scroll", toggleVisible);
 
   return (
-    <div className="createPostContainer">
+    <div className="createPostContainer container">
       <MetaTag
         title={"Tạo bài viết"}
         description={"Đăng bán, trao đổi, tắng sản phẩm"}

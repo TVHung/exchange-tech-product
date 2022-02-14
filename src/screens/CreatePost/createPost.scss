@@ -2,8 +2,6 @@
 @import "../../assets/css/common";
 
 .createPostContainer {
-  @include page-frame();
-  @include width-container();
   position: relative;
   .scroll-to-top {
     width: 60px;
@@ -99,11 +97,11 @@
   }
 }
 
-@media (min-width: 1500px) {
-  .createPostContainer {
-    @include width-lg-container();
-  }
-}
+// @media (min-width: 1500px) {
+//   .createPostContainer {
+//     @include width-lg-container();
+//   }
+// }
 
 .validate-form-address {
   color: red;

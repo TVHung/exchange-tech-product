@@ -2,8 +2,6 @@
 @import "../../assets/css/valiables";
 
 #homeContainer {
-  @include page-frame();
-  @include width-container();
   position: relative;
   //   padding: 0px 80px;
   .scroll-to-top {
@@ -23,8 +21,8 @@
   }
 }
 
-@media (min-width: 1500px) {
-  #homeContainer {
-    @include width-lg-container();
-  }
-}
+// @media (min-width: 1500px) {
+//   #homeContainer {
+//     @include width-lg-container();
+//   }
+// }

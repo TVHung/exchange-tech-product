@@ -2,15 +2,7 @@
 @import "../../assets/css/common";
 
 .detail-container {
-  @include page-frame();
-  @include width-container();
   position: relative;
-}
-
-@media (min-width: 1500px) {
-  .detail-container {
-    @include width-lg-container();
-  }
 }
 
 .copy-check-mark {
@@ -19,27 +11,6 @@
   right: 45%;
 }
 
-.detail-bread-crumb {
-  width: 100%;
-  padding-top: 10px;
-  ul {
-    list-style: none;
-    margin-left: 0px;
-    margin-right: 0px;
-    padding-left: 0px;
-    padding-right: 0px;
-    li {
-      display: inline-block;
-      font-weight: bolder;
-      a {
-        color: $base-color-1;
-        &:hover {
-          color: $base-color-2;
-        }
-      }
-    }
-  }
-}
 .detail-left {
   margin: 10px 0px 10px 0px;
   .detail-left-image {
@@ -172,6 +143,7 @@
     }
     .socialMediaButton {
       margin-right: 10px;
+      margin-bottom: 10px;
     }
     .copy-link-btn {
       margin-right: 10px;
@@ -184,8 +156,8 @@
   }
 }
 
-@media (max-width: 1040px) {
-  .detail-right {
-    display: none;
-  }
-}
+// @media (max-width: 1040px) {
+//   .detail-right {
+//     display: none;
+//   }
+// }

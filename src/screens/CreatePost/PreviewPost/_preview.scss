@@ -2,8 +2,6 @@
 @import "../../../assets/css/common";
 
 .detail-container {
-  @include page-frame();
-  @include width-container();
   position: relative;
 }
 
@@ -184,8 +182,8 @@
   }
 }
 
-@media (max-width: 1040px) {
-  .detail-right {
-    display: none;
-  }
-}
+// @media (max-width: 1040px) {
+//   .detail-right {
+//     display: none;
+//   }
+// }

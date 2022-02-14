@@ -2,16 +2,14 @@
 @import "../../assets/css/common";
 
 .profile-container {
-  @include page-frame();
-  @include width-container();
   padding-top: 20px;
 }
 
-@media (min-width: 1500px) {
-  .profile-container {
-    @include width-lg-container();
-  }
-}
+// @media (min-width: 1500px) {
+//   .profile-container {
+//     @include width-lg-container();
+//   }
+// }
 
 .profile-tab {
   font-weight: bold;

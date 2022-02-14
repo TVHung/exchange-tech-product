@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid, Button } from "@material-ui/core";
-import Item from "./Item";
+import Item from "./ItemRecommend";
 import "./listItem.scss";
 
 function ListItem({ dataList }) {

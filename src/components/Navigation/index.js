@@ -128,11 +128,12 @@ export default function Navigation() {
       style={{
         height: 140,
         top: isScroll.onTop ? -150 : 0,
-        boxShadow: !isScroll.onTop
-          ? "none"
-          : "0 10px 10px 3px rgba(0, 0, 0, 0.3)",
+        // boxShadow: !isScroll.onTop
+        //   ? "none"
+        //   : "0 10px 10px 3px rgba(0, 0, 0, 0.3)",
       }}
     >
+      {/* <div className="container"> */}
       <div className="nav-header">
         <div className="logo-nav">
           <div className="logo-container">
@@ -303,6 +304,7 @@ export default function Navigation() {
           Logout
         </MenuItem>
       </Menu>
+      {/* </div> */}
     </div>
   );
 }

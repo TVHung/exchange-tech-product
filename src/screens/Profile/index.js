@@ -27,7 +27,7 @@ export default function Profile() {
   }, []);
 
   return (
-    <div className="profile-container">
+    <div className="profile-container container">
       <MetaTag
         title={"Thông tin người dùng"}
         description={"Trang web buôn bán, trao đổi sản phẩm cũ"}

@@ -86,12 +86,8 @@ export default function Login() {
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
-  const loginSuccess = (response) => {
-    // console.log("Login success", response);
-  };
-  const loginFailure = (response) => {
-    // console.log("Login Failed", response);
-  };
+  const loginSuccess = (response) => {};
+  const loginFailure = (response) => {};
 
   return (
     <div className="containerLogin">

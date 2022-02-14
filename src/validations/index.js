@@ -50,7 +50,6 @@ export const validateNullFormPost = (text) => {
 
 export const validatePrice = (price) => {
   let validateText = "";
-  console.log(price);
   if (price == null) validateText = "Trường này không được để trống";
   return validateText;
 };

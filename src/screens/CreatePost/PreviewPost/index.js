@@ -39,7 +39,7 @@ export default function PreviewPost() {
   }, []);
 
   return (
-    <div className="detail-container">
+    <div className="detail-container containers">
       {!preload ? (
         <Preloading />
       ) : (

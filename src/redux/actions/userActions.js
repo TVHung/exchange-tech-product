@@ -1,12 +1,12 @@
 import axios from "axios";
-import { apiGetUser } from "../../constants";
+import { apiGetUserProfile } from "../../constants";
 import { USER_PROFILE, IS_LOGIN } from "./../case";
 import { headers } from "./../../constants";
 
 export const fetchUser = () => async (dispatch) => {
   try {
     await axios
-      .get(apiGetUser, {
+      .get(apiGetUserProfile, {
         headers: headers,
       })
       .then((res) => {
