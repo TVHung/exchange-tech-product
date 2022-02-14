@@ -34,3 +34,22 @@ export const equalPassword = (password, confirmPassword) => {
   }
   return "";
 };
+
+export const isNull = (text) => {
+  // if (text == 0 || text == "0") return false;
+  if (text == null) return true;
+  if (text.length == 0) return true;
+
+  return false;
+};
+
+export const validateNullFormPost = (text) => {
+  let validateText = isNull(text) ? "Trường này không được để trống" : "";
+  return validateText;
+};
+
+export const validatePrice = (price) => {
+  let validateText = "";
+  if (price == null) validateText = "Trường này không được để trống";
+  return validateText;
+};

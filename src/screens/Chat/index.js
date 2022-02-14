@@ -26,7 +26,7 @@ export default function Chat() {
   }, []);
 
   return (
-    <div className="chat-container">
+    <div className="chat-container container">
       <MetaTag title={"Tin nhắn"} description={"Kết nối với người mua, bán"} />
       {!preload ? (
         <Preloading />

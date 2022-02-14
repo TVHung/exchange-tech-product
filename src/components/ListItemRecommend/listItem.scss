@@ -1,0 +1,8 @@
+@import "../../assets/css/common.scss";
+
+.listContainer {
+  margin: 20px 0px 20px 0px;
+  .list-more-btn {
+    @include makeCenter();
+  }
+}

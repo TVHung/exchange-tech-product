@@ -2,48 +2,34 @@
 @import "../../assets/css/common";
 
 .detail-container {
-  @include page-frame();
-  @include width-container();
   position: relative;
-}
-
-@media (min-width: 1500px) {
-  .detail-container {
-    @include width-lg-container();
-  }
 }
 
 .copy-check-mark {
   position: fixed;
-  top: 50%;
-  right: 50%;
+  top: 40%;
+  right: 45%;
 }
 
-.detail-bread-crumb {
-  width: 100%;
-  ul {
-    list-style: none;
-    margin-left: 0px;
-    margin-right: 0px;
-    padding-left: 0px;
-    padding-right: 0px;
-    li {
-      display: inline-block;
-      font-weight: bolder;
-      a {
-        color: $base-color-1;
-        &:hover {
-          color: $base-color-2;
-        }
-      }
-    }
-  }
-}
 .detail-left {
   margin: 10px 0px 10px 0px;
   .detail-left-image {
     width: 100%;
     height: 500px;
+    position: relative;
+    .detail-time-createat {
+      position: absolute;
+      bottom: 0px;
+      height: auto;
+      width: 100%;
+      background-color: rgba($color: #000000, $alpha: 0.5);
+      @include makeRight();
+      p {
+        color: white;
+        margin: 10px;
+        font-size: 20px;
+      }
+    }
   }
   .detail-left-content {
     position: relative;
@@ -157,6 +143,7 @@
     }
     .socialMediaButton {
       margin-right: 10px;
+      margin-bottom: 10px;
     }
     .copy-link-btn {
       margin-right: 10px;
@@ -169,8 +156,8 @@
   }
 }
 
-@media (max-width: 1040px) {
-  .detail-right {
-    display: none;
-  }
-}
+// @media (max-width: 1040px) {
+//   .detail-right {
+//     display: none;
+//   }
+// }

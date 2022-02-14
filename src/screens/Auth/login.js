@@ -30,7 +30,17 @@ export default function Login() {
   });
   const [errorEmail, setErrorEmail] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
+  const [errorLogin, setErrorLogin] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      setUser({ email: "", password: "" });
+      setErrorEmail("");
+      setErrorPassword("");
+      setErrorLogin("");
+    };
+  }, []);
 
   const handleOnChange = (e) => {
     setUser((prevState) => ({
@@ -61,27 +71,23 @@ export default function Login() {
         .then((res) => {
           const data = res.data;
           if (data.access_token) {
-            toast.success("正常にログインしました！");
+            toast.success("Đăng nhập thành công");
             setCookie("access_token", data.access_token, 3600);
           }
-          // setLoginFaild("");
+          setErrorLogin("");
           window.location.href = `/`;
         })
         .catch((error) => {
-          toast.error("ログインに失敗しました！");
-          // setLoginFaild("メールアドレスまたはパスワードが間違っています！");
+          toast.error("Đặng nhập không thành công");
+          setErrorLogin("Email hoặc mật khẩu không đúng");
         });
   };
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
-  const loginSuccess = (response) => {
-    console.log("Login success", response);
-  };
-  const loginFailure = (response) => {
-    console.log("Login Failed", response);
-  };
+  const loginSuccess = (response) => {};
+  const loginFailure = (response) => {};
 
   return (
     <div className="containerLogin">
@@ -141,6 +147,9 @@ export default function Login() {
             />
             <p id="validateEmail" className="nofiLogin">
               {errorPassword}
+            </p>
+            <p id="validateEmail" className="nofiLogin">
+              {errorLogin}
             </p>
             <div style={{ marginTop: 10 }}>
               <Button
