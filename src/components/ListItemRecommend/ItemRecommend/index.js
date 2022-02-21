@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./item.scss";
+import "../../ListItem/Item/item.scss";
 import { formatPrice, handleCalculateTime } from "./../../../utils/common";
 
 export default function Item({ data }) {

@@ -69,3 +69,12 @@
   color: $base-color-1;
   padding: 20px;
 }
+
+//3 size chinh: big: 28px, medium: 24px, default: 16px
+@mixin font($font-size, $font-family: initial, $font-weight: normal, $color: #000, $line-height: 1.5) {
+  font-family: $font-family;
+  font-size: $font-size;
+  font-weight: $font-weight;
+  line-height: $line-height;
+  color: $color !important;
+}

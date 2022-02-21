@@ -3,9 +3,9 @@ export const profileBreadcrumb = [
   { name: "Trang chủ", direct: "/" },
   { name: "Thông tin cá nhân", direct: "/profile" },
 ];
-export const parentBreadcrumb = [
+export const postBreadcrumb = [
   { name: "Trang chủ", direct: "/" },
-  { name: "Trang cha mẹ", direct: "/parent" },
+  { name: "Tạo bài đăng", direct: "/create-post" },
 ];
 export const gameBreadcrumb = [
   { name: "Trang chủ", direct: "/" },

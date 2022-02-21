@@ -8,9 +8,18 @@ export const apiGetUserProfile = `${api}/auth/user-profile`;
 export const apiGetUser = `${api}/users`;
 
 //api post
+export const apiPost = `${api}/posts`;
 export const apiGetAllPost = `${api}/posts`;
 export const apiFetchPostDetail = `${api}/posts`;
+export const apiPostMobile = `${api}/post-mobile`;
+export const apiPostLaptop = `${api}/post-laptop`;
+export const apiPostPc = `${api}/post-pc`;
 
+//api image
+export const apiImages = `${api}/post-image`;
+
+//api address
+export const apiAddresses = `${api}/addresses`;
 export const apiAddress = `https://provinces.open-api.vn/api`;
 export const apiCity = `${apiAddress}/?depth=1`; //get all city
 export const apiDistrict = `${apiAddress}/p`; //get district by city depth=2
