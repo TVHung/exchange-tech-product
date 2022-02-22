@@ -19,7 +19,6 @@ export const apiPostPc = `${api}/post-pc`;
 export const apiImages = `${api}/post-image`;
 
 //api address
-export const apiAddresses = `${api}/addresses`;
 export const apiAddress = `https://provinces.open-api.vn/api`;
 export const apiCity = `${apiAddress}/?depth=1`; //get all city
 export const apiDistrict = `${apiAddress}/p`; //get district by city depth=2
@@ -29,3 +28,20 @@ export const headers = {
   "Content-type": "application/json",
   Authorization: `Bearer ${getCookie("access_token")}`,
 };
+
+export const storageData = [
+  { value: 8 },
+  { value: 16 },
+  { value: 32 },
+  { value: 64 },
+  { value: 128 },
+  { value: 256 },
+  { value: 512 },
+  { value: 1024 },
+];
+
+export const statusData = [
+  { value: "Mới" },
+  { value: "Cũ (90 - 99%)" },
+  { value: "Cũ (< 90%)" },
+];

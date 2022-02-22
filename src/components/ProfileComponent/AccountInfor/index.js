@@ -23,19 +23,9 @@ export default function AccountInfor() {
                 </Grid>
                 <Grid item xs={8}>
                   <h3 style={{ marginTop: 0 }}>Truong Hung</h3>
-                  <div>
-                    <span>
-                      <span className="account-followed">
-                        <b>1000</b> Người theo dõi
-                      </span>
-                      <span className="account-following">
-                        <b>1</b> Đang theo dõi
-                      </span>
-                    </span>
-                  </div>
                   <Link to="/profile/edit">
                     <Button className="account-edit-button">
-                      Chỉnh sửa thông tin <i className="fas fa-user-edit"></i>
+                      Chỉnh sửa <i className="fas fa-user-edit"></i>
                     </Button>
                   </Link>
                 </Grid>

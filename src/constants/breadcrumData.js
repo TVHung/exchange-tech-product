@@ -7,6 +7,10 @@ export const postBreadcrumb = [
   { name: "Trang chủ", direct: "/" },
   { name: "Tạo bài đăng", direct: "/create-post" },
 ];
+export const searchBreadcrumb = [
+  { name: "Trang chủ", direct: "/" },
+  { name: "Tìm kiếm", direct: "/search" },
+];
 export const gameBreadcrumb = [
   { name: "Trang chủ", direct: "/" },
   { name: "Mobile", direct: "/mobile" },

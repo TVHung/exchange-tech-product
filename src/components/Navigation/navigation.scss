@@ -87,14 +87,11 @@ a {
   margin-left: 20px;
   cursor: pointer;
   padding: 10px 15px 10px 15px;
-  background: $button-color;
-  border-radius: 10px;
+  border-radius: 5px;
   transition: all 0.5 ease-in-out;
+  @include button-common();
   a {
-    color: white;
-  }
-  &:hover {
-    transform: scale(1.05);
+    color: white !important;
   }
 }
 .icon-btn {
@@ -162,6 +159,9 @@ a {
     z-index: 4;
     align-content: center;
     padding-left: 0px;
+    a {
+      color: white !important;
+    }
   }
 
   .menu-icon {
@@ -216,17 +216,13 @@ a {
       height: 45px;
       width: 140px;
       float: left;
-      background: $button-color;
-      color: white;
       margin-left: 10px;
       @include makeCenter();
-      border-radius: 10px;
+      @include button-common();
+      border-radius: 5px;
       transition: all 0.5 ease-in-out;
       a {
         color: white;
-      }
-      &:hover {
-        transform: scale(1.05);
       }
     }
   }

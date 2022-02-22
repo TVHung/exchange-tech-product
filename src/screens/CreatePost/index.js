@@ -6,7 +6,6 @@ import Preloading from "../../components/Loading";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 import {
-  apiAddresses,
   apiCity,
   apiDistrict,
   apiWard,
@@ -16,6 +15,8 @@ import {
   apiPostMobile,
   apiPostLaptop,
   apiPostPc,
+  storageData,
+  statusData,
 } from "./../../constants";
 import {
   isNull,
@@ -49,28 +50,28 @@ export default function CreatePost() {
   const [postInfor, setPostInfor] = useState({
     category: 1, //1:phone, 2: laptop, 3: pc
     name: "",
-    brand: null,
-    status: null,
+    brand: "",
+    status: "",
     guarantee: null,
     cpu: "",
     gpu: "",
     ram: null,
     rom: null,
-    storage_type: null,
-    storage_capacity: null,
+    storage_type: "",
+    storage: null,
     address: "",
     price: null,
     title: "",
     description: "",
     display_size: null,
-    public_status: 0,
+    public_status: 1,
     trade: 0,
   });
   const [postTradeInfor, setPostTradeInfor] = useState({
     category: 1, //0:phone, 1: laptop, 2: pc
     name: "",
-    brand: null,
-    status: null,
+    brand: "",
+    status: "",
     guarantee: null,
     cpu: "",
     gpu: "",
@@ -78,7 +79,7 @@ export default function CreatePost() {
     rom: null,
     storage_type: null,
     display_size: null,
-    storage_capacity: null,
+    storage: null,
     description: "",
   });
   const [validatePost, setvalidatePost] = useState({
@@ -93,7 +94,7 @@ export default function CreatePost() {
     ram: "",
     rom: "",
     storage_type: "",
-    storage_capacity: "",
+    storage: "",
     address: "",
     city: "",
     district: "",
@@ -116,7 +117,7 @@ export default function CreatePost() {
     rom: "",
     storage_type: "",
     display_size: "",
-    storage_capacity: "",
+    storage: "",
     description: "",
   });
   useEffect(() => {
@@ -124,34 +125,34 @@ export default function CreatePost() {
       setPostInfor({
         category: 1, //1:phone, 2: laptop, 3: pc
         name: "",
-        brand: null,
-        status: null,
+        brand: "",
+        status: "",
         guarantee: null,
         cpu: "",
         gpu: "",
         ram: null,
         rom: null,
         storage_type: null,
-        storage_capacity: null,
+        storage: null,
         address: "",
         price: null,
         title: "",
         description: "",
-        public_status: 0,
+        public_status: 1,
         trade: 0,
       });
       setPostTradeInfor({
         category: 1, //0:phone, 1: laptop, 2: pc
         name: "",
-        brand: null,
-        status: null,
+        brand: "",
+        status: "",
         guarantee: null,
         cpu: "",
         gpu: "",
         ram: null,
         rom: null,
         storage_type: null,
-        storage_capacity: null,
+        storage: null,
         description: "",
       });
       setvalidatePost({
@@ -165,7 +166,7 @@ export default function CreatePost() {
         ram: "",
         rom: "",
         storage_type: "",
-        storage_capacity: "",
+        storage: "",
         address: "",
         city: "",
         district: "",
@@ -186,7 +187,7 @@ export default function CreatePost() {
         ram: "",
         rom: "",
         storage_type: "",
-        storage_capacity: "",
+        storage: "",
         description: "",
       });
     };
@@ -222,16 +223,7 @@ export default function CreatePost() {
       setFileOject([...fileObject, e.target.files[0]]);
     }
   };
-  const upload = async () => {
-    for (let i = 0; i < fileObject.length; i++) {
-      setTimeout(
-        () => {
-          uploadToCloud(fileObject[i]);
-        },
-        i === 0 ? 0 : 1000
-      );
-    }
-  };
+
   const deleteFile = (e) => {
     const s = file.filter((item, index) => index !== e);
     const o = fileObject.filter((item, index) => index !== e);
@@ -272,19 +264,6 @@ export default function CreatePost() {
     });
   };
 
-  const uploadToCloud = async (fileSelected) => {
-    const formData = new FormData();
-    formData.append("file", fileSelected);
-    formData.append("upload_preset", "weedzflm");
-    console.log(fileSelected);
-    await axios
-      .post("https://api.cloudinary.com/v1_1/trhung/image/upload", formData)
-      .then((res) => {
-        let url = res.data.url;
-        console.log(url);
-        setImageUrl((imageUrl) => [...imageUrl, url]);
-      });
-  };
   const handleOkAddress = () => {
     let cityName = "city";
     let districtName = "district";
@@ -461,7 +440,7 @@ export default function CreatePost() {
     //   ram: "",
     //   rom: "",
     //   storage_type: "",
-    //   storage_capacity: "",
+    //   storage: "",
     //   city: "",
     //   district: "",
     //   wards: "",
@@ -481,7 +460,7 @@ export default function CreatePost() {
     //     ram: "",
     //     rom: "",
     //     storage_type: "",
-    //     storage_capacity: "",
+    //     storage: "",
     //   });
     // }
   };
@@ -489,36 +468,8 @@ export default function CreatePost() {
   const fetchAllDataFeild = async () => {
     //data rom, category, storage
   };
-
-  //cac thong tin can thiet truoc khi tao duoc post
-  const handleSubmitData = async () => {
-    const apiAddress = `${apiAddresses}`;
-    const addressData = {
-      city: addressDetail.cityName,
-      district: addressDetail.districtName,
-      ward: addressDetail.wardName,
-    };
-    // console.log(addressData);
-    // createPost(10);
-    const requestPost = axios.post(apiAddress, addressData, {
-      headers: headers,
-    });
-    await axios
-      .all([requestPost])
-      .then(
-        axios.spread((...responses) => {
-          const add = responses[0].data.data;
-          createPost(add.id);
-          console.log("dia chi", add);
-        })
-      )
-      .catch((errors) => {
-        console.error(errors);
-      });
-  };
-
   //tao post cha
-  const createPost = async (address_id) => {
+  const createPost = async () => {
     const postData = {
       is_trade: 0,
       post_trade_id: 0,
@@ -527,11 +478,13 @@ export default function CreatePost() {
       name: postInfor.name,
       description: postInfor.description,
       ram: Number(postInfor.ram),
-      storage_id: 1,
-      status_id: 1,
+      storage: 128,
+      status: "Mới",
       price: Number(postInfor.price),
-      address_id: address_id,
+      address: address,
       public_status: 1,
+      video_url:
+        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
       guarantee: Number(postInfor.guarantee),
     };
     console.log(postData);
@@ -638,7 +591,7 @@ export default function CreatePost() {
 
   return (
     <div className="createPostContainer container">
-      <button onClick={() => handleDrop(fileObject)}>upload</button>
+      {/* <button onClick={() => handleDrop(fileObject)}>upload</button> */}
       <Breadcrumb arrLink={postBreadcrumb} />
       <MetaTag
         title={"Tạo bài viết"}
@@ -830,7 +783,8 @@ export default function CreatePost() {
                   <div className="col">
                     <div className="form-outline">
                       <label className="form-label" htmlFor="form6Example4">
-                        Màu sắc
+                        Màu sắc&nbsp;
+                        <span style={{ color: "red" }}>*</span>s
                       </label>
                       <input
                         type="text"
@@ -856,10 +810,12 @@ export default function CreatePost() {
                       name="status"
                       onChange={(e) => handleOnChange(e)}
                     >
-                      <option>Tình trạng</option>
-                      <option value="1">Mới 100%</option>
-                      <option value="2">Cũ 99%</option>
-                      <option value="3">Cũ 95%</option>
+                      <option value="0">Tình trạng</option>
+                      {statusData.map((data, index) => (
+                        <option key={index} value={data.value}>
+                          {data.value}
+                        </option>
+                      ))}
                     </select>
                     <p className="validate-form-text">{validatePost.status}</p>
                   </div>
@@ -979,10 +935,12 @@ export default function CreatePost() {
                         name="rom"
                         onChange={(e) => handleOnChange(e)}
                       >
-                        <option>Bộ nhớ trong</option>
-                        <option value="1">8gb</option>
-                        <option value="2">16gb</option>
-                        <option value="3">64gb</option>
+                        <option value="0">Bộ nhớ trong</option>
+                        {storageData.map((data, index) => (
+                          <option key={index} value={data.value}>
+                            {`${data.value}GB`}
+                          </option>
+                        ))}
                       </select>
                       <p className="validate-form-text">{validatePost.rom}</p>
                     </div>
@@ -1020,17 +978,18 @@ export default function CreatePost() {
                       <select
                         className="form-select"
                         aria-label="Disabled select example"
-                        name="storage_capacity"
+                        name="storage"
                         onChange={(e) => handleOnChange(e)}
                       >
-                        <option>Dung lượng ổ cứng cứng</option>
-                        <option value="1">128gb</option>
-                        <option value="2">256gb</option>
-                        <option value="3">512gb</option>
-                        <option value="4">1tb</option>
+                        <option value="0">Dung lượng ổ cứng cứng</option>
+                        {storageData.map((data, index) => (
+                          <option key={index} value={data.value}>
+                            {`${data.value}GB`}
+                          </option>
+                        ))}
                       </select>
                       <p className="validate-form-text">
-                        {validatePost.storage_capacity}
+                        {validatePost.storage}
                       </p>
                     </div>
                   </div>
@@ -1104,7 +1063,10 @@ export default function CreatePost() {
                   className="form-control"
                   id="form6Example7"
                   rows="4"
-                  placeholder="Mô tả chi tiết"
+                  placeholder="Mô tả chi tiết
+                  - Mua khi nào
+                  - Trải nghiệm ra sao
+                  - Có vấn đề nào khi sử dụng hay không"
                   name="description"
                   onChange={(e) => handleOnChange(e)}
                 ></textarea>
@@ -1219,9 +1181,11 @@ export default function CreatePost() {
                           aria-label="Disabled select example"
                         >
                           <option>Tình trạng</option>
-                          <option value="1">Mới 100%</option>
-                          <option value="2">99%</option>
-                          <option value="3">95%</option>
+                          {statusData.map((data, index) => (
+                            <option key={index} value={data.value}>
+                              {data.value}
+                            </option>
+                          ))}
                         </select>
                         <p className="validate-form-text">
                           {validatePostTrade.status}
@@ -1322,10 +1286,12 @@ export default function CreatePost() {
                             className="form-select"
                             aria-label="Disabled select example"
                           >
-                            <option>Bộ nhớ trong</option>
-                            <option value="1">8gb</option>
-                            <option value="2">16gb</option>
-                            <option value="3">64gb</option>
+                            <option value="0">Bộ nhớ trong</option>
+                            {storageData.map((data, index) => (
+                              <option key={index} value={data.value}>
+                                {`${data.value}GB`}
+                              </option>
+                            ))}
                           </select>
                           <p className="validate-form-text">
                             {validatePostTrade.rom}
@@ -1371,7 +1337,7 @@ export default function CreatePost() {
                             <option value="3">1tb</option>
                           </select>
                           <p className="validate-form-text">
-                            {validatePostTrade.storage_capacity}
+                            {validatePostTrade.storage}
                           </p>
                         </div>
                       </div>

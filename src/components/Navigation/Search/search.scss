@@ -52,7 +52,7 @@
     border: none;
     outline: none;
     cursor: pointer;
-    background: $button-color;
+    @include button-common();
 }
 
 #iconSearch {

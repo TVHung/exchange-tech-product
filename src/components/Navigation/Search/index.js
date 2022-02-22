@@ -6,6 +6,12 @@ export default function Search() {
   const [inputVal, setInputVal] = useState("");
   const formRef = useRef(null);
 
+  const onSearch = () => {
+    let link = `/search?search=${inputVal}`;
+    console.log("link", inputVal);
+    window.location.href = link;
+  };
+
   return (
     <div id="boxSearch" ref={formRef}>
       <input
@@ -19,7 +25,7 @@ export default function Search() {
           setInputVal(val);
         }}
       />
-      <button type="submit" id="button">
+      <button type="submit" id="button" onClick={() => onSearch()}>
         <SearchIcon id="iconSearch" />
       </button>
     </div>

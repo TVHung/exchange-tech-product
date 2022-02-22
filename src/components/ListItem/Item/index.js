@@ -47,7 +47,7 @@ export default function Item({ data }) {
               {handleCalculateTime(data.created_at || null)}
             </span>
             <span className="item-location">
-              {data.address.city ? data.address.city : ""}
+              {data.address && data.address.split(", ")[2]}
             </span>
           </div>
         </div>
