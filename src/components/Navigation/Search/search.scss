@@ -7,23 +7,22 @@
     border-radius: 45px;
     // margin-left: 25%;
     // margin-right: 25%;
-    width: 100%;
+    width: 70%;
     transition: all 0.2s ease-in-out;
     &:hover {
         box-shadow: 0 5px 10px 3px rgba(0, 0, 0, 0.3);
-        transform: scale(1.05);
+        transform: scale(1.005);
     }
     &:focus-within {
         box-shadow: 0 5px 10px 3px rgba(0, 0, 0, 0.3);
-        transform: scale(1.05);
+        transform: scale(1.005);
     }
 }
 
 //mobile nav
 @media (max-width: 500px) {
     #boxSearch {
-        // margin-left: 10%;
-        // margin-right: 10%;
+        width: 100%;
     }
 }
 

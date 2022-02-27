@@ -3,7 +3,7 @@
 
 #homeContainer {
   position: relative;
-  //   padding: 0px 80px;
+  @include scroll-custom();
 }
 
 // @media (min-width: 1500px) {

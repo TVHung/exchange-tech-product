@@ -76,7 +76,7 @@ export default function Navigation() {
   const [isAuth, setIsAuth] = useState(false);
   //choose the screen size
   const handleResize = () => {
-    if (window.innerWidth < 1040) {
+    if (window.innerWidth < 500) {
       setIsSmall(true);
     } else {
       setIsSmall(false);
@@ -133,19 +133,10 @@ export default function Navigation() {
           : "0 10px 10px 3px rgba(0, 0, 0, 0.3)",
       }}
     >
-      {/* <div className="container"> */}
-      <div className="nav-header">
+      <div className="nav-header container-fluid">
         <div className="logo-nav">
           <div className="logo-container">
-            <a
-              href="/"
-              title="Trang chu"
-              style={{
-                padding: 0,
-                margin: 20,
-                backgroundColor: "transparent",
-              }}
-            >
+            <a href="/" title="Trang chu">
               <img
                 id="logopersonal"
                 alt="logo"
@@ -230,7 +221,7 @@ export default function Navigation() {
           </ul>
         )}
       </div>
-      <div className="bottomNav">
+      <div className="bottomNav container-fluid">
         {!isSmall ? (
           <Grid container>
             <Grid item xs={8} className="searchContainer">
@@ -304,7 +295,6 @@ export default function Navigation() {
           Logout
         </MenuItem>
       </Menu>
-      {/* </div> */}
     </div>
   );
 }
