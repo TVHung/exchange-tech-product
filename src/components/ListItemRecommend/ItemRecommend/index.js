@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./item.scss";
+import "../../ListItem/Item/item.scss";
 import { formatPrice, handleCalculateTime } from "./../../../utils/common";
 
 export default function Item({ data }) {
@@ -45,7 +45,7 @@ export default function Item({ data }) {
               {handleCalculateTime(data.created_at || null)}
             </span>
             <span className="item-location">
-              {data.address.city ? data.address.city : ""}
+              {data.address && data.address.split(", ")[2]}
             </span>
           </div>
         </div>

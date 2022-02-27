@@ -1,56 +1,17 @@
 @import "../../assets/css/valiables";
 @import "../../assets/css/common";
 
-#footer {
-  width: 100%;
-  min-height: 280px;
-  background-color: $nav-bottom-color;
-  @include deleteSpace();
-  @include width-container();
-}
-
-.support {
-  display: flex;
-  justify-content: left;
-  span {
-    color: white;
-    ul {
-      @include deleteSpace();
-      list-style: none;
-      li {
-        padding: 2px;
-        a {
-          color: white;
-          text-decoration: none;
-          &:hover {
-            color: aquamarine;
-          }
-        }
-      }
+.footer-container {
+  background-color: $base-color-1;
+  .icon-social-footer {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    i {
+      margin-top: 10px;
     }
   }
 }
-
-@media (min-width: 1500px) {
-  #footer {
-    @include width-lg-container();
-  }
-}
-
-.line-top,
-.line-bottom {
-  color: white;
-}
-.line-top {
-  width: 100%;
-}
-.line-bottom {
-  width: 80%;
-  margin-left: 10%;
-  margin-right: 10%;
-}
-
-#nocopyright {
-  height: 40px;
-  @include makeCenter();
+.no-copyright {
+  background-color: $base-color-1;
 }

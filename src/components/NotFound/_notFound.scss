@@ -1,0 +1,29 @@
+@import "../../assets/css/valiables";
+@import "../../assets/css/common";
+
+.not-found-container {
+    padding-top: 50px;
+    .not-found-content,
+    .not-found-img {
+        width: 100%;
+        @include makeCenter();
+        padding: 0px 30px;
+    }
+    .not-found-img {
+        img {
+            width: 100px;
+            height: 100px;
+        }
+    }
+    .not-found-content {
+        p {
+            font-weight: bold;
+            font-size: 22px;
+            text-align: center;
+        }
+        span {
+            padding: 0px 50px;
+            text-align: center;
+        }
+    }
+}

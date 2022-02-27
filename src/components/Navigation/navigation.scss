@@ -14,7 +14,6 @@
   background: $nav-top-color;
   justify-content: space-between;
   align-items: center;
-  @include width-container();
   height: $height-top-nav;
 }
 .logo-nav {
@@ -26,6 +25,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  a {
+    padding: 0px;
+    background-color: transparent;
+    margin: 20px 0px;
+  }
 }
 .logo {
   width: 45px;
@@ -87,14 +91,11 @@ a {
   margin-left: 20px;
   cursor: pointer;
   padding: 10px 15px 10px 15px;
-  background: $button-color;
-  border-radius: 10px;
+  border-radius: 5px;
   transition: all 0.5 ease-in-out;
+  @include button-common();
   a {
-    color: white;
-  }
-  &:hover {
-    transform: scale(1.05);
+    color: white !important;
   }
 }
 .icon-btn {
@@ -155,7 +156,7 @@ a {
     z-index: 4;
   }
   .nav-options.active {
-    background: grey;
+    background: rgb(255, 255, 255);
     left: 0;
     opacity: 1;
     transition: all 0.5s ease;
@@ -173,7 +174,8 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 10vw;
+    // height: 50px;
+    padding: 10px;
   }
   .sign-up {
     color: white;
@@ -216,17 +218,12 @@ a {
       height: 45px;
       width: 140px;
       float: left;
-      background: $button-color;
-      color: white;
       margin-left: 10px;
       @include makeCenter();
-      border-radius: 10px;
-      transition: all 0.5 ease-in-out;
+      @include button-common();
+      border-radius: 5px;
       a {
         color: white;
-      }
-      &:hover {
-        transform: scale(1.05);
       }
     }
   }

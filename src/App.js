@@ -10,6 +10,7 @@ import Dashboard from "./screens/admin/Dashboard";
 import Footer from "./components/Footer";
 import Chat from "./screens/Chat";
 import CreatePost from "./screens/CreatePost";
+import Search from "./screens/Search";
 import PreviewPost from "./screens/CreatePost/PreviewPost";
 import Detail from "./screens/Detail";
 import Profile from "./screens/Profile";
@@ -23,6 +24,7 @@ import PrivateRoute from "./routes/auth/PrivateRoute";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUser } from "./redux/actions/userActions";
 import { getCookie } from "./utils/cookie";
+import ScrollUp from "./components/ScrollUp";
 toast.configure();
 
 function App() {
@@ -43,6 +45,7 @@ function App() {
   return (
     <Fragment>
       <Router>
+        <ScrollUp />
         <Navigation />
         <Switch>
           <Route exact path="/" component={Home} />
@@ -55,6 +58,7 @@ function App() {
           />
           <Route exact path="/chat" render={(props) => <Chat />} />
           <Route exact path="/create-post" render={(props) => <CreatePost />} />
+          <Route exact path="/search" render={(props) => <Search />} />
           <Route
             exact
             path="/create-post/preview"

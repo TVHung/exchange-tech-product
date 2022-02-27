@@ -37,17 +37,10 @@ const dataList = [
     description:
       "Vi xử lý: Intel Core i5 11400H, 6 nhân / 12 luồng Màn hình: 15.6 FullHD IPS 144Hz (1920 x 1080), màn nhám Độ phủ màu: 65% sRGB",
     ram: 6,
-    storage_id: 1,
-    status_id: 1,
+    storage: 64,
+    status: "Mới",
     price: "400000",
-    address: {
-      id: 1,
-      city: "Hà nội",
-      district: "Hai bà trưng",
-      ward: "Minh khai",
-      created_at: null,
-      updated_at: null,
-    },
+    address: "Minh khai, Hai bà trưng, Hà nội",
     public_status: 1,
     guarantee: 2,
     images: [
@@ -94,17 +87,10 @@ const dataList = [
     description:
       "Vi xử lý: Intel Core i5 11400H, 6 nhân / 12 luồng Màn hình: 15.6 FullHD IPS 144Hz (1920 x 1080), màn nhám Độ phủ màu: 65% sRGB",
     ram: 6,
-    storage_id: 1,
-    status_id: 1,
+    storage: 64,
+    status: "Mới",
     price: "400000",
-    address: {
-      id: 1,
-      city: "Hà nội",
-      district: "Hai bà trưng",
-      ward: "Minh khai",
-      created_at: null,
-      updated_at: null,
-    },
+    address: "Minh khai, Hai bà trưng, Hà nội",
     public_status: 1,
     guarantee: 2,
     images: [
@@ -151,17 +137,10 @@ const dataList = [
     description:
       "Vi xử lý: Intel Core i5 11400H, 6 nhân / 12 luồng Màn hình: 15.6 FullHD IPS 144Hz (1920 x 1080), màn nhám Độ phủ màu: 65% sRGB",
     ram: 6,
-    storage_id: 1,
-    status_id: 1,
+    storage: 64,
+    status: "Mới",
     price: "8200000",
-    address: {
-      id: 1,
-      city: "Hà nội",
-      district: "Hai bà trưng",
-      ward: "Minh khai",
-      created_at: null,
-      updated_at: null,
-    },
+    address: "Minh khai, Hai bà trưng, Hà nội",
     public_status: 1,
     guarantee: 2,
     images: [
@@ -208,17 +187,10 @@ const dataList = [
     description:
       "Vi xử lý: Intel Core i5 11400H, 6 nhân / 12 luồng Màn hình: 15.6 FullHD IPS 144Hz (1920 x 1080), màn nhám Độ phủ màu: 65% sRGB",
     ram: 6,
-    storage_id: 1,
-    status_id: 1,
+    storage: 64,
+    status: "Mới",
     price: "2900000",
-    address: {
-      id: 1,
-      city: "Hà nội",
-      district: "Hai bà trưng",
-      ward: "Minh khai",
-      created_at: null,
-      updated_at: null,
-    },
+    address: "Minh khai, Hai bà trưng, Hà nội",
     public_status: 1,
     guarantee: 2,
     images: [
@@ -265,17 +237,10 @@ const dataList = [
     description:
       "Vi xử lý: Intel Core i5 11400H, 6 nhân / 12 luồng Màn hình: 15.6 FullHD IPS 144Hz (1920 x 1080), màn nhám Độ phủ màu: 65% sRGB",
     ram: 6,
-    storage_id: 1,
-    status_id: 1,
+    storage: 64,
+    status: "Mới",
     price: "9900000",
-    address: {
-      id: 1,
-      city: "Hà nội",
-      district: "Hai bà trưng",
-      ward: "Minh khai",
-      created_at: null,
-      updated_at: null,
-    },
+    address: "Minh khai, Hai bà trưng, Hà nội",
     public_status: 1,
     guarantee: 2,
     images: [
@@ -322,17 +287,10 @@ const dataList = [
     description:
       "Vi xử lý: Intel Core i5 11400H, 6 nhân / 12 luồng Màn hình: 15.6 FullHD IPS 144Hz (1920 x 1080), màn nhám Độ phủ màu: 65% sRGB",
     ram: 6,
-    storage_id: 1,
-    status_id: 1,
+    storage: 64,
+    status: "Mới",
     price: "4400000",
-    address: {
-      id: 1,
-      city: "Hà nội",
-      district: "Hai bà trưng",
-      ward: "Minh khai",
-      created_at: null,
-      updated_at: null,
-    },
+    address: "Yên Phụ, Yên Phong, Bắc Ninh",
     public_status: 1,
     guarantee: 2,
     images: [
@@ -486,13 +444,13 @@ export default function Detail() {
                         <span>Ram: {postDetail.ram}GB</span>
                       </div>
                     )}
-                    {postDetail.storage_id && (
+                    {postDetail.storage && (
                       <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                         <i className="fas fa-tags"></i>
-                        <span>Dung lượng: 128GB</span>
+                        <span>Dung lượng: {postDetail.storage}GB</span>
                       </div>
                     )}
-                    {postDetail.status_id && (
+                    {postDetail.status && (
                       <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                         <i className="fas fa-microchip"></i>
                         <span>Tình trạng: {postDetail.status}</span>
@@ -671,10 +629,7 @@ export default function Detail() {
                   </div>
                 </div>
                 <div className="detail-contact-seller">
-                  <p>
-                    Địa chỉ:{" "}
-                    {`${postDetail.address.ward}, ${postDetail.address.district}, ${postDetail.address.city}`}
-                  </p>
+                  <p>Địa chỉ: {postDetail.address}</p>
                   <p>Số điện thoại: {postUser.profile.phone}</p>
                 </div>
                 <div className="detail-chat-seller">
