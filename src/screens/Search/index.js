@@ -1,27 +1,127 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./_search.scss";
 import { Collapse, Button } from "react-bootstrap";
 import Breadcrumb from "./../../components/Breadcrumb/index";
 import { searchBreadcrumb } from "../../constants/breadcrumData";
 import ItemSearch from "../../components/Items/ItemSearch";
 import NotFound from "../../components/NotFound";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteParam, insertParam } from "../../utils/common";
+import { searchPostByName } from "../../redux/actions/postActions";
+import { useHistory } from "react-router-dom";
+import { filterPriceData } from "../../constants";
 
 export default function Search() {
   const [open, setOpen] = useState(false);
   const [openPrice, setOpenPrice] = useState(false);
   const [openCategory, setOpenCategory] = useState(false);
+  const [openVideo, setOpenVideo] = useState(false);
+  const [openGuarantee, setOpenGuarantee] = useState(false);
+  const [openStorageType, setOpenStorageType] = useState(false);
+  const [openStorage, setOpenStorage] = useState(false);
+  const [openStatus, setOpenStatus] = useState(false);
+  const [openRam, setOpenRam] = useState(false);
+  const [openDisplaySize, setOpenDisplaySize] = useState(false);
+  const [openCard, setOpenCard] = useState(false);
+  const [openBrand, setOpenBrand] = useState(false);
+  const [searchValue, setsearchValue] = useState("");
+
+  const history = useHistory();
+
+  const insertParams = (key, value) => {
+    let params = insertParam(key, value);
+    history.push({
+      pathname: "/search",
+      search: `?${params}`,
+    });
+  };
 
   const showHideCollapse = (type) => {
     switch (type) {
+      case "category":
+        setOpenCategory(!openCategory);
+        break;
       case "price":
         setOpenPrice(!openPrice);
         break;
-      case "category":
-        setOpenCategory(!openCategory);
+      case "video":
+        setOpenVideo(!openVideo);
+        break;
+      case "guarantee":
+        setOpenGuarantee(!openGuarantee);
+        break;
+      case "storage_type":
+        setOpenStorageType(!openStorageType);
+        break;
+      case "storage":
+        setOpenStorage(!openStorage);
+        break;
+      case "status":
+        setOpenStatus(!openStatus);
+        break;
+      case "ram":
+        setOpenRam(!openRam);
+        break;
+      case "display_size":
+        setOpenDisplaySize(!openDisplaySize);
+        break;
+      case "card":
+        setOpenCard(!openCard);
+        break;
+      case "brand":
+        setOpenBrand(!openBrand);
         break;
       default:
         break;
     }
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setsearchValue(params.get("search"));
+  }, [searchValue]);
+
+  const get_post_search = useSelector((state) => state.post.search_result);
+
+  const onChangeCheckSort = (e) => {
+    const { id } = e.target;
+    if (id == "low-hight") {
+      insertParams("sort", "asc");
+    }
+    if (id == "hight-low") {
+      insertParams("sort", "desc");
+    }
+  };
+  const onChangeCheckCategory = (e) => {
+    const { name } = e.target;
+    let value = "";
+    if (name == "mobile") {
+      value += "1";
+      // insertParam("category", "1");
+    }
+    if (name == "laptop") {
+      value += value.length > 0 ? "_2" : "2";
+      // insertParam("category", "2");
+    }
+    if (name == "pc") {
+      value += value.length > 0 ? "_3" : "3";
+      // insertParam("category", "3");
+    }
+    insertParams("category", value);
+  };
+
+  const onChangePrice = (e) => {
+    const { value, checked } = e.target;
+    insertParams("price", value);
+  };
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(searchPostByName(window.location.search));
+  }, [window.location.search]);
+
+  const deletePara = () => {
+    deleteParam("price");
   };
 
   return (
@@ -29,6 +129,7 @@ export default function Search() {
       <div className="container search-container">
         <div id="content">
           <Breadcrumb arrLink={searchBreadcrumb} />
+          {/* <button onClick={() => deletePara()}>delete</button> */}
           <div className="d-flex justify-content-end ms-auto py-sm-3 filter-header">
             <div className="form-check filter-header-sort">
               <span>
@@ -40,8 +141,9 @@ export default function Search() {
               <input
                 className="form-check-input"
                 type="radio"
-                name="flexRadioDefault"
-                id="flexRadioDefault1"
+                name="sort"
+                id="low-hight"
+                onChange={(e) => onChangeCheckSort(e)}
               />
               <label className="form-check-label" htmlFor="flexRadioDefault1">
                 <i className="fas fa-sort-amount-down-alt"></i>
@@ -54,8 +156,9 @@ export default function Search() {
               <input
                 className="form-check-input"
                 type="radio"
-                name="flexRadioDefault"
-                id="flexRadioDefault2"
+                name="sort"
+                id="hight-low"
+                onChange={(e) => onChangeCheckSort(e)}
               />
               <label className="form-check-label" htmlFor="flexRadioDefault2">
                 <i className="fas fa-sort-amount-up-alt"></i>
@@ -76,7 +179,7 @@ export default function Search() {
                   <div className="box-label text-uppercase d-flex align-items-center">
                     Loại sản phẩm{" "}
                     <button
-                      className="btn ms-auto  collapse-filter"
+                      className="btn ms-auto collapse-filter"
                       name="price"
                       onClick={() => showHideCollapse("category")}
                       aria-controls="collpase-category-filter"
@@ -95,15 +198,12 @@ export default function Search() {
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          Tất cả <input type="checkbox" />{" "}
-                          <span className="check"></span>{" "}
-                        </label>{" "}
-                      </div>
-                      <div className="my-1">
-                        {" "}
-                        <label className="tick">
                           Mobile
-                          <input type="checkbox" />{" "}
+                          <input
+                            type="checkbox"
+                            name="mobile"
+                            onChange={(e) => onChangeCheckCategory(e)}
+                          />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
@@ -111,14 +211,23 @@ export default function Search() {
                         {" "}
                         <label className="tick">
                           Laptop
-                          <input type="checkbox" />{" "}
+                          <input
+                            type="checkbox"
+                            name="laptop"
+                            onChange={(e) => onChangeCheckCategory(e)}
+                          />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          Pc <input type="checkbox" />{" "}
+                          Pc{" "}
+                          <input
+                            type="checkbox"
+                            name="pc"
+                            onChange={(e) => onChangeCheckCategory(e)}
+                          />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
@@ -126,7 +235,10 @@ export default function Search() {
                   </Collapse>
                 </div>
                 <div className="box border-bottom-custom">
-                  <div className="box-label text-uppercase d-flex align-items-center">
+                  <div
+                    className="box-label text-uppercase d-flex align-items-center"
+                    onClick={() => showHideCollapse("price")}
+                  >
                     Giá{" "}
                     <button
                       className="btn ms-auto collapse-filter"
@@ -145,106 +257,56 @@ export default function Search() {
                   </div>
                   <Collapse in={openPrice}>
                     <div id="collpase-price-filter">
-                      <div className="my-1">
-                        {" "}
-                        <label className="tick">
-                          Nhỏ hơn 500.000đ <input type="checkbox" />{" "}
-                          <span className="check"></span>{" "}
-                        </label>{" "}
-                      </div>
-                      <div className="my-1">
-                        {" "}
-                        <label className="tick">
-                          500.000đ - 1.000.000đ
-                          <input type="checkbox" />{" "}
-                          <span className="check"></span>{" "}
-                        </label>{" "}
-                      </div>
-                      <div className="my-1">
-                        {" "}
-                        <label className="tick">
-                          1.000.000đ - 2.000.000đ <input type="checkbox" />{" "}
-                          <span className="check"></span>{" "}
-                        </label>{" "}
-                      </div>
-                      <div className="my-1">
-                        {" "}
-                        <label className="tick">
-                          2.000.000đ - 4.000.000đ <input type="checkbox" />{" "}
-                          <span className="check"></span>{" "}
-                        </label>{" "}
-                      </div>
-                      <div className="my-1">
-                        {" "}
-                        <label className="tick">
-                          4.000.000đ - 8.000.000đ <input type="checkbox" />{" "}
-                          <span className="check"></span>{" "}
-                        </label>{" "}
-                      </div>
-                      <div className="my-1">
-                        {" "}
-                        <label className="tick">
-                          8.000.000đ - 10.000.000đ <input type="checkbox" />{" "}
-                          <span className="check"></span>{" "}
-                        </label>{" "}
-                      </div>
-                      <div className="my-1">
-                        {" "}
-                        <label className="tick">
-                          Lớn hơn 10.000.000đ <input type="checkbox" />{" "}
-                          <span className="check"></span>{" "}
-                        </label>{" "}
-                      </div>
+                      {filterPriceData.map((data, index) => (
+                        <div className="my-1" key={index}>
+                          {" "}
+                          <label className="tick">
+                            {data.value}{" "}
+                            <input
+                              id={`price${index}`}
+                              type="checkbox"
+                              value={data.id}
+                              onClick={(e) => onChangePrice(e)}
+                            />{" "}
+                            <span className="check"></span>{" "}
+                          </label>{" "}
+                        </div>
+                      ))}
                     </div>
                   </Collapse>
                 </div>
                 <div className="box border-bottom-custom">
                   <div className="box-label text-uppercase d-flex align-items-center">
-                    Loại sản phẩm{" "}
+                    Video{" "}
                     <button
                       className="btn ms-auto  collapse-filter"
                       name="price"
-                      onClick={() => showHideCollapse("category")}
+                      onClick={() => showHideCollapse("video")}
                       aria-controls="collpase-category-filter"
-                      aria-expanded={openCategory}
+                      aria-expanded={openVideo}
                     >
                       {" "}
-                      {openCategory ? (
+                      {openVideo ? (
                         <i className="fas fa-minus"></i>
                       ) : (
                         <i className="fas fa-plus"></i>
                       )}{" "}
                     </button>
                   </div>
-                  <Collapse in={openCategory}>
+                  <Collapse in={openVideo}>
                     <div id="collpase-category-filter">
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          Tất cả <input type="checkbox" />{" "}
+                          Có video <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          Mobile
+                          Không có video
                           <input type="checkbox" />{" "}
-                          <span className="check"></span>{" "}
-                        </label>{" "}
-                      </div>
-                      <div className="my-1">
-                        {" "}
-                        <label className="tick">
-                          Laptop
-                          <input type="checkbox" />{" "}
-                          <span className="check"></span>{" "}
-                        </label>{" "}
-                      </div>
-                      <div className="my-1">
-                        {" "}
-                        <label className="tick">
-                          Pc <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
@@ -253,35 +315,28 @@ export default function Search() {
                 </div>
                 <div className="box border-bottom-custom">
                   <div className="box-label text-uppercase d-flex align-items-center">
-                    Giá{" "}
+                    Bảo hành{" "}
                     <button
                       className="btn ms-auto collapse-filter"
                       name="price"
-                      onClick={() => showHideCollapse("price")}
+                      onClick={() => showHideCollapse("guarantee")}
                       aria-controls="collpase-price-filter"
-                      aria-expanded={openPrice}
+                      aria-expanded={openGuarantee}
                     >
                       {" "}
-                      {openPrice ? (
+                      {openGuarantee ? (
                         <i className="fas fa-minus"></i>
                       ) : (
                         <i className="fas fa-plus"></i>
                       )}{" "}
                     </button>
                   </div>
-                  <Collapse in={openPrice}>
+                  <Collapse in={openGuarantee}>
                     <div id="collpase-price-filter">
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          Nhỏ hơn 500.000đ <input type="checkbox" />{" "}
-                          <span className="check"></span>{" "}
-                        </label>{" "}
-                      </div>
-                      <div className="my-1">
-                        {" "}
-                        <label className="tick">
-                          500.000đ - 1.000.000đ
+                          Nhỏ hơn 3 tháng
                           <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
@@ -289,35 +344,22 @@ export default function Search() {
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          1.000.000đ - 2.000.000đ <input type="checkbox" />{" "}
+                          3 đến 6 tháng
+                          <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          2.000.000đ - 4.000.000đ <input type="checkbox" />{" "}
+                          6 đến 12 tháng <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          4.000.000đ - 8.000.000đ <input type="checkbox" />{" "}
-                          <span className="check"></span>{" "}
-                        </label>{" "}
-                      </div>
-                      <div className="my-1">
-                        {" "}
-                        <label className="tick">
-                          8.000.000đ - 10.000.000đ <input type="checkbox" />{" "}
-                          <span className="check"></span>{" "}
-                        </label>{" "}
-                      </div>
-                      <div className="my-1">
-                        {" "}
-                        <label className="tick">
-                          Lớn hơn 10.000.000đ <input type="checkbox" />{" "}
+                          Lớn hơn 12 tháng <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
@@ -326,35 +368,28 @@ export default function Search() {
                 </div>
                 <div className="box border-bottom-custom">
                   <div className="box-label text-uppercase d-flex align-items-center">
-                    Loại sản phẩm{" "}
+                    Loại ổ cứng{" "}
                     <button
                       className="btn ms-auto  collapse-filter"
                       name="price"
-                      onClick={() => showHideCollapse("category")}
+                      onClick={() => showHideCollapse("storage_type")}
                       aria-controls="collpase-category-filter"
-                      aria-expanded={openCategory}
+                      aria-expanded={openStorageType}
                     >
                       {" "}
-                      {openCategory ? (
+                      {openStorageType ? (
                         <i className="fas fa-minus"></i>
                       ) : (
                         <i className="fas fa-plus"></i>
                       )}{" "}
                     </button>
                   </div>
-                  <Collapse in={openCategory}>
+                  <Collapse in={openStorageType}>
                     <div id="collpase-category-filter">
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          Tất cả <input type="checkbox" />{" "}
-                          <span className="check"></span>{" "}
-                        </label>{" "}
-                      </div>
-                      <div className="my-1">
-                        {" "}
-                        <label className="tick">
-                          Mobile
+                          HDD
                           <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
@@ -362,7 +397,7 @@ export default function Search() {
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          Laptop
+                          SDD
                           <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
@@ -370,7 +405,7 @@ export default function Search() {
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          Pc <input type="checkbox" />{" "}
+                          SSHD <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
@@ -379,35 +414,35 @@ export default function Search() {
                 </div>
                 <div className="box border-bottom-custom">
                   <div className="box-label text-uppercase d-flex align-items-center">
-                    Giá{" "}
+                    Bộ nhớ{" "}
                     <button
                       className="btn ms-auto collapse-filter"
                       name="price"
-                      onClick={() => showHideCollapse("price")}
+                      onClick={() => showHideCollapse("storage")}
                       aria-controls="collpase-price-filter"
-                      aria-expanded={openPrice}
+                      aria-expanded={openStorage}
                     >
                       {" "}
-                      {openPrice ? (
+                      {openStorage ? (
                         <i className="fas fa-minus"></i>
                       ) : (
                         <i className="fas fa-plus"></i>
                       )}{" "}
                     </button>
                   </div>
-                  <Collapse in={openPrice}>
+                  <Collapse in={openStorage}>
                     <div id="collpase-price-filter">
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          Nhỏ hơn 500.000đ <input type="checkbox" />{" "}
+                          Nhỏ hơn 8GB <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          500.000đ - 1.000.000đ
+                          8GB đến 16GB
                           <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
@@ -415,35 +450,49 @@ export default function Search() {
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          1.000.000đ - 2.000.000đ <input type="checkbox" />{" "}
+                          16GB đến 32GB <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          2.000.000đ - 4.000.000đ <input type="checkbox" />{" "}
+                          32GB đến 64GB <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          4.000.000đ - 8.000.000đ <input type="checkbox" />{" "}
+                          64GB đến 128GB <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          8.000.000đ - 10.000.000đ <input type="checkbox" />{" "}
+                          128GB đến 256GB <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          Lớn hơn 10.000.000đ <input type="checkbox" />{" "}
+                          256GB đến 512GB <input type="checkbox" />{" "}
+                          <span className="check"></span>{" "}
+                        </label>{" "}
+                      </div>
+                      <div className="my-1">
+                        {" "}
+                        <label className="tick">
+                          512GB đến 1TB <input type="checkbox" />{" "}
+                          <span className="check"></span>{" "}
+                        </label>{" "}
+                      </div>
+                      <div className="my-1">
+                        {" "}
+                        <label className="tick">
+                          Lớn hơn 1TB <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
@@ -452,35 +501,28 @@ export default function Search() {
                 </div>
                 <div className="box border-bottom-custom">
                   <div className="box-label text-uppercase d-flex align-items-center">
-                    Loại sản phẩm{" "}
+                    Trạng thái sản phẩm{" "}
                     <button
                       className="btn ms-auto  collapse-filter"
                       name="price"
-                      onClick={() => showHideCollapse("category")}
+                      onClick={() => showHideCollapse("status")}
                       aria-controls="collpase-category-filter"
-                      aria-expanded={openCategory}
+                      aria-expanded={openStatus}
                     >
                       {" "}
-                      {openCategory ? (
+                      {openStatus ? (
                         <i className="fas fa-minus"></i>
                       ) : (
                         <i className="fas fa-plus"></i>
                       )}{" "}
                     </button>
                   </div>
-                  <Collapse in={openCategory}>
+                  <Collapse in={openStatus}>
                     <div id="collpase-category-filter">
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          Tất cả <input type="checkbox" />{" "}
-                          <span className="check"></span>{" "}
-                        </label>{" "}
-                      </div>
-                      <div className="my-1">
-                        {" "}
-                        <label className="tick">
-                          Mobile
+                          Mới
                           <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
@@ -488,7 +530,7 @@ export default function Search() {
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          Laptop
+                          Cũ (90 đến 99%)
                           <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
@@ -496,7 +538,7 @@ export default function Search() {
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          Pc <input type="checkbox" />{" "}
+                          Cũ (&lt;90%) <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
@@ -505,35 +547,35 @@ export default function Search() {
                 </div>
                 <div className="box border-bottom-custom">
                   <div className="box-label text-uppercase d-flex align-items-center">
-                    Giá{" "}
+                    Ram{" "}
                     <button
                       className="btn ms-auto collapse-filter"
                       name="price"
-                      onClick={() => showHideCollapse("price")}
+                      onClick={() => showHideCollapse("ram")}
                       aria-controls="collpase-price-filter"
-                      aria-expanded={openPrice}
+                      aria-expanded={openRam}
                     >
                       {" "}
-                      {openPrice ? (
+                      {openRam ? (
                         <i className="fas fa-minus"></i>
                       ) : (
                         <i className="fas fa-plus"></i>
                       )}{" "}
                     </button>
                   </div>
-                  <Collapse in={openPrice}>
+                  <Collapse in={openRam}>
                     <div id="collpase-price-filter">
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          Nhỏ hơn 500.000đ <input type="checkbox" />{" "}
+                          Nhỏ hơn 4GB <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          500.000đ - 1.000.000đ
+                          4GB đến 8GB
                           <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
@@ -541,35 +583,178 @@ export default function Search() {
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          1.000.000đ - 2.000.000đ <input type="checkbox" />{" "}
+                          8GB đến 16GB <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          2.000.000đ - 4.000.000đ <input type="checkbox" />{" "}
+                          16GB đến 32GB <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          4.000.000đ - 8.000.000đ <input type="checkbox" />{" "}
+                          32GB đến 64GB <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          8.000.000đ - 10.000.000đ <input type="checkbox" />{" "}
+                          Lớn hơn 64GB <input type="checkbox" />{" "}
+                          <span className="check"></span>{" "}
+                        </label>{" "}
+                      </div>
+                    </div>
+                  </Collapse>
+                </div>
+                <div className="box border-bottom-custom">
+                  <div className="box-label text-uppercase d-flex align-items-center">
+                    Kích thước màn hình{" "}
+                    <button
+                      className="btn ms-auto collapse-filter"
+                      name="price"
+                      onClick={() => showHideCollapse("display_size")}
+                      aria-controls="collpase-price-filter"
+                      aria-expanded={openDisplaySize}
+                    >
+                      {" "}
+                      {openDisplaySize ? (
+                        <i className="fas fa-minus"></i>
+                      ) : (
+                        <i className="fas fa-plus"></i>
+                      )}{" "}
+                    </button>
+                  </div>
+                  <Collapse in={openDisplaySize}>
+                    <div id="collpase-price-filter">
+                      <div className="my-1">
+                        {" "}
+                        <label className="tick">
+                          &lt;13 inch <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
                       <div className="my-1">
                         {" "}
                         <label className="tick">
-                          Lớn hơn 10.000.000đ <input type="checkbox" />{" "}
+                          13 - 13.9 inch
+                          <input type="checkbox" />{" "}
+                          <span className="check"></span>{" "}
+                        </label>{" "}
+                      </div>
+                      <div className="my-1">
+                        {" "}
+                        <label className="tick">
+                          14 - 14.9 inch <input type="checkbox" />{" "}
+                          <span className="check"></span>{" "}
+                        </label>{" "}
+                      </div>
+                      <div className="my-1">
+                        {" "}
+                        <label className="tick">
+                          15 - 15.9 inch <input type="checkbox" />{" "}
+                          <span className="check"></span>{" "}
+                        </label>{" "}
+                      </div>
+                      <div className="my-1">
+                        {" "}
+                        <label className="tick">
+                          &gt;16 inch <input type="checkbox" />{" "}
+                          <span className="check"></span>{" "}
+                        </label>{" "}
+                      </div>
+                    </div>
+                  </Collapse>
+                </div>
+                <div className="box border-bottom-custom">
+                  <div className="box-label text-uppercase d-flex align-items-center">
+                    Card màn hình{" "}
+                    <button
+                      className="btn ms-auto collapse-filter"
+                      name="price"
+                      onClick={() => showHideCollapse("card")}
+                      aria-controls="collpase-price-filter"
+                      aria-expanded={openCard}
+                    >
+                      {" "}
+                      {openCard ? (
+                        <i className="fas fa-minus"></i>
+                      ) : (
+                        <i className="fas fa-plus"></i>
+                      )}{" "}
+                    </button>
+                  </div>
+                  <Collapse in={openCard}>
+                    <div id="collpase-price-filter">
+                      <div className="my-1">
+                        {" "}
+                        <label className="tick">
+                          Có <input type="checkbox" />{" "}
+                          <span className="check"></span>{" "}
+                        </label>{" "}
+                      </div>
+                      <div className="my-1">
+                        {" "}
+                        <label className="tick">
+                          Không
+                          <input type="checkbox" />{" "}
+                          <span className="check"></span>{" "}
+                        </label>{" "}
+                      </div>
+                    </div>
+                  </Collapse>
+                </div>
+                <div className="box border-bottom-custom">
+                  <div className="box-label text-uppercase d-flex align-items-center">
+                    Hãng{" "}
+                    <button
+                      className="btn ms-auto collapse-filter"
+                      name="price"
+                      onClick={() => showHideCollapse("brand")}
+                      aria-controls="collpase-price-filter"
+                      aria-expanded={openBrand}
+                    >
+                      {" "}
+                      {openBrand ? (
+                        <i className="fas fa-minus"></i>
+                      ) : (
+                        <i className="fas fa-plus"></i>
+                      )}{" "}
+                    </button>
+                  </div>
+                  <Collapse in={openBrand}>
+                    <div id="collpase-price-filter">
+                      <div className="my-1">
+                        {" "}
+                        <label className="tick">
+                          Apple <input type="checkbox" />{" "}
+                          <span className="check"></span>{" "}
+                        </label>{" "}
+                      </div>
+                      <div className="my-1">
+                        {" "}
+                        <label className="tick">
+                          Samsung
+                          <input type="checkbox" />{" "}
+                          <span className="check"></span>{" "}
+                        </label>{" "}
+                      </div>
+                      <div className="my-1">
+                        {" "}
+                        <label className="tick">
+                          Dell <input type="checkbox" />{" "}
+                          <span className="check"></span>{" "}
+                        </label>{" "}
+                      </div>
+                      <div className="my-1">
+                        {" "}
+                        <label className="tick">
+                          Asus
+                          <input type="checkbox" />{" "}
                           <span className="check"></span>{" "}
                         </label>{" "}
                       </div>
@@ -579,12 +764,32 @@ export default function Search() {
               </div>
             </div>
             <div className="bg-white p-2" id="search-result">
-              <ItemSearch />
-              <ItemSearch />
-              <ItemSearch />
-              <ItemSearch />
-              <ItemSearch />
-              {/* <NotFound /> */}
+              <div className="search-result-status">
+                <div className="search-result-count">
+                  {get_post_search.length > 0 ? (
+                    <p>
+                      Có <b>{get_post_search.length}</b> sản phẩm phù hợp với
+                      tiêu chí của bản
+                    </p>
+                  ) : (
+                    <p>Không tìm thấy kết quả phù hợp</p>
+                  )}
+                </div>
+              </div>
+              <div>
+                {get_post_search.length > 0 ? (
+                  <>
+                    {get_post_search &&
+                      get_post_search.map((data, index) => (
+                        <div key={index}>
+                          <ItemSearch data={data} />
+                        </div>
+                      ))}
+                  </>
+                ) : (
+                  <NotFound />
+                )}
+              </div>
             </div>
           </div>
         </div>

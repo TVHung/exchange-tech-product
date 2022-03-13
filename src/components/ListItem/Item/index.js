@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./item.scss";
 import { Button } from "@material-ui/core";
 import { formatPrice, handleCalculateTime } from "./../../../utils/common";
+import imgDefault from "../../../assets/image/product-default.png";
 
 export default function Item({ data }) {
-  const [favorite, setfavorite] = useState(data.favorite);
+  const [favorite, setfavorite] = useState(false);
 
   const toggleFavorite = () => {
     setfavorite(!favorite);
@@ -28,14 +29,14 @@ export default function Item({ data }) {
     <div className="itemContainer">
       <div className="itemHeader">
         <img
-          src={getBanner(data.images)}
+          src={getBanner(data.images) || imgDefault}
           alt="productImg"
           className="itemImg"
         />
         <i
           className="fas fa-heart favorite-heart"
           onClick={() => toggleFavorite()}
-          style={{ color: favorite ? "grey" : "red" }}
+          style={{ color: !favorite ? "grey" : "red" }}
         ></i>
       </div>
       <div>

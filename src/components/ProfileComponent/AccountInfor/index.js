@@ -3,12 +3,77 @@ import "./accountInfor.scss";
 import { Grid, Button, TextField } from "@material-ui/core";
 import avt from "../../../assets/image/avt.jpg";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { apiChangePass, headers } from "../../../constants";
+import { toast } from "react-toastify";
 
 export default function AccountInfor() {
+  const [newPass, setNewPass] = useState({
+    old_password: "",
+    new_password: "",
+    new_password_confirmation: "",
+  });
+  const [valOldPass, setvalOldPass] = useState("");
+  const [valNewPass, setvalNewPass] = useState("");
+  const [valNewPassConfirm, setvalNewPassConfirm] = useState("");
+
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setNewPass((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const validateFormNewPass = () => {
+    let valPass = true;
+    if (newPass.old_password.length === 0) {
+      setvalOldPass("*Trường này không được để trống!");
+      valPass = false;
+    } else {
+      setvalOldPass("");
+    }
+    if (newPass.new_password.length === 0) {
+      setvalNewPass("*Trường này không được để trống!");
+      valPass = false;
+    } else if (newPass.old_password === newPass.new_password) {
+      setvalNewPass("Mật khẩu cũ và mới giống nhau");
+      valPass = false;
+    } else setvalNewPass("");
+
+    if (newPass.new_password_confirmation.length === 0) {
+      setvalNewPassConfirm("*Trường này không được để trống!");
+      valPass = false;
+    } else if (newPass.new_password != newPass.new_password_confirmation) {
+      setvalNewPassConfirm(
+        "Mật khẩu mới và xác nhận lại mật khẩu không giống nhau"
+      );
+      valPass = false;
+    } else setvalNewPassConfirm("");
+    console.log(valPass);
+    return valPass;
+  };
+
+  const onSubmitNewPass = async (e) => {
+    // e.preventdefault();
+    if (validateFormNewPass())
+      await axios
+        .post(apiChangePass, newPass, { headers: headers })
+        .then((res) => {
+          console.log(res);
+          toast.success("Cập nhật mật khẩu thành công");
+          document.getElementById("form-update-password").reset();
+        })
+        .catch((error) => {
+          toast.error("Cập nhật mật khẩu không thành công");
+          console.error(error);
+        });
+  };
+
   return (
     <div className="account-container">
       <div className="account-infor">
-        <h2>Thông tin người dùng</h2>
+        <h3>Thông tin người dùng</h3>
         <div className="account-infor-content">
           <Grid container>
             <Grid
@@ -78,48 +143,76 @@ export default function AccountInfor() {
         </div>
       </div>
       <div className="account-password">
-        <h2>Thay đổi mật khẩu</h2>
+        <h3>Thay đổi mật khẩu</h3>
         <div className="account-password-content">
-          <Grid container>
-            <Grid item xs={12} md={6} className="account-password-left-top">
-              <h3>Nhập mật khẩu cũ</h3>
-              <TextField
-                id="outlined-basic"
-                variant="outlined"
-                placeholder="Nhập mật khẩu cũ"
-                className="text-input"
+          <form
+            className="form-product"
+            id="form-update-password"
+            onSubmit={(e) => onSubmitNewPass(e)}
+          >
+            <div className="form-outline mb-3">
+              <label className="form-label" htmlFor="post-old_password">
+                Nhập mật khẩu hiện tại&nbsp;
+                <span style={{ color: "red" }}>*</span>
+              </label>
+              <input
+                type="text"
+                id="post-old_password"
+                className="form-control"
+                placeholder="Nhập mật khẩu hiện tại"
+                name="old_password"
+                onChange={(e) => handleOnChange(e)}
               />
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              md={6}
-              className="account-password-right-top"
-            ></Grid>
-            <Grid item xs={12} md={6} className="account-password-left-bottom">
-              <h3>Nhập mật khẩu mới</h3>
-              <TextField
-                id="outlined-basic"
-                variant="outlined"
-                placeholder="Nhập mật khẩu mới"
-                className="text-input"
-              />
-            </Grid>
-            <Grid item xs={12} md={6} className="account-password-right-bottom">
-              <h3>Nhập lại mật khẩu mới</h3>
-              <TextField
-                id="outlined-basic"
-                variant="outlined"
-                placeholder="Nhập lại mật khẩu mới"
-                className="text-input"
-              />
-            </Grid>
-            <Grid item xs={12} className="account-password-button">
-              <Button className="account-password-update-button">
+              <p className="validate-form-text">{valOldPass}</p>
+            </div>
+            <div className="row mb-3">
+              <div className="col">
+                <div className="form-outline">
+                  <label className="form-label" htmlFor="post-new_password">
+                    Mật khẩu mới&nbsp;
+                    <span style={{ color: "red" }}>*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="post-new_password"
+                    className="form-control"
+                    placeholder="Nhập mật khẩu mới"
+                    name="new_password"
+                    onChange={(e) => handleOnChange(e)}
+                  />
+                  <p className="validate-form-text">{valNewPass}</p>
+                </div>
+              </div>
+              <div className="col">
+                <div className="form-outline">
+                  <label
+                    className="form-label"
+                    htmlFor="post-new_password_confirmation"
+                  >
+                    Nhập lại mật khẩu mới&nbsp;
+                    <span style={{ color: "red" }}>*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="post-new_password_confirmation"
+                    className="form-control"
+                    placeholder="Nhập lại mật khẩu mới"
+                    name="new_password_confirmation"
+                    onChange={(e) => handleOnChange(e)}
+                  />
+                  <p className="validate-form-text">{valNewPassConfirm}</p>
+                </div>
+              </div>
+            </div>
+            <div className="account-password-button">
+              <Button
+                className="account-password-update-button"
+                onClick={(e) => onSubmitNewPass(e)}
+              >
                 Cập nhật <i className="fas fa-save"></i>
               </Button>
-            </Grid>
-          </Grid>
+            </div>
+          </form>
         </div>
       </div>
     </div>

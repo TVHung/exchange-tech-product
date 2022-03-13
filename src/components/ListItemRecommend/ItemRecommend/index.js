@@ -3,7 +3,7 @@ import "../../ListItem/Item/item.scss";
 import { formatPrice, handleCalculateTime } from "./../../../utils/common";
 
 export default function Item({ data }) {
-  const [favorite, setfavorite] = useState(data.favorite);
+  const [favorite, setfavorite] = useState(false);
   const toggleFavorite = () => {
     setfavorite(!favorite);
   };
@@ -33,7 +33,7 @@ export default function Item({ data }) {
         <i
           className="fas fa-heart favorite-heart"
           onClick={() => toggleFavorite()}
-          style={{ color: favorite ? "grey" : "red" }}
+          style={{ color: !favorite ? "grey" : "red" }}
         ></i>
       </div>
       <div>

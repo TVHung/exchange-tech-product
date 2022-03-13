@@ -201,7 +201,7 @@ export default function Navigation() {
             <MenuIcon className="menu-icon" />
           )}
         </div>
-        {isAuth ? (
+        {getCookie("access_token") ? (
           <div className="drop-layout-function">
             <i
               className="fas fa-ellipsis-v dot-menu-icon"

@@ -289,6 +289,22 @@ label {
     border-radius: 5px;
     max-height: calc(100vh);
     @include scroll-custom();
+    .search-result-status {
+        background-color: #f9fafc;
+        padding: 10px;
+        margin-bottom: 10px;
+        .search-result-count {
+            p {
+                margin: 0px;
+                padding: 0px;
+                font-size: 20px;
+            }
+            b {
+                color: $base-color-2;
+                font-size: 25px;
+            }
+        }
+    }
 }
 @media (min-width: 1399.6px) {
     #navbar-toggler-icon {

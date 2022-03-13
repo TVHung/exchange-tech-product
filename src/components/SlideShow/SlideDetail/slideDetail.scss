@@ -1,14 +1,17 @@
+@import "../../../assets/css/common";
+@import "../../../assets/css/valiables";
+
 .slideDetailContainer {
   overflow: hidden;
-  .slide-detail-image {
-    border-radius: 10px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: #eeeeee;
-    display: flex;
+  width: 100%;
+  .slide-container {
     justify-content: center;
     align-items: center;
-    object-fit: contain;
+    display: flex;
+  }
+  .slide-detail-image {
     height: 500px;
+    width: auto;
+    max-width: 100%;
   }
 }

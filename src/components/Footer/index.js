@@ -72,7 +72,7 @@ function Footer() {
                     id="form5Example21"
                     className="form-control"
                   />
-                  <label className="form-label mt-1" for="form5Example21">
+                  <label className="form-label mt-1" htmlFor="form5Example21">
                     Địa chỉ email của bạn
                   </label>
                 </div>
@@ -93,7 +93,7 @@ function Footer() {
 
         <section className="">
           <div className="row">
-            <div className="col-lg-4 col-sm-12 mb-md-0">
+            <div className="col-lg-4 col-xs-12 mb-md-0 mb-2">
               <h5 className="text-uppercase">Hỗ trợ khách hàng</h5>
 
               <ul className="list-unstyled mb-0">
@@ -124,7 +124,7 @@ function Footer() {
                 </li>
               </ul>
             </div>
-            <div className="col-lg-4 col-sm-12 mb-md-0">
+            <div className="col-lg-4 col-xs-12 mb-md-0 mb-2">
               <h5 className="text-uppercase">Về chợ công nghệ</h5>
 
               <ul className="list-unstyled mb-0">
@@ -150,7 +150,7 @@ function Footer() {
                 </li>
               </ul>
             </div>
-            <div className="col-lg-4 col-sm-12 mb-md-0">
+            <div className="col-lg-4 col-xs-12 mb-md-0 mb-2">
               <h5 className="text-uppercase">Liên kết</h5>
 
               <ul className="list-unstyled mb-0">

@@ -4,14 +4,8 @@
 .account-container {
   .account-infor {
     .account-infor-content {
-      width: 100%;
-      height: auto;
-      border-radius: 20px;
-      border: 3px solid;
-      border-color: $base-color-2;
-      color: $base-color-1;
+      @include borderContent();
       .account-infor-content-detail-left {
-        padding: 20px;
         height: 100%;
         //   background-color: red;
         .account-avatar {
@@ -41,7 +35,6 @@
           background-color: $base-color-1;
           color: white;
           margin-top: 0px;
-          border-radius: 10px;
           padding: 10px;
           i {
             padding-left: 5px;
@@ -52,7 +45,8 @@
         .account-detail {
           ul {
             list-style: none;
-            margin-top: 10px;
+            margin-bottom: 0px !important;
+            margin-left: 0px !important;
             li {
               padding-bottom: 10px;
               i {
@@ -80,12 +74,7 @@
   .account-password {
     padding-top: 20px;
     .account-password-content {
-      width: 100%;
-      height: auto;
-      border-radius: 20px;
-      border: 3px solid;
-      border-color: $base-color-2;
-      color: $base-color-1;
+      @include borderContent();
       .account-password-left-top {
         padding: 20px;
         h3 {
@@ -111,16 +100,17 @@
         }
       }
       .account-password-button {
-        padding: 20px;
         .account-password-update-button {
           padding: 10px;
           background-color: $base-color-1;
           color: white;
-          border-radius: 10px;
           i {
             padding-left: 5px;
           }
         }
+      }
+      .validate-form-text {
+        color: red;
       }
     }
   }

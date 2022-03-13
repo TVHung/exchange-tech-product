@@ -37,6 +37,12 @@
     .btn.enquiry {
         @include button-common();
     }
+    .search-item-price {
+        color: $base-color-2;
+    }
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 @media (max-width: 1199.5px) {
