@@ -14,7 +14,6 @@ import Search from "./screens/Search";
 import PreviewPost from "./screens/CreatePost/PreviewPost";
 import Detail from "./screens/Detail";
 import Profile from "./screens/Profile";
-import { ProfileEdit } from "./components/ProfileComponent";
 import { Fragment } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -83,12 +82,6 @@ function App() {
             path="/profile"
             exact
             component={Profile}
-            isAuth={isAuth}
-          />
-          <PrivateRoute
-            path="/profile/edit"
-            exact
-            component={ProfileEdit}
             isAuth={isAuth}
           />
           <Route path="/:someString" component={Error} />

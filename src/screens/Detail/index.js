@@ -18,325 +18,29 @@ import {
 import ListItem from "./../../components/ListItemRecommend";
 import StarRatings from "react-star-ratings";
 import CheckMark from "../../components/CheckMark";
-import { apiFetchPostDetail, apiGetUser, headers } from "../../constants";
+import {
+  apiFetchPostDetail,
+  apiFetchRecommendPosts,
+  apiGetUser,
+  headers,
+} from "../../constants";
 import axios from "axios";
 import Breadcrumb from "../../components/Breadcrumb";
 import { gameBreadcrumb } from "../../constants/breadcrumData";
 import { useParams } from "react-router-dom";
-
-const dataList = [
-  {
-    id: 1,
-    user_id: 1,
-    is_trade: 0,
-    post_trade_id: 2,
-    title: "day la san pham 1",
-    category_id: 1,
-    category: "Mobile",
-    name: "Iphone 13",
-    description:
-      "Vi xử lý: Intel Core i5 11400H, 6 nhân / 12 luồng Màn hình: 15.6 FullHD IPS 144Hz (1920 x 1080), màn nhám Độ phủ màu: 65% sRGB",
-    ram: 6,
-    storage: 64,
-    status: "Mới",
-    price: "400000",
-    address: "Minh khai, Hai bà trưng, Hà nội",
-    public_status: 1,
-    guarantee: 2,
-    images: [
-      {
-        id: 1,
-        is_banner: 1,
-        image_url:
-          "https://media.vneconomy.vn/w800/images/upload/2021/12/29/iphone-13-pro-max.jpg",
-        post_id: 1,
-        created_at: null,
-        updated_at: null,
-      },
-      {
-        id: 2,
-        is_banner: 0,
-        image_url:
-          "https://bachlongmobile.com/bnews/wp-content/uploads/2021/09/tren-tay-thuc-te-iphone-13-pro-max-819x1024.jpg",
-        post_id: 1,
-        created_at: null,
-        updated_at: null,
-      },
-      {
-        id: 3,
-        is_banner: 0,
-        image_url:
-          "https://images.fpt.shop/unsafe/filters:quality(90)/fptshop.com.vn/uploads/images/tin-tuc/138687/Originals/Tren-tay-iphone-13-mini-2.jpg",
-        post_id: 1,
-        created_at: null,
-        updated_at: null,
-      },
-    ],
-    created_at: "2022-02-08T17:07:15.000000Z",
-    updated_at: null,
-  },
-  {
-    id: 2,
-    user_id: 1,
-    is_trade: 0,
-    post_trade_id: 2,
-    title: "day la san pham 2",
-    category_id: 1,
-    category: "Mobile",
-    name: "Iphone 14",
-    description:
-      "Vi xử lý: Intel Core i5 11400H, 6 nhân / 12 luồng Màn hình: 15.6 FullHD IPS 144Hz (1920 x 1080), màn nhám Độ phủ màu: 65% sRGB",
-    ram: 6,
-    storage: 64,
-    status: "Mới",
-    price: "400000",
-    address: "Minh khai, Hai bà trưng, Hà nội",
-    public_status: 1,
-    guarantee: 2,
-    images: [
-      {
-        id: 4,
-        is_banner: 1,
-        image_url:
-          "https://images.fpt.shop/unsafe/fit-in/585x390/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2021/10/19/637702682508615222_macbook-pro-16-2021-xam-1.jpg",
-        post_id: 2,
-        created_at: null,
-        updated_at: null,
-      },
-      {
-        id: 5,
-        is_banner: 0,
-        image_url:
-          "https://static.remove.bg/remove-bg-web/d450d501f6500a09e72d0e306a5d62768359d9fa/assets/start_remove-c851bdf8d3127a24e2d137a55b1b427378cd17385b01aec6e59d5d4b5f39d2ec.png",
-        post_id: 2,
-        created_at: null,
-        updated_at: null,
-      },
-      {
-        id: 6,
-        is_banner: 0,
-        image_url:
-          "http://www.maccenter.vn/Adv_Images/Banner-MacBookPro-2021-1.jpg",
-        post_id: 2,
-        created_at: null,
-        updated_at: null,
-      },
-    ],
-    created_at: "2022-02-08T17:07:15.000000Z",
-    updated_at: null,
-  },
-  {
-    id: 3,
-    user_id: 1,
-    is_trade: 0,
-    post_trade_id: 2,
-    title: "day la san pham 3",
-    category_id: 1,
-    category: "Mobile",
-    name: "Iphone 15",
-    description:
-      "Vi xử lý: Intel Core i5 11400H, 6 nhân / 12 luồng Màn hình: 15.6 FullHD IPS 144Hz (1920 x 1080), màn nhám Độ phủ màu: 65% sRGB",
-    ram: 6,
-    storage: 64,
-    status: "Mới",
-    price: "8200000",
-    address: "Minh khai, Hai bà trưng, Hà nội",
-    public_status: 1,
-    guarantee: 2,
-    images: [
-      {
-        id: 7,
-        is_banner: 1,
-        image_url:
-          "https://images.fpt.shop/unsafe/fit-in/585x390/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2021/10/19/637702682508615222_macbook-pro-16-2021-xam-1.jpg",
-        post_id: 3,
-        created_at: null,
-        updated_at: null,
-      },
-      {
-        id: 8,
-        is_banner: 0,
-        image_url:
-          "https://static.remove.bg/remove-bg-web/d450d501f6500a09e72d0e306a5d62768359d9fa/assets/start_remove-c851bdf8d3127a24e2d137a55b1b427378cd17385b01aec6e59d5d4b5f39d2ec.png",
-        post_id: 3,
-        created_at: null,
-        updated_at: null,
-      },
-      {
-        id: 9,
-        is_banner: 0,
-        image_url:
-          "http://www.maccenter.vn/Adv_Images/Banner-MacBookPro-2021-1.jpg",
-        post_id: 3,
-        created_at: null,
-        updated_at: null,
-      },
-    ],
-    created_at: "2022-02-08T17:07:15.000000Z",
-    updated_at: null,
-  },
-  {
-    id: 4,
-    user_id: 1,
-    is_trade: 0,
-    post_trade_id: 2,
-    title: "day la san pham 4",
-    category_id: 2,
-    category: "Laptop",
-    name: "Iphone 13",
-    description:
-      "Vi xử lý: Intel Core i5 11400H, 6 nhân / 12 luồng Màn hình: 15.6 FullHD IPS 144Hz (1920 x 1080), màn nhám Độ phủ màu: 65% sRGB",
-    ram: 6,
-    storage: 64,
-    status: "Mới",
-    price: "2900000",
-    address: "Minh khai, Hai bà trưng, Hà nội",
-    public_status: 1,
-    guarantee: 2,
-    images: [
-      {
-        id: 10,
-        is_banner: 1,
-        image_url:
-          "https://media.vneconomy.vn/w800/images/upload/2021/12/29/iphone-13-pro-max.jpg",
-        post_id: 4,
-        created_at: null,
-        updated_at: null,
-      },
-      {
-        id: 11,
-        is_banner: 0,
-        image_url:
-          "https://bachlongmobile.com/bnews/wp-content/uploads/2021/09/tren-tay-thuc-te-iphone-13-pro-max-819x1024.jpg",
-        post_id: 4,
-        created_at: null,
-        updated_at: null,
-      },
-      {
-        id: 12,
-        is_banner: 0,
-        image_url:
-          "https://images.fpt.shop/unsafe/filters:quality(90)/fptshop.com.vn/uploads/images/tin-tuc/138687/Originals/Tren-tay-iphone-13-mini-2.jpg",
-        post_id: 4,
-        created_at: null,
-        updated_at: null,
-      },
-    ],
-    created_at: "2022-02-08T17:07:15.000000Z",
-    updated_at: null,
-  },
-  {
-    id: 5,
-    user_id: 1,
-    is_trade: 1,
-    post_trade_id: 2,
-    title: "day la san pham 5",
-    category_id: 2,
-    category: "Laptop",
-    name: "Iphone 14",
-    description:
-      "Vi xử lý: Intel Core i5 11400H, 6 nhân / 12 luồng Màn hình: 15.6 FullHD IPS 144Hz (1920 x 1080), màn nhám Độ phủ màu: 65% sRGB",
-    ram: 6,
-    storage: 64,
-    status: "Mới",
-    price: "9900000",
-    address: "Minh khai, Hai bà trưng, Hà nội",
-    public_status: 1,
-    guarantee: 2,
-    images: [
-      {
-        id: 13,
-        is_banner: 1,
-        image_url:
-          "https://images.fpt.shop/unsafe/fit-in/585x390/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2021/10/19/637702682508615222_macbook-pro-16-2021-xam-1.jpg",
-        post_id: 5,
-        created_at: null,
-        updated_at: null,
-      },
-      {
-        id: 14,
-        is_banner: 0,
-        image_url:
-          "https://static.remove.bg/remove-bg-web/d450d501f6500a09e72d0e306a5d62768359d9fa/assets/start_remove-c851bdf8d3127a24e2d137a55b1b427378cd17385b01aec6e59d5d4b5f39d2ec.png",
-        post_id: 5,
-        created_at: null,
-        updated_at: null,
-      },
-      {
-        id: 15,
-        is_banner: 0,
-        image_url:
-          "http://www.maccenter.vn/Adv_Images/Banner-MacBookPro-2021-1.jpg",
-        post_id: 5,
-        created_at: null,
-        updated_at: null,
-      },
-    ],
-    created_at: "2022-02-08T17:07:15.000000Z",
-    updated_at: null,
-  },
-  {
-    id: 6,
-    user_id: 1,
-    is_trade: 1,
-    post_trade_id: 2,
-    title: "day la san pham 6",
-    category_id: 2,
-    category: "Laptop",
-    name: "Iphone 15",
-    description:
-      "Vi xử lý: Intel Core i5 11400H, 6 nhân / 12 luồng Màn hình: 15.6 FullHD IPS 144Hz (1920 x 1080), màn nhám Độ phủ màu: 65% sRGB",
-    ram: 6,
-    storage: 64,
-    status: "Mới",
-    price: "4400000",
-    address: "Yên Phụ, Yên Phong, Bắc Ninh",
-    public_status: 1,
-    guarantee: 2,
-    images: [
-      {
-        id: 16,
-        is_banner: 1,
-        image_url:
-          "https://images.fpt.shop/unsafe/fit-in/585x390/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2021/10/19/637702682508615222_macbook-pro-16-2021-xam-1.jpg",
-        post_id: 6,
-        created_at: null,
-        updated_at: null,
-      },
-      {
-        id: 17,
-        is_banner: 0,
-        image_url:
-          "https://static.remove.bg/remove-bg-web/d450d501f6500a09e72d0e306a5d62768359d9fa/assets/start_remove-c851bdf8d3127a24e2d137a55b1b427378cd17385b01aec6e59d5d4b5f39d2ec.png",
-        post_id: 6,
-        created_at: null,
-        updated_at: null,
-      },
-      {
-        id: 18,
-        is_banner: 0,
-        image_url:
-          "http://www.maccenter.vn/Adv_Images/Banner-MacBookPro-2021-1.jpg",
-        post_id: 6,
-        created_at: null,
-        updated_at: null,
-      },
-    ],
-    created_at: "2022-02-08T17:07:15.000000Z",
-    updated_at: null,
-  },
-];
 
 export default function Detail() {
   const [preload, setPreload] = useState(false);
   const [favorite, setFavorite] = useState(false);
   const [stateCopy, setStateCopy] = useState(false);
   const [postDetail, setPostDetail] = useState({});
+  const [recommendPost, setRecommendPost] = useState([]);
   const [postUser, setPostUser] = useState({});
   const params = useParams();
 
   useEffect(() => {
     fetchAllData(params.id);
+    fetchRecommendPost();
     return () => {};
   }, [params.id]);
 
@@ -393,7 +97,23 @@ export default function Detail() {
           const userPost = res.data.data;
           setPostUser(userPost);
           setPreload(true);
-          console.log("id", userPost);
+          console.log("post user profile", userPost);
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchRecommendPost = async () => {
+    try {
+      await axios
+        .get(`${apiFetchRecommendPosts}`, {
+          headers: headers,
+        })
+        .then((res) => {
+          const recommendPost = res.data.data;
+          setRecommendPost(recommendPost);
+          console.log("post recommend", recommendPost);
         });
     } catch (error) {
       console.error(error);
@@ -438,13 +158,13 @@ export default function Detail() {
                 <div className="detail-properties">
                   <div className="row">
                     {/* common */}
-                    {postDetail.ram && (
+                    {postDetail.ram > 0 && (
                       <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                         <i className="fas fa-memory"></i>
                         <span>Ram: {postDetail.ram}GB</span>
                       </div>
                     )}
-                    {postDetail.storage && (
+                    {postDetail.storage > 0 && (
                       <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                         <i className="fas fa-tags"></i>
                         <span>Dung lượng: {postDetail.storage}GB</span>
@@ -456,90 +176,76 @@ export default function Detail() {
                         <span>Tình trạng: {postDetail.status}</span>
                       </div>
                     )}
-                    {postDetail.guarantee && (
-                      <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                        <i className="fas fa-hdd"></i>
+                    <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                      <i className="fas fa-hdd"></i>
+                      {postDetail.guarantee > 0 ? (
                         <span>Bảo hành: {postDetail.guarantee} Tháng</span>
-                      </div>
-                    )}
+                      ) : (
+                        <span>Bảo hành: Không</span>
+                      )}
+                    </div>
                     {/* mobile */}
-                    {postDetail.postMobiles.length === 1 && (
+                    {postDetail.category_id === 1 && (
                       <>
                         <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                           <i className="fas fa-tags"></i>
-                          <span>
-                            Hãng: {postDetail.postMobiles[0].brand_id}
-                          </span>
+                          <span>Hãng: {postDetail.brand_id}</span>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                           <i className="fas fa-tags"></i>
-                          <span>
-                            Màu sắc: {postDetail.postMobiles[0].color}
-                          </span>
+                          <span>Màu sắc: {postDetail.color}</span>
                         </div>
                       </>
                     )}
                     {/* laptop */}
-                    {postDetail.postLaptops.length === 1 && (
+                    {postDetail.category_id === 2 && (
                       <>
                         <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                           <i className="fas fa-tags"></i>
-                          <span>
-                            Hãng: {postDetail.postLaptops[0].brand_id}
-                          </span>
+                          <span>Hãng: {postDetail.brand_id}</span>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                           <i className="fas fa-tags"></i>
-                          <span>
-                            Màu sắc: {postDetail.postLaptops[0].color}
-                          </span>
+                          <span>Màu sắc: {postDetail.color}</span>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                           <i className="fas fa-microchip"></i>
-                          <span>CPU: {postDetail.postLaptops[0].cpu}</span>
+                          <span>CPU: {postDetail.cpu}</span>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                           <i className="fas fa-microchip"></i>
-                          <span>GPU: {postDetail.postLaptops[0].gpu}</span>
+                          <span>GPU: {postDetail.gpu}</span>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                           <i className="fas fa-hdd"></i>
-                          <span>
-                            Loại ổ cứng:{" "}
-                            {postDetail.postLaptops[0].storage_type}
-                          </span>
+                          <span>Loại ổ cứng: {postDetail.storage_type}</span>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                           <i className="fas fa-hdd"></i>
-                          <span>
-                            Màn hình: {postDetail.postLaptops[0].display_size}
-                          </span>
+                          <span>Màn hình: {postDetail.display_size}</span>
                         </div>
                       </>
                     )}
                     {/* pc */}
-                    {postDetail.postPcs.length === 1 && (
+                    {postDetail.category_id === 3 && (
                       <>
                         <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                           <i className="fas fa-microchip"></i>
-                          <span>CPU: {postDetail.postPcs[0].cpu}</span>
+                          <span>CPU: {postDetail.cpu}</span>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                           <i className="fas fa-microchip"></i>
-                          <span>GPU: {postDetail.postPcs[0].gpu}</span>
+                          <span>GPU: {postDetail.gpu}</span>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                           <i className="fas fa-hdd"></i>
-                          <span>
-                            Loại ổ cứng: {postDetail.postPcs[0].storage_type}
-                          </span>
+                          <span>Loại ổ cứng: {postDetail.storage_type}</span>
                         </div>
                       </>
                     )}
                   </div>
                 </div>
               </div>
-              <hr />
               {postDetail.is_trade == 1 ? (
                 <div className="detail-left">
                   <div className="detail-left-content">
@@ -689,9 +395,10 @@ export default function Detail() {
               </div>
             </div>
           </div>
+          <hr />
           <div className="related-products">
             <h3>Sản phẩm liên quan</h3>
-            <ListItem dataList={dataList} />
+            <ListItem dataList={recommendPost} />
           </div>
           <div className="copy-check-mark">
             <CheckMark stateCopy={stateCopy} setStateCopy={setStateCopy} />

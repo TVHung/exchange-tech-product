@@ -14,9 +14,10 @@ export const POST_TYPES = {
 };
 
 export const handleCalculateTime = (time) => {
+  console.log(time);
   if (time) {
-    let createAt = new Date(2021, 10, 31, 20, 0, 0).getTime();
-    let current = new Date(2021, 10, 31, 23, 0, 0).getTime();
+    let createAt = new Date(time).getTime();
+    let current = new Date().getTime();
     let distance = current - createAt;
     if (distance <= 0) return "";
     else {

@@ -10,10 +10,10 @@ import {
   apiDistrict,
   apiWard,
   headers,
-  apiGetAllPost,
   apiImages,
   storageData,
   statusData,
+  apiPost,
 } from "./../../constants";
 import { toast } from "react-toastify";
 import {
@@ -66,6 +66,7 @@ export default function CreatePost() {
     public_status: 1,
     trade: 0,
     color: "",
+    video_url: "",
   });
   const [postTradeInfor, setPostTradeInfor] = useState({
     category: 1, //1:phone, 2: laptop, 3: pc
@@ -216,9 +217,9 @@ export default function CreatePost() {
         });
     });
     axios.all(uploaders).then((res) => {
-      console.log("upload thanh cong", res);
       setIsCreatePost(false);
       toast.success("Tạo thành công");
+      window.location.href = "/profile?tab=my-posts";
     });
   };
 
@@ -402,10 +403,10 @@ export default function CreatePost() {
       validateNullFormPost(postInfor.status) !== "" &&
       validateNullFormPost(address) !== "" &&
       validateNullFormPost(postInfor.title) !== "" &&
-      validateNullFormPost(postInfor.description) !== "" &&
-      file.length
+      validateNullFormPost(postInfor.description) !== ""
     )
       validate = false;
+    if (file.length <= 0) validate = false;
     if (!isFree && validatePrice(postInfor.price) !== "") validate = false;
     if (
       Number(postInfor.category) !== 3 &&
@@ -413,11 +414,11 @@ export default function CreatePost() {
       validateNullFormPost(postInfor.color) !== ""
     )
       validate = false;
-    console.log(validate);
+    console.log(file.length, validate);
     if (validate) createPost();
   };
 
-  //tao post cha
+  //tao post
   const createPost = async () => {
     const postData = {
       is_trade: 0,
@@ -428,32 +429,33 @@ export default function CreatePost() {
       description: postInfor.description,
       ram: Number(postInfor.ram),
       storage: Number(postInfor.storage),
+      video_url:
+        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
       status: postInfor.status,
       price: Number(postInfor.price),
       address: address,
       public_status: Number(postInfor.public_status),
-      video_url:
-        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
       guarantee: Number(postInfor.guarantee),
+      sold: 0,
       color: postInfor.color,
-      brand_id: Number(postInfor.brand),
       cpu: postInfor.cpu,
       gpu: postInfor.gpu,
       storage_type: postInfor.storage_type,
+      brand_id: Number(postInfor.brand),
       display_size: Number(postInfor.display_size),
     };
-    console.log("validate", validatePost);
+
     console.log("post", postData);
-    // await axios
-    //   .post(apiGetAllPost, postData, { headers: headers })
-    //   .then((res) => {
-    //     const p = res.data.data;
-    //     console.log("post", p);
-    //     handleDrop(fileObject, p.id);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
+    await axios
+      .post(apiPost, postData, { headers: headers })
+      .then((res) => {
+        const p = res.data.data;
+        console.log("post success", p);
+        if (res.data.status) handleDrop(fileObject, p.id);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
   const handleSaveImage = async (post_id, url, is_banner) => {
     const imageData = {
@@ -582,45 +584,62 @@ export default function CreatePost() {
       ) : (
         <Grid container className="form-container">
           <Grid item xs={12} md={4} className="create-post-images">
-            <div className="image-validate">
-              <p>{validatePost.image}</p>
-            </div>
-            <div className="custom-file">
-              <label htmlFor="file-upload" className="custom-file-upload">
-                <i className="fas fa-upload"></i> Thêm ảnh
-              </label>
-              <input
-                type="file"
-                className="custom-file-input"
-                id="file-upload"
-                // multiple
-                onChange={(e) => uploadSingleFile(e)}
-              />
-            </div>
-            <div className="mt-3 view-preview row">
-              {file.length > 0 &&
-                file.map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="col-lg-6 col-md-4 col-sm-6 image-preview mb-2 "
-                    >
-                      <div className="image-selected">
-                        <img src={item} alt="" width="100%" />
-                        <i
-                          className="fas fa-times-circle fa delete-image"
-                          onClick={() => deleteFile(index)}
-                        ></i>
-                        {index === 0 ? (
-                          <div className="title-cover-image">
-                            <p>Ảnh bìa</p>
-                          </div>
-                        ) : null}
+            <div className="image-post">
+              <div className="image-validate">
+                <p>{validatePost.image}</p>
+              </div>
+              <div className="custom-file">
+                <label htmlFor="file-upload" className="custom-file-upload">
+                  <i className="fas fa-upload"></i> Thêm ảnh
+                </label>
+                <input
+                  type="file"
+                  className="custom-file-input"
+                  id="file-upload"
+                  // multiple
+                  onChange={(e) => uploadSingleFile(e)}
+                />
+              </div>
+              <div className="mt-3 view-preview row">
+                {file.length > 0 &&
+                  file.map((item, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="col-lg-6 col-md-4 col-sm-6 image-preview mb-2 "
+                      >
+                        <div className="image-selected">
+                          <img src={item} alt="" width="100%" />
+                          <i
+                            className="fas fa-times-circle fa delete-image"
+                            onClick={() => deleteFile(index)}
+                          ></i>
+                          {index === 0 ? (
+                            <div className="title-cover-image">
+                              <p>Ảnh bìa</p>
+                            </div>
+                          ) : null}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+              </div>
             </div>
+            {/* <div className="video-post">
+              <div className="custom-video">
+                <label htmlFor="video-upload" className="custom-video-upload">
+                  <i className="fas fa-upload"></i> Thêm video
+                </label>
+                <input
+                  type="file"
+                  className="custom-video-input"
+                  id="video-upload"
+                  // multiple
+                  onChange={(e) => uploadSingleFile(e)}
+                />
+              </div>
+              <div className="mt-3 view-preview row"></div>
+            </div> */}
           </Grid>
           <Grid item xs={12} md={8} className="create-post-detail">
             <div className="mb-3">
@@ -1037,42 +1056,171 @@ export default function CreatePost() {
                   {validatePost.public_status}
                 </p>
               </div>
-              {/* <div className="mb-3 mt-4">
-                <h4>Bạn muốn đổi sang sản phẩm khác</h4>
-              </div>
-              <div className="mb-3 form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="tradeCheckbox"
-                  defaultChecked={isTrade}
-                  onClick={() => onClickTrade()}
-                />
-                <label className="form-check-label" htmlFor="tradeCheckbox">
-                  Đổi sản phẩm
-                </label>
-              </div> */}
-              {isTrade && <></>}
-              <div className="row mb-3">
-                <div className="col">
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-block btn-preview"
-                    onClick={(e) => toPreview(e)}
-                  >
-                    Xem trước
-                  </button>
-                </div>
-                <div className="col">
-                  <button
-                    type="submit"
-                    className="btn btn-success btn-block btn-submit"
-                  >
-                    Đăng tin
-                  </button>
-                </div>
-              </div>
             </form>
+            <div className="mb-3 mt-4">
+              <h4>Bạn muốn đổi sang sản phẩm khác</h4>
+            </div>
+            <div className="mb-3 form-check">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id="tradeCheckbox"
+                defaultChecked={isTrade}
+                onClick={() => onClickTrade()}
+              />
+              <label className="form-check-label" htmlFor="tradeCheckbox">
+                Đổi sản phẩm
+              </label>
+            </div>
+            {isTrade && (
+              <>
+                <div className="mb-3">
+                  <h3>Thông tin sản phẩm muốn đổi</h3>
+                </div>
+                <div className="form-outline mb-3">
+                  <label className="form-label" htmlFor="post-category">
+                    Loại sản phẩm
+                  </label>
+                  <select
+                    className="form-select"
+                    aria-label="Disabled select example"
+                    required
+                    id="post-category"
+                    name="category"
+                    onChange={(e) => handleOnChange(e)}
+                    placeholder="Loại sản phẩm"
+                  >
+                    <option value="1">Điện thoại, Máy tính bảng</option>
+                    <option value="2">Laptop</option>
+                    <option value="3">PC</option>
+                  </select>
+                  <p className="validate-form-text">{validatePost.category}</p>
+                </div>
+                <form
+                  className="form-product"
+                  id="form-create-post"
+                  onSubmit={(e) => onSubmitForm(e)}
+                >
+                  <div className="mb-3 mt-4">
+                    <h4>Thông tin chi tiết</h4>
+                  </div>
+                  <div className="form-outline mb-3">
+                    <label className="form-label" htmlFor="post-name">
+                      Tên sản phẩm&nbsp;<span style={{ color: "red" }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="post-name"
+                      className={
+                        validatePost.name
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      placeholder="Tên sản phẩm"
+                      name="name"
+                      onChange={(e) => handleOnChange(e)}
+                    />
+                    <p className="validate-form-text">{validatePost.name}</p>
+                  </div>
+                  <div className="row mb-3">
+                    <div className="col">
+                      <div className="form-outline">
+                        <label className="form-label" htmlFor="post-status">
+                          Tình trạng&nbsp;
+                          <span style={{ color: "red" }}>*</span>
+                        </label>
+                        <select
+                          className={
+                            validatePost.status
+                              ? "form-select is-invalid"
+                              : "form-select"
+                          }
+                          aria-label="Disabled select example"
+                          name="status"
+                          id="post-status"
+                          onChange={(e) => handleOnChange(e)}
+                        >
+                          <option value="0">Tình trạng</option>
+                          {statusData.map((data, index) => (
+                            <option key={index} value={data.id}>
+                              {data.value}
+                            </option>
+                          ))}
+                        </select>
+                        <p className="validate-form-text">
+                          {validatePost.status}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mb-3 mt-4">
+                    <h4>Tiêu đề và mô tả</h4>
+                  </div>
+                  <div className="form-outline mb-3">
+                    <label className="form-label" htmlFor="post-title">
+                      Tiêu đề&nbsp;<span style={{ color: "red" }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="post-title"
+                      className={
+                        validatePost.title
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      name="title"
+                      placeholder="Tiêu đề"
+                      onChange={(e) => handleOnChange(e)}
+                    />
+                    <p className="validate-form-text">{validatePost.title}</p>
+                  </div>
+                  <div className="form-outline mb-3">
+                    <label className="form-label" htmlFor="post-description">
+                      Mô tả chi tiết&nbsp;
+                      <span style={{ color: "red" }}>*</span>
+                    </label>
+                    <textarea
+                      className={
+                        validatePost.description
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      id="post-description"
+                      rows="4"
+                      placeholder="Mô tả chi tiết
+                  - Sản phẩm như thế nào
+                  - Chất lượng ra sao
+                  - Nhu cầu cụ thể như thế nào"
+                      name="description"
+                      onChange={(e) => handleOnChange(e)}
+                    ></textarea>
+                    <p className="validate-form-text">
+                      {validatePost.description}
+                    </p>
+                  </div>
+                </form>
+              </>
+            )}
+            <div className="row mb-3">
+              <div className="col">
+                <button
+                  type="button"
+                  className="btn btn-primary btn-block btn-preview"
+                  onClick={(e) => toPreview(e)}
+                >
+                  Xem trước
+                </button>
+              </div>
+              <div className="col">
+                <button
+                  type="submit"
+                  className="btn btn-success btn-block btn-submit"
+                  onClick={(e) => onSubmitForm(e)}
+                >
+                  Đăng tin
+                </button>
+              </div>
+            </div>
           </Grid>
         </Grid>
       )}

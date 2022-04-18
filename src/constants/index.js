@@ -12,9 +12,9 @@ export const apiChangePass = `${api}/auth/change-pass`;
 export const apiPost = `${api}/posts`;
 export const apiGetAllPost = `${api}/posts`;
 export const apiFetchPostDetail = `${api}/posts`;
-export const apiPostMobile = `${api}/post-mobile`;
-export const apiPostLaptop = `${api}/post-laptop`;
-export const apiPostPc = `${api}/post-pc`;
+export const apiFetchMyPosts = `${api}/my-posts`;
+export const apiFetchRecommendPosts = `${api}/recommend-posts`;
+export const apiWishList = `${api}/wish-list`;
 
 //api image
 export const apiImages = `${api}/post-image`;

@@ -3,11 +3,9 @@
 
 #homeContainer {
   position: relative;
-  @include scroll-custom();
+  // @include scroll-custom();
+  // overflow: hidden;
+  .home-posts {
+    height: auto;
+  }
 }
-
-// @media (min-width: 1500px) {
-//   #homeContainer {
-//     @include width-lg-container();
-//   }
-// }

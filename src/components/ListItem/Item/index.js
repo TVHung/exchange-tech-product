@@ -3,16 +3,37 @@ import "./item.scss";
 import { Button } from "@material-ui/core";
 import { formatPrice, handleCalculateTime } from "./../../../utils/common";
 import imgDefault from "../../../assets/image/product-default.png";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteWishList,
+  addWishList,
+} from "../../../redux/actions/postActions";
 
-export default function Item({ data }) {
+export default function Item({ data, status }) {
   const [favorite, setfavorite] = useState(false);
 
   const toggleFavorite = () => {
+    if (favorite) {
+      removeWishList();
+    } else {
+      addNewWishList();
+    }
     setfavorite(!favorite);
   };
 
+  const dispatch = useDispatch();
+  const addNewWishList = () => {
+    dispatch(addWishList(data.id));
+  };
+  const removeWishList = () => {
+    dispatch(deleteWishList(data.id));
+  };
+
   useEffect(() => {
-    return () => {};
+    setfavorite(status);
+    return () => {
+      setfavorite(false);
+    };
   }, []);
 
   const toDetail = () => {
@@ -42,7 +63,11 @@ export default function Item({ data }) {
       <div>
         <div className="itemContent">
           <h4>{data.name}</h4>
-          <p className="item-value">Giá: {formatPrice(data.price)}đ</p>
+          {data.price != 0 ? (
+            <p className="item-value">Giá: {formatPrice(data.price)}đ</p>
+          ) : (
+            <p className="item-value">Giá: Miễn phí</p>
+          )}
           <div className="item-create-location">
             <span className="item-createAt">
               {handleCalculateTime(data.created_at || null)}
