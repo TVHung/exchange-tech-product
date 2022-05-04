@@ -8,8 +8,7 @@
   border-color: #dfe1e3;
   position: relative;
   transition: all 0.4s ease-out;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-radius: 10px;
   &:hover {
     cursor: pointer;
     // box-shadow: 0 0 20px 8px #c4c4c4;
@@ -51,6 +50,7 @@
 }
 
 .itemContent {
+  position: relative;
   margin: 10px !important;
   height: 150px;
   .item-value {
@@ -73,36 +73,52 @@
 
 .itemDrop {
   display: none;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  background-color: white;
+  position: absolute;
+  top: 0px;
+  height: 330px;
+  border-radius: 10px;
+  background-color: rgba($color: $base-color-1, $alpha: 0.5);
   z-index: 3;
-  -moz-box-shadow: 0px 5px 10px rgba($color: #000000, $alpha: 0.5);
-  -webkit-box-shadow: 0px 5px 10px rgba($color: #000000, $alpha: 0.5);
-  box-shadow: 0px 5px 10px rgba($color: #000000, $alpha: 0.5);
   transition: all 0.4s ease-out;
-  .itemDrop-content {
-    margin: 10px !important;
-    p {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 4; /* number of lines to show */
-      -webkit-box-orient: vertical;
+  .favorite-heart {
+    position: absolute;
+    color: red;
+    right: 10px;
+    top: 10px;
+    transition: all 0.2s ease-out;
+    &:hover {
+      transform: scale(1.05);
     }
   }
-  .itemDrop-btn {
-    margin: 0px 10px !important;
-    .item-btn-care,
-    .item-btn-chat {
-      width: 100%;
-      background-color: $base-color-1;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      color: white;
-      &:hover {
-        background-color: $base-color-2;
-        color: $base-color-1;
+  .itemDrop-container {
+    position: relative;
+    height: 310px;
+    .itemDrop-content {
+      margin: 25px 10px 10px 10px !important;
+      p {
+        color: #fff;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 4; /* number of lines to show */
+        -webkit-box-orient: vertical;
+      }
+    }
+    .itemDrop-btn {
+      margin: 0px 10px !important;
+      position: absolute;
+      bottom: 10px;
+      .item-btn-care,
+      .item-btn-chat {
+        width: 100%;
+        background-color: $base-color-1;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        color: white;
+        &:hover {
+          background-color: $base-color-2;
+          color: $base-color-1;
+        }
       }
     }
   }

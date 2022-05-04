@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from "react";
-import "./accountInfor.scss";
+import "./_accountInfor.scss";
 import { Grid, Button } from "@material-ui/core";
 import avt from "../../../assets/image/avt.jpg";
 import axios from "axios";
 import { apiChangePass, headers } from "../../../constants";
 import { toast } from "react-toastify";
 import { Modal } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchUserProfile,
+  updateUserProfile,
+} from "../../../redux/actions/userActions";
+import { converDate } from "../../../utils/common";
 
 export default function AccountInfor() {
   const [newPass, setNewPass] = useState({
@@ -17,7 +23,14 @@ export default function AccountInfor() {
   const [valNewPass, setvalNewPass] = useState("");
   const [valNewPassConfirm, setvalNewPassConfirm] = useState("");
   const [show, setShow] = useState(false);
-  const [profile, setProfile] = useState({});
+  const [profile, setProfile] = useState({
+    name: "",
+    sex: null,
+    avatar_url: "",
+    phone: "",
+    address: "",
+    facebook_url: "",
+  });
   const [avatar, setAvatar] = useState("");
   const [style, setStyle] = useState({ display: "block" });
   const handleOnChange = (e) => {
@@ -79,7 +92,10 @@ export default function AccountInfor() {
         });
   };
 
-  const handleSubmit = () => {};
+  const handleSubmitProfile = () => {
+    dispatch(updateUserProfile(profile));
+    setShow(false);
+  };
   const handleClose = () => {
     setShow(false);
   };
@@ -88,6 +104,27 @@ export default function AccountInfor() {
     if (e.target.files.length !== 0)
       setAvatar(URL.createObjectURL(e.target.files[0]));
   };
+
+  //get data profile
+  const dispatch = useDispatch();
+  useEffect(() => {
+    fetchUser();
+  }, []);
+  const user_profile = useSelector((state) => state.user.userProfile);
+  const fetchUser = () => {
+    dispatch(fetchUserProfile());
+  };
+  useEffect(() => {
+    setProfile({
+      name: user_profile.name,
+      sex: user_profile.sex,
+      avatar_url: user_profile.avatar_url,
+      phone: user_profile.phone,
+      address: user_profile.address,
+      facebook_url: user_profile.facebook_url,
+    });
+    console.log("Profile", user_profile);
+  }, [user_profile]);
 
   return (
     <div className="account-container">
@@ -101,7 +138,7 @@ export default function AccountInfor() {
               <div
                 className="account-avatar-profile"
                 style={{
-                  backgroundImage: `url(${avatar || avt})`,
+                  backgroundImage: `url(${avatar || user_profile.avatar_url})`,
                   backgroundPosition: "center",
                   backgroundRepeat: "no-repeat",
                   backgroundSize: "cover",
@@ -139,7 +176,8 @@ export default function AccountInfor() {
                 className="form-control"
                 placeholder="Tên"
                 name="name"
-                onChange={(e) => handleOnChange(e)}
+                defaultValue={user_profile.name}
+                onChange={(e) => handleOnChangeProfile(e)}
               />
               <p className="validate-form-text"></p>
             </div>
@@ -153,7 +191,8 @@ export default function AccountInfor() {
                 className="form-control"
                 placeholder="Địa chỉ"
                 name="address"
-                onChange={(e) => handleOnChange(e)}
+                defaultValue={user_profile.address}
+                onChange={(e) => handleOnChangeProfile(e)}
               />
               <p className="validate-form-text"></p>
             </div>
@@ -168,7 +207,8 @@ export default function AccountInfor() {
                 className="form-control"
                 placeholder="Đường dẫn tài khoản facebook"
                 name="facebook_url"
-                onChange={(e) => handleOnChange(e)}
+                defaultValue={user_profile.facebook_url}
+                onChange={(e) => handleOnChangeProfile(e)}
               />
               <p className="validate-form-text"></p>
             </div>
@@ -183,19 +223,28 @@ export default function AccountInfor() {
                 className="form-control"
                 placeholder="Số điện thoại"
                 name="phone"
-                onChange={(e) => handleOnChange(e)}
+                defaultValue={user_profile.phone}
+                onChange={(e) => handleOnChangeProfile(e)}
               />
               <p className="validate-form-text"></p>
             </div>
           </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => handleClose()}>
+          <button
+            type="button"
+            className="btn btn-light"
+            onClick={() => handleClose()}
+          >
             Hủy
-          </Button>
-          <Button variant="primary" onClick={() => handleSubmit()}>
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => handleSubmitProfile()}
+          >
             Cập nhật
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
       <div className="account-infor">
@@ -210,10 +259,14 @@ export default function AccountInfor() {
             >
               <Grid container>
                 <Grid item xs={4}>
-                  <img src={avt} alt="avt" className="account-avatar" />
+                  <img
+                    src={user_profile.avatar_url}
+                    alt="avt"
+                    className="account-avatar"
+                  />
                 </Grid>
                 <Grid item xs={8}>
-                  <h3 style={{ marginTop: 0 }}>Truong Hung</h3>
+                  <h4 style={{ marginTop: 0 }}>{user_profile.name}</h4>
                   <Button
                     className="account-edit-button"
                     onClick={() => setShow(true)}
@@ -234,7 +287,7 @@ export default function AccountInfor() {
                   <li>
                     <i className="fas fa-phone"></i>
                     <b>Số điện thoại: </b>
-                    <span className="infor-detail">09383621309</span>
+                    <span className="infor-detail">{user_profile.phone}</span>
                   </li>
                   <li>
                     <i className="fas fa-address-book"></i>
@@ -246,7 +299,9 @@ export default function AccountInfor() {
                   <li>
                     <i className="fas fa-calendar-day"></i>
                     <b>Ngày tham gia: </b>
-                    <span className="infor-detail">13/09/1999</span>
+                    <span className="infor-detail">
+                      {converDate(user_profile.created_at)}
+                    </span>
                   </li>
                   <li>
                     <i className="fas fa-comment-dots"></i>
@@ -257,10 +312,17 @@ export default function AccountInfor() {
                     <i className="fas fa-check-circle"></i>
                     <b>Kết nối: </b>
                     <span className="infor-detail">
-                      <i className="fab fa-facebook social-icon"></i>
-                      <i className="fab fa-twitter social-icon"></i>
+                      <a
+                        href={user_profile.facebook_url}
+                        title="Facebook"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <i className="fab fa-facebook social-icon"></i>
+                      </a>
+                      {/* <i className="fab fa-twitter social-icon"></i>
                       <i className="fab fa-google-plus-g social-icon"></i>
-                      <i className="fab fa-instagram social-icon"></i>
+                      <i className="fab fa-instagram social-icon"></i> */}
                     </span>
                   </li>
                 </ul>

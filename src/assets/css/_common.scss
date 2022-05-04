@@ -79,6 +79,32 @@
   color: $color !important;
 }
 
+@mixin fontSize1() {
+  font-size: $fontSizeHeader1;
+  font-weight: bold;
+  line-height: 28px;
+}
+@mixin fontSize2() {
+  font-size: $fontSizeHeader2;
+  font-weight: normal;
+  line-height: 24px;
+}
+@mixin fontSize3() {
+  font-size: $fontSizeHeader3;
+  font-weight: normal;
+  line-height: 20px;
+}
+@mixin fontSize4() {
+  font-size: $fontSizeHeader4;
+  font-weight: normal;
+  line-height: 18px;
+}
+@mixin fontSize5() {
+  font-size: $fontSizeHeader5;
+  font-weight: normal;
+  line-height: 16px;
+}
+
 @mixin scroll-custom {
   overflow-y: auto;
   &::-webkit-scrollbar {

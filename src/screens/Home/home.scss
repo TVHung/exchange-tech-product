@@ -7,5 +7,8 @@
   // overflow: hidden;
   .home-posts {
     height: auto;
+    h3 {
+      @include fontSize1();
+    }
   }
 }

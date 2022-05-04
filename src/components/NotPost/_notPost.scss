@@ -1,0 +1,29 @@
+@import "../../assets/css/valiables";
+@import "../../assets/css/common";
+
+.not-post-container {
+    padding-top: 50px;
+    .not-post-content,
+    .not-post-img {
+        width: 100%;
+        @include makeCenter();
+        padding: 0px 30px;
+    }
+    .not-post-img {
+        img {
+            width: 100px;
+            height: 100px;
+        }
+    }
+    .not-post-content {
+        p {
+            font-weight: bold;
+            font-size: 22px;
+            text-align: center;
+        }
+        span {
+            padding: 0px 50px;
+            text-align: center;
+        }
+    }
+}

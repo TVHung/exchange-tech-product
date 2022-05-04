@@ -14,7 +14,6 @@ export const POST_TYPES = {
 };
 
 export const handleCalculateTime = (time) => {
-  console.log(time);
   if (time) {
     let createAt = new Date(time).getTime();
     let current = new Date().getTime();
@@ -44,6 +43,13 @@ export const handleCalculateTime = (time) => {
   return "";
 };
 
+//chuyen sang kieu hien thi ngay thang nam
+export const converDate = (time) => {
+  var d = new Date(time);
+  var datestring =
+    d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+  return datestring;
+};
 export const insertParam = (key, value) => {
   key = encodeURIComponent(key);
   value = encodeURIComponent(value);
@@ -70,8 +76,67 @@ export const insertParam = (key, value) => {
   return params;
 };
 
-export const deleteParam = (key) => {
-  let url = new URL(window.location.href);
-  let params = new URLSearchParams(url.search);
-  params.delete(key);
+export const deleteParam = (parameter) => {
+  var url = document.location.href;
+  var urlparts = url.split("?");
+
+  if (urlparts.length >= 2) {
+    var urlBase = urlparts.shift();
+    var queryString = urlparts.join("?");
+
+    var prefix = encodeURIComponent(parameter) + "=";
+    var pars = queryString.split(/[&;]/g);
+    for (var i = pars.length; i-- > 0; )
+      if (pars[i].lastIndexOf(prefix, 0) !== -1) pars.splice(i, 1);
+    url = urlBase + "?" + pars.join("&");
+    window.history.pushState("", document.title, url); // added this line to push the new url directly to url bar .
+  }
+};
+
+//thay doi xoa chuoi khi chon nhieu truong
+export const changeParamString = (feild, value) => {
+  var url = new URL(window.location.href);
+  var paramString = url.searchParams.get(feild);
+  if (paramString != null) {
+    let paramArr = paramString.split(".");
+    if (paramArr.includes(value)) {
+      var filtered = paramArr.filter(function (val, index, arr) {
+        return val != value;
+      });
+      if (filtered.length == 0) {
+        deleteParam(feild);
+        return null;
+      } else {
+        return convertArrayToStringFilter(filtered);
+      }
+    } else {
+      paramArr.push(value);
+      return convertArrayToStringFilter(paramArr);
+    }
+  } else {
+    return value;
+  }
+};
+
+const convertArrayToStringFilter = (arr) => {
+  let valueFilter = "";
+  if (arr.length >= 2)
+    for (let i = 0; i < arr.length; i++) {
+      if (i == arr.length - 1) valueFilter += arr[i];
+      else valueFilter += arr[i] + ".";
+    }
+  else valueFilter = arr[0];
+  return valueFilter;
+};
+
+//lay gia tri khi nguoi dung keo slider step
+export const getValueListFilter = (marks, value) => {
+  let val;
+  for (let i = 0; i < marks.length; i++) {
+    if (marks[i].value == value) {
+      val = marks[i].label;
+      break;
+    }
+  }
+  return val;
 };

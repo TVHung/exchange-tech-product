@@ -12,7 +12,9 @@ export default function MyPostItem({ data, handleShow }) {
     e.preventDefault();
     handleShow(data.id);
   };
-
+  const handleEdit = (e) => {
+    window.location.href = `edit-post/${data.id}`;
+  };
   const getBanner = (data_images) => {
     if (data_images)
       for (let i = 0; i < data_images.length; i++)
@@ -54,7 +56,9 @@ export default function MyPostItem({ data, handleShow }) {
           <div className="btn btn-danger mx-2" onClick={(e) => handleDelete(e)}>
             Xóa
           </div>
-          <div className="btn enquiry mx-2">Chỉnh sửa</div>
+          <div className="btn enquiry mx-2" onClick={(e) => handleEdit(e)}>
+            Chỉnh sửa
+          </div>
         </div>
       </div>
     </div>

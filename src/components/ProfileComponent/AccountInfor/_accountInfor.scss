@@ -3,6 +3,9 @@
 
 .account-container {
   .account-infor {
+    h3 {
+      @include fontSize1();
+    }
     .account-infor-content {
       @include borderContent();
       .account-infor-content-detail-left {
@@ -62,6 +65,9 @@
                 }
               }
               .infor-detail {
+                a {
+                  color: unset;
+                }
                 color: $base-color-2;
               }
             }
@@ -73,6 +79,9 @@
 
   .account-password {
     padding-top: 20px;
+    h3 {
+      @include fontSize1();
+    }
     .account-password-content {
       @include borderContent();
       .account-password-left-top {

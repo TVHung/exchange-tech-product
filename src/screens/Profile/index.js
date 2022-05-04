@@ -43,9 +43,13 @@ export default function Profile() {
                 aria-label="lab API tabs example"
               >
                 <Tab label="Tài khoản" value="1" className="profile-tab" />
-                <Tab label="Bài viết" value="2" className="profile-tab" />
                 <Tab
-                  label="Sản phẩm yêu thích"
+                  label="Bài viết của bạn"
+                  value="2"
+                  className="profile-tab"
+                />
+                <Tab
+                  label="Bài viết quan tâm"
                   value="3"
                   className="profile-tab"
                 />

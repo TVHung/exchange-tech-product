@@ -373,3 +373,15 @@ label {
         margin: 10px;
     }
 }
+#collpase-storage-filter,
+#collpase-price-filter {
+    .slider-step-price {
+    }
+    .slider-step-value {
+        width: 100%;
+        input {
+            width: 45%;
+            display: inline-block;
+        }
+    }
+}
