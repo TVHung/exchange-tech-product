@@ -292,9 +292,7 @@ export default function AccountInfor() {
                   <li>
                     <i className="fas fa-address-book"></i>
                     <b>Địa chỉ: </b>
-                    <span className="infor-detail">
-                      Đức Lân, Yên Phụ, Yên Phong, Bắc Ninh
-                    </span>
+                    <span className="infor-detail">{user_profile.address}</span>
                   </li>
                   <li>
                     <i className="fas fa-calendar-day"></i>

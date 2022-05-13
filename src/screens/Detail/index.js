@@ -131,8 +131,11 @@ export default function Detail() {
             <div className="col-sm-12 col-lg-8">
               <div className="detail-left">
                 <div className="detail-left-image">
-                  <SlideDetail dataSlides={postDetail.images} />
-                  <div className="detail-time-createat">
+                  <SlideDetail
+                    dataSlides={postDetail.images}
+                    video_url={postDetail.video_url}
+                  />
+                  <div className="detail-time-create">
                     <p>
                       Bài đăng cách đây{" "}
                       {handleCalculateTime(postDetail.created_at)}
@@ -170,10 +173,10 @@ export default function Detail() {
                         <span>Dung lượng: {postDetail.storage}GB</span>
                       </div>
                     )}
-                    {postDetail.status && (
+                    {postDetail.status != null && (
                       <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                         <i className="fas fa-microchip"></i>
-                        <span>Tình trạng: {postDetail.status}</span>
+                        <span>Tình trạng: {postDetail.status_value}</span>
                       </div>
                     )}
                     <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
@@ -218,7 +221,9 @@ export default function Detail() {
                         </div>
                         <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                           <i className="fas fa-hdd"></i>
-                          <span>Loại ổ cứng: {postDetail.storage_type}</span>
+                          <span>
+                            Loại ổ cứng: {postDetail.storage_type_value}
+                          </span>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                           <i className="fas fa-hdd"></i>
@@ -246,7 +251,7 @@ export default function Detail() {
                   </div>
                 </div>
               </div>
-              {postDetail.is_trade == 1 ? (
+              {postDetail.post_trade_id != null ? (
                 <div className="detail-left">
                   <div className="detail-left-content">
                     <h3>Sản phẩm mong muốn được đổi qua</h3>

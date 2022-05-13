@@ -424,8 +424,7 @@ export default function EditPost() {
   //tao post
   const createPost = async () => {
     const postData = {
-      is_trade: 0,
-      post_trade_id: 0,
+      post_trade_id: null,
       title: postInfor.title,
       category_id: Number(postInfor.category),
       name: postInfor.name,

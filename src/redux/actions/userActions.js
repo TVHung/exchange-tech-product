@@ -43,6 +43,7 @@ export const fetchUserProfile = () => async (dispatch) => {
 };
 
 export const updateUserProfile = (data) => async (dispatch) => {
+  console.log("update");
   try {
     await axios
       .put(apiUserProfile, data, {

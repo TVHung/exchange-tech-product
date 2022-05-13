@@ -4,7 +4,7 @@ import "react-slideshow-image/dist/styles.css";
 import "./slideDetail.scss";
 import imgDefault from "../../../assets/image/product-default.png";
 
-export default function SlideDetail({ dataSlides }) {
+export default function SlideDetail({ dataSlides, video_url }) {
   const properties = {
     duration: 5000,
     transitionDuration: 500,
@@ -33,6 +33,13 @@ export default function SlideDetail({ dataSlides }) {
               className="slide-detail-image"
               alt="product-img"
             />
+          </div>
+        )}
+        {video_url.length && (
+          <div className="slide-container">
+            <video controls autoPlay className="slide-detail-video">
+              <source src={video_url} type="video/mp4" />
+            </video>
           </div>
         )}
       </Slide>

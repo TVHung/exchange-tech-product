@@ -21,6 +21,7 @@ export const apiWishList = `${api}/wish-list`;
 
 //api image
 export const apiImages = `${api}/post-image`;
+export const apiUpload = `${api}/upload`;
 
 //api address
 export const apiAddress = `https://provinces.open-api.vn/api`;
@@ -33,6 +34,9 @@ export const apiGetBrandByCategory = `${api}/get-by-category`;
 
 //search
 export const apiSearch = `${api}/search`;
+
+//google
+export const apiGetGoogleUrl = `${api}/get-google-sign-in-url`;
 
 export const headers = {
   "Content-type": "application/json",
@@ -56,9 +60,9 @@ export const statusData = [
   { id: 3, value: "Cũ (<90%)" },
 ];
 export const storageTypeData = [
-  { id: 1, value: "HDD" },
-  { id: 2, value: "SSD" },
-  { id: 3, value: "SSHD" },
+  { id: 1, value: "HDD", type: 0 },
+  { id: 2, value: "SSD", type: 1 },
+  { id: 3, value: "SSHD", type: 2 },
 ];
 export const categoryData = [
   { id: 1, value: "Điện thoại, máy tính bảng" },

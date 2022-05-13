@@ -14,6 +14,8 @@ import {
   storageData,
   statusData,
   apiPost,
+  apiGetBrandByCategory,
+  apiUpload,
 } from "./../../constants";
 import { toast } from "react-toastify";
 import {
@@ -23,6 +25,7 @@ import {
 } from "./../../validations";
 import Breadcrumb from "../../components/Breadcrumb";
 import { postBreadcrumb } from "../../constants/breadcrumData";
+import { getCookie } from "../../utils/cookie";
 
 export default function CreatePost() {
   const [preload, setPreload] = useState(true);
@@ -49,13 +52,12 @@ export default function CreatePost() {
   const [postInfor, setPostInfor] = useState({
     category: 1, //1:phone, 2: laptop, 3: pc
     name: "",
-    brand: "",
-    status: "",
+    brand: null,
+    status: null,
     guarantee: null,
-    cpu: "",
-    gpu: "",
+    cpu: null,
+    gpu: null,
     ram: null,
-    rom: null,
     storage_type: "",
     storage: null,
     address: "",
@@ -77,7 +79,6 @@ export default function CreatePost() {
     cpu: "",
     gpu: "",
     ram: null,
-    rom: null,
     storage_type: null,
     display_size: null,
     storage: null,
@@ -103,7 +104,6 @@ export default function CreatePost() {
     cpu: "",
     gpu: "",
     ram: "",
-    rom: "",
     storage_type: "",
     display_size: "",
     storage: "",
@@ -155,7 +155,6 @@ export default function CreatePost() {
         cpu: "",
         gpu: "",
         ram: null,
-        rom: null,
         storage_type: "",
         storage: null,
         address: "",
@@ -192,7 +191,25 @@ export default function CreatePost() {
     setFileOject(o);
   };
 
-  const handleDrop = (files, post_id) => {
+  const testUpload = async (files) => {
+    const dataFiles = {
+      file: files,
+    };
+    const headers = {
+      "Content-type": "application/json",
+      Authorization: `Bearer ${getCookie("access_token")}`,
+    };
+    await axios
+      .post(apiUpload, dataFiles, { headers: headers })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const saveImages = (files, post_id) => {
     const uploaders = files.map((file, index) => {
       const formData = new FormData();
       formData.append("file", file);
@@ -418,11 +435,28 @@ export default function CreatePost() {
     if (validate) createPost();
   };
 
+  useEffect(() => {
+    fetchBrand(postInfor.category);
+    return () => {};
+  }, [postInfor.category]);
+
+  const [brandCategory, setbrandCategory] = useState([]);
+  const fetchBrand = async (id) => {
+    if (id == "1" || id == "2")
+      try {
+        await axios.get(`${apiGetBrandByCategory}/${id}`).then((res) => {
+          const brands = res.data.data;
+          console.log("brands by category", res.data.data);
+          setbrandCategory(brands);
+        });
+      } catch (error) {
+        return { statusCode: 500, body: error.toString() };
+      }
+  };
   //tao post
   const createPost = async () => {
     const postData = {
-      is_trade: 0,
-      post_trade_id: 0,
+      post_trade_id: null,
       title: postInfor.title,
       category_id: Number(postInfor.category),
       name: postInfor.name,
@@ -431,7 +465,7 @@ export default function CreatePost() {
       storage: Number(postInfor.storage),
       video_url:
         "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-      status: postInfor.status,
+      status: Number(postInfor.status),
       price: Number(postInfor.price),
       address: address,
       public_status: Number(postInfor.public_status),
@@ -440,9 +474,10 @@ export default function CreatePost() {
       color: postInfor.color,
       cpu: postInfor.cpu,
       gpu: postInfor.gpu,
-      storage_type: postInfor.storage_type,
+      storage_type: Number(postInfor.storage_type),
       brand_id: Number(postInfor.brand),
       display_size: Number(postInfor.display_size),
+      file: fileObject,
     };
 
     console.log("post", postData);
@@ -450,11 +485,13 @@ export default function CreatePost() {
       .post(apiPost, postData, { headers: headers })
       .then((res) => {
         const p = res.data.data;
-        console.log("post success", p);
-        if (res.data.status) handleDrop(fileObject, p.id);
+        console.log("post success", p, res);
+        if (res.data.status == 1) saveImages(fileObject, p.id);
+        else toast.error("Tạo bài viết không thành công");
       })
       .catch((error) => {
         console.error(error);
+        toast.error("Tạo bài viết không thành công");
       });
   };
   const handleSaveImage = async (post_id, url, is_banner) => {
@@ -491,7 +528,7 @@ export default function CreatePost() {
 
   return (
     <div className="createPostContainer container">
-      {/* <button onClick={() => handleDrop(fileObject, 101)}>upload</button> */}
+      <button onClick={() => testUpload(fileObject)}>upload</button>
       <Breadcrumb arrLink={postBreadcrumb} />
       <MetaTag
         title={"Tạo bài viết"}
@@ -710,9 +747,12 @@ export default function CreatePost() {
                         onChange={(e) => handleOnChange(e)}
                       >
                         <option>Hãng sản xuất</option>
-                        <option value="1">Apple</option>
-                        <option value="2">Samsung</option>
-                        <option value="3">Xiaomi</option>
+                        {brandCategory &&
+                          brandCategory.map((data, index) => (
+                            <option key={index} value={data.id}>
+                              {data.name}
+                            </option>
+                          ))}
                       </select>
                       <p className="validate-form-text">{validatePost.brand}</p>
                     </div>
@@ -864,31 +904,35 @@ export default function CreatePost() {
                         <option value="16">16</option>
                         <option value="17.3">17.3</option>
                       </select>
-                      <p className="validate-form-text">{validatePost.rom}</p>
+                      <p className="validate-form-text">
+                        {validatePost.display_size}
+                      </p>
                     </div>
                   </div>
                 )}
                 {Number(postInfor.category) == 1 && (
                   <div className="col">
                     <div className="form-outline">
-                      <label className="form-label" htmlFor="post-rom">
-                        Bộ nhớ trong (ROM)
+                      <label className="form-label" htmlFor="post-storage">
+                        Dung lượng bộ nhớ
                       </label>
                       <select
                         className="form-select"
                         aria-label="Disabled select example"
-                        name="rom"
-                        id="post-rom"
+                        name="storage"
+                        id="post-storage"
                         onChange={(e) => handleOnChange(e)}
                       >
-                        <option value="0">Bộ nhớ trong</option>
+                        <option value="0">Dung lượng bộ nhớ</option>
                         {storageData.map((data, index) => (
                           <option key={index} value={data.value}>
                             {`${data.value}GB`}
                           </option>
                         ))}
                       </select>
-                      <p className="validate-form-text">{validatePost.rom}</p>
+                      <p className="validate-form-text">
+                        {validatePost.storage}
+                      </p>
                     </div>
                   </div>
                 )}

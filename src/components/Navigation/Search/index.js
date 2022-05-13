@@ -34,6 +34,11 @@ export default function Search() {
     dispatch(searchPostByName(`name=${inputVal}`));
   };
 
+  const onChangeSearch = (e) => {
+    const val = e.target.value;
+    setInputVal(val);
+  };
+
   return (
     <div id="boxSearch" ref={formRef}>
       <input
@@ -42,10 +47,7 @@ export default function Search() {
         placeholder="Tìm kiếm sản phẩm"
         name="search"
         value={inputVal}
-        onChange={(e) => {
-          const val = e.target.value;
-          setInputVal(val);
-        }}
+        onChange={(e) => onChangeSearch(e)}
       />
       <button type="submit" id="button" onClick={() => onSearch()}>
         <SearchIcon id="iconSearch" />

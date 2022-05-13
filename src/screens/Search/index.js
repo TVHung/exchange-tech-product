@@ -51,6 +51,7 @@ export default function Search() {
   const [openDisplaySize, setOpenDisplaySize] = useState(false);
   const [openCard, setOpenCard] = useState(false);
   const [openBrand, setOpenBrand] = useState(false);
+  const [openAddress, setOpenAddress] = useState(false);
   const [searchValue, setsearchValue] = useState("");
 
   //value filter
@@ -110,6 +111,9 @@ export default function Search() {
         break;
       case "brand":
         setOpenBrand(!openBrand);
+        break;
+      case "address":
+        setOpenAddress(!openAddress);
         break;
       default:
         break;
@@ -186,20 +190,11 @@ export default function Search() {
     }
     setBrandValue(paramVal);
   };
+  const onChangeAddress = (e) => {};
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(searchPostByName(window.location.search));
   }, [window.location.search]);
-
-  //kiem tra tat ca cac checkbox co duoc check hay khong
-  const checkAllCheckboxStatus = (type) => {
-    switch (type) {
-      case "category":
-        break;
-      default:
-        break;
-    }
-  };
 
   //brand by category
   // const get_brand_category = useSelector((state) => state.brand.brand_category);
@@ -409,6 +404,31 @@ export default function Search() {
                     </div>
                   </Collapse>
                 </div>
+                {/* <div className="box border-bottom-custom">
+                  <div
+                    className="box-label text-uppercase d-flex align-items-center"
+                    onClick={() => showHideCollapse("address")}
+                  >
+                    Địa chỉ{" "}
+                    <button
+                      className="btn ms-auto collapse-filter"
+                      name="address"
+                      onClick={() => showHideCollapse("address")}
+                      aria-controls="collpase-address-filter"
+                      aria-expanded={openAddress}
+                    >
+                      {" "}
+                      {openAddress ? (
+                        <i className="fas fa-minus"></i>
+                      ) : (
+                        <i className="fas fa-plus"></i>
+                      )}{" "}
+                    </button>
+                  </div>
+                  <Collapse in={openAddress}>
+                    <div id="collpase-address-filter"></div>
+                  </Collapse>
+                </div> */}
                 <div className="box border-bottom-custom">
                   <div
                     className="box-label text-uppercase d-flex align-items-center"
@@ -566,7 +586,7 @@ export default function Search() {
                                 {data.value}
                                 <input
                                   type="checkbox"
-                                  value={data.value}
+                                  value={data.type}
                                   onChange={(e) => onChangeCheckStorageType(e)}
                                 />{" "}
                                 <span className="check"></span>{" "}
