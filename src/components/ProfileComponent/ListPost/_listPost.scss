@@ -1,0 +1,18 @@
+@import "../../../assets/css/valiables";
+@import "../../../assets/css/common";
+
+.my-post-manager {
+    h3 {
+        @include fontSize1();
+    }
+    .my-post-status-select {
+        .filter-header {
+            .filter-header-sort {
+                margin-right: 20px;
+            }
+            .form-check:first-child {
+                padding-left: 0px !important;
+            }
+        }
+    }
+}

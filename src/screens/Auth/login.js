@@ -49,13 +49,9 @@ export default function Login() {
     }));
   };
 
-  const continueWithGoogle = (e) => {
-    e.preventDefault();
-  };
-
   //check login
   const handleSubmitLogin = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     let userLogin = {
       email: user.email,
       password: user.password,
@@ -86,8 +82,14 @@ export default function Login() {
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
-  const loginSuccess = (response) => {};
-  const loginFailure = (response) => {};
+  const loginSuccess = (response) => {
+    console.log(response);
+    toast.success("Đăng nhập thành công");
+  };
+  const loginFailure = (response) => {
+    // console.log(response);
+    // toast.error("Đặng nhập không thành công");
+  };
 
   return (
     <div className="containerLogin">
@@ -160,21 +162,22 @@ export default function Login() {
                 className="submitLogin"
                 onClick={(e) => handleSubmitLogin(e)}
               >
-                Log in
+                Đăng nhập
               </Button>
             </div>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <GoogleLogin
                   clientId={
-                    "943683537472-djj3f68jb2spj4f7vgrr7hevsd28u7tk.apps.googleusercontent.com"
+                    "217349199407-r0efehl3tjiavtkk5b8c035bqj5aer2q.apps.googleusercontent.com"
                   }
-                  onSuccess={loginSuccess}
-                  onFailure={loginFailure}
+                  onSuccess={(res) => loginSuccess(res)}
+                  onFailure={(res) => loginFailure(res)}
                   isSignedIn={true}
+                  cookiePolicy={"single_host_origin"}
                   render={(renderProps) => (
                     <Button
-                      type="submit"
+                      type="button"
                       fullWidth
                       variant="contained"
                       className="submitLogin"
@@ -192,10 +195,10 @@ export default function Login() {
                         />
                       }
                       onClick={renderProps.onClick}
-                      // disabled={renderProps.disabled}
+                      disabled={renderProps.disabled}
                       // disabled={true}
                     >
-                      Continue with Google
+                      Tiếp tục với Google
                     </Button>
                   )}
                 ></GoogleLogin>
@@ -203,12 +206,16 @@ export default function Login() {
             </Grid>
             <hr style={{ marginTop: 20, opacity: 0.5 }} />
             <Grid container>
-              <a href="/register" className="textLogin">
-                Can't log in?
-              </a>
-              <a href="/register" className="textLogin">
-                Sign up for an account
-              </a>
+              <Grid item xs={6}>
+                <a href="/register" className="textLogin">
+                  Không thể đăng nhập?
+                </a>
+              </Grid>
+              <Grid item xs={6}>
+                <a href="/register" className="textLogin">
+                  Đăng kí một tài khoản
+                </a>
+              </Grid>
             </Grid>
           </form>
         </div>

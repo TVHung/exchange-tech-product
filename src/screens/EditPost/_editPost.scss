@@ -1,0 +1,115 @@
+@import "../../assets/css/valiables";
+@import "../../assets/css/common";
+
+.editPostContainer {
+  position: relative;
+  .form-container {
+    .create-post-images {
+      padding: 10px;
+      height: auto;
+      .custom-file {
+        input[type="file"] {
+          display: none;
+        }
+        .custom-file-upload {
+          border: $base-color-1 2px solid;
+          border-radius: 5px;
+          padding: 5px;
+          width: 100%;
+          text-align: center;
+        }
+      }
+      .custom-video {
+        input[type="file"] {
+          display: none;
+        }
+        .custom-video-upload {
+          border: $base-color-1 2px solid;
+          border-radius: 5px;
+          padding: 5px;
+          width: 100%;
+          text-align: center;
+        }
+      }
+      .view-preview {
+        .image-preview {
+          .image-selected {
+            position: relative;
+            .delete-image {
+              position: absolute;
+              top: 5px;
+              right: 5px;
+            }
+            .title-cover-image {
+              position: absolute;
+              bottom: 0px;
+              background-color: rgba($color: #000000, $alpha: 0.7);
+              width: 100%;
+              text-align: center;
+              padding: 0px;
+              margin: 0px;
+              p {
+                color: white;
+                margin: 2px;
+                padding: 0px;
+              }
+            }
+          }
+        }
+      }
+      .image-validate {
+        margin-top: 10px;
+        p {
+          color: red;
+        }
+      }
+    }
+    .create-post-detail {
+      padding: 10px;
+      height: 100%;
+      .btn-submit,
+      .btn-preview {
+        width: 100%;
+        border: none;
+      }
+      .btn-submit {
+        @include button-common();
+      }
+      .form-outline {
+        .form-label {
+          font-weight: bold;
+        }
+        input[readonly] {
+          background-color: transparent;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+      hr.line {
+        border: 3px solid $base-color-1;
+        border-radius: 1px;
+      }
+      .validate-form-text {
+        color: red;
+        margin-top: 5px;
+        font-size: 15px;
+      }
+      textarea {
+        @include scroll-custom();
+      }
+    }
+  }
+}
+
+// @media (min-width: 1500px) {
+//   .createPostContainer {
+//     @include width-lg-container();
+//   }
+// }
+
+.validate-form-address {
+  color: red;
+  margin-top: 5px;
+  font-size: 15px;
+}

@@ -3,15 +3,12 @@
 
 .account-container {
   .account-infor {
+    h3 {
+      @include fontSize1();
+    }
     .account-infor-content {
-      width: 100%;
-      height: auto;
-      border-radius: 20px;
-      border: 3px solid;
-      border-color: $base-color-2;
-      color: $base-color-1;
+      @include borderContent();
       .account-infor-content-detail-left {
-        padding: 20px;
         height: 100%;
         //   background-color: red;
         .account-avatar {
@@ -41,7 +38,6 @@
           background-color: $base-color-1;
           color: white;
           margin-top: 0px;
-          border-radius: 10px;
           padding: 10px;
           i {
             padding-left: 5px;
@@ -52,7 +48,8 @@
         .account-detail {
           ul {
             list-style: none;
-            margin-top: 10px;
+            margin-bottom: 0px !important;
+            margin-left: 0px !important;
             li {
               padding-bottom: 10px;
               i {
@@ -68,6 +65,9 @@
                 }
               }
               .infor-detail {
+                a {
+                  color: unset;
+                }
                 color: $base-color-2;
               }
             }
@@ -79,13 +79,11 @@
 
   .account-password {
     padding-top: 20px;
+    h3 {
+      @include fontSize1();
+    }
     .account-password-content {
-      width: 100%;
-      height: auto;
-      border-radius: 20px;
-      border: 3px solid;
-      border-color: $base-color-2;
-      color: $base-color-1;
+      @include borderContent();
       .account-password-left-top {
         padding: 20px;
         h3 {
@@ -111,16 +109,57 @@
         }
       }
       .account-password-button {
-        padding: 20px;
         .account-password-update-button {
           padding: 10px;
           background-color: $base-color-1;
           color: white;
-          border-radius: 10px;
           i {
             padding-left: 5px;
           }
         }
+      }
+      .validate-form-text {
+        color: red;
+      }
+    }
+  }
+}
+
+.avatar-container {
+  position: relative;
+  margin-bottom: 10px;
+  @include makeCenter();
+  .account-avatar-profile {
+    border-radius: 50%;
+    transition: ease-in-out 0.4s;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s ease-out;
+    max-width: 100%;
+    z-index: 5;
+    &:hover {
+      cursor: pointer;
+      box-shadow: inset 0px 0px 10px 5px rgba($color: #000000, $alpha: 0.5);
+      transform: scale(1.005);
+    }
+  }
+  .change-avatar {
+    position: absolute;
+    z-index: 10;
+    top: calc(50% - 8px);
+    left: calc(50% - 8px);
+    transition: 0.1 ease-in-out;
+    &:hover {
+      cursor: pointer;
+      transform: scale(1.1);
+    }
+    .custom-file-upload {
+      i {
+        color: $base-color-2;
       }
     }
   }

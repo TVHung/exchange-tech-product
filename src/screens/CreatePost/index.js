@@ -10,14 +10,14 @@ import {
   apiDistrict,
   apiWard,
   headers,
-  apiGetAllPost,
   apiImages,
-  apiPostMobile,
-  apiPostLaptop,
-  apiPostPc,
   storageData,
   statusData,
+  apiPost,
+  apiGetBrandByCategory,
+  apiUpload,
 } from "./../../constants";
+import { toast } from "react-toastify";
 import {
   isNull,
   validateNullFormPost,
@@ -25,6 +25,8 @@ import {
 } from "./../../validations";
 import Breadcrumb from "../../components/Breadcrumb";
 import { postBreadcrumb } from "../../constants/breadcrumData";
+import { getCookie } from "../../utils/cookie";
+
 export default function CreatePost() {
   const [preload, setPreload] = useState(true);
   const [isTrade, setIsTrade] = useState(false);
@@ -50,13 +52,12 @@ export default function CreatePost() {
   const [postInfor, setPostInfor] = useState({
     category: 1, //1:phone, 2: laptop, 3: pc
     name: "",
-    brand: "",
-    status: "",
+    brand: null,
+    status: null,
     guarantee: null,
-    cpu: "",
-    gpu: "",
+    cpu: null,
+    gpu: null,
     ram: null,
-    rom: null,
     storage_type: "",
     storage: null,
     address: "",
@@ -66,9 +67,11 @@ export default function CreatePost() {
     display_size: null,
     public_status: 1,
     trade: 0,
+    color: "",
+    video_url: "",
   });
   const [postTradeInfor, setPostTradeInfor] = useState({
-    category: 1, //0:phone, 1: laptop, 2: pc
+    category: 1, //1:phone, 2: laptop, 3: pc
     name: "",
     brand: "",
     status: "",
@@ -76,34 +79,21 @@ export default function CreatePost() {
     cpu: "",
     gpu: "",
     ram: null,
-    rom: null,
     storage_type: null,
     display_size: null,
     storage: null,
     description: "",
   });
   const [validatePost, setvalidatePost] = useState({
-    category: "",
     name: "",
     brand: "",
     status: "",
-    guarantee: "",
     color: "",
-    cpu: "",
-    gpu: "",
-    ram: "",
-    rom: "",
-    storage_type: "",
-    storage: "",
     address: "",
-    city: "",
-    district: "",
-    wards: "",
     price: "",
     title: "",
-    display_size: "",
     description: "",
-    public_status: "",
+    image: "",
   });
   const [validatePostTrade, setvalidatePostTrade] = useState({
     category: 1, //1:phone, 2: laptop, 3: pc
@@ -114,7 +104,6 @@ export default function CreatePost() {
     cpu: "",
     gpu: "",
     ram: "",
-    rom: "",
     storage_type: "",
     display_size: "",
     storage: "",
@@ -122,74 +111,10 @@ export default function CreatePost() {
   });
   useEffect(() => {
     return () => {
-      setPostInfor({
-        category: 1, //1:phone, 2: laptop, 3: pc
-        name: "",
-        brand: "",
-        status: "",
-        guarantee: null,
-        cpu: "",
-        gpu: "",
-        ram: null,
-        rom: null,
-        storage_type: null,
-        storage: null,
-        address: "",
-        price: null,
-        title: "",
-        description: "",
-        public_status: 1,
-        trade: 0,
-      });
-      setPostTradeInfor({
-        category: 1, //0:phone, 1: laptop, 2: pc
-        name: "",
-        brand: "",
-        status: "",
-        guarantee: null,
-        cpu: "",
-        gpu: "",
-        ram: null,
-        rom: null,
-        storage_type: null,
-        storage: null,
-        description: "",
-      });
-      setvalidatePost({
-        category: "",
-        name: "",
-        brand: "",
-        status: "",
-        guarantee: "",
-        cpu: "",
-        gpu: "",
-        ram: "",
-        rom: "",
-        storage_type: "",
-        storage: "",
-        address: "",
-        city: "",
-        district: "",
-        wards: "",
-        price: "",
-        title: "",
-        description: "",
-        public_status: "",
-      });
-      setvalidatePostTrade({
-        category: 1, //1:phone, 2: laptop, 3: pc
-        name: "",
-        brand: "",
-        status: "",
-        guarantee: "",
-        cpu: "",
-        gpu: "",
-        ram: "",
-        rom: "",
-        storage_type: "",
-        storage: "",
-        description: "",
-      });
+      setPostInfor({});
+      setPostTradeInfor({});
+      setvalidatePost({});
+      setvalidatePostTrade({});
     };
   }, []);
   const handleOnChangeAddress = (e) => {
@@ -207,6 +132,41 @@ export default function CreatePost() {
       ...prevState,
       [name]: value,
     }));
+    if (name === "category") {
+      setvalidatePost({
+        name: "",
+        brand: "",
+        status: "",
+        color: "",
+        price: "",
+        address: "",
+        title: "",
+        description: "",
+        image: "",
+      });
+      //reset form post
+      document.getElementById("form-create-post").reset();
+      setPostInfor({
+        category: value, //1:phone, 2: laptop, 3: pc
+        name: "",
+        brand: "",
+        status: "",
+        guarantee: null,
+        cpu: "",
+        gpu: "",
+        ram: null,
+        storage_type: "",
+        storage: null,
+        address: "",
+        price: null,
+        title: "",
+        description: "",
+        display_size: null,
+        public_status: 1,
+        trade: 0,
+        color: "",
+      });
+    }
   };
   const handleOnChangeTrade = (e) => {
     const { name, value } = e.target;
@@ -231,17 +191,32 @@ export default function CreatePost() {
     setFileOject(o);
   };
 
-  const handleDrop = (files) => {
-    // Push all the axios request promise into a single array
-    const uploaders = files.map((file) => {
-      // Initial FormData
+  const testUpload = async (files) => {
+    const dataFiles = {
+      file: files,
+    };
+    const headers = {
+      "Content-type": "application/json",
+      Authorization: `Bearer ${getCookie("access_token")}`,
+    };
+    await axios
+      .post(apiUpload, dataFiles, { headers: headers })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const saveImages = (files, post_id) => {
+    const uploaders = files.map((file, index) => {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("tags", `codeinfuse, medium, gist`);
       formData.append("upload_preset", "weedzflm"); // Replace the preset name with your own
       formData.append("api_key", "141866846121189"); // Replace API key with your own Cloudinary key
       formData.append("timestamp", (Date.now() / 1000) | 0);
-      // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
       return axios
         .post(
           "https://api.cloudinary.com/v1_1/codeinfuse/image/upload",
@@ -252,15 +227,16 @@ export default function CreatePost() {
         )
         .then((response) => {
           const data = response.data;
-          const fileURL = data.secure_url; // You should store this URL for future references in your app
-          console.log("data", data, fileURL);
+          const fileURL = data.secure_url;
           setImageUrl((imageUrl) => [...imageUrl, fileURL]);
+          let isBanner = index == 0 ? 1 : 0;
+          handleSaveImage(post_id, fileURL, isBanner);
         });
     });
-    // Once all the files are uploaded
     axios.all(uploaders).then((res) => {
-      // ... perform after upload is successful operation
-      console.log("upload thanh cong", res);
+      setIsCreatePost(false);
+      toast.success("Tạo thành công");
+      window.location.href = "/profile?tab=my-posts";
     });
   };
 
@@ -420,178 +396,139 @@ export default function CreatePost() {
 
   const onSubmitForm = (event) => {
     event.preventDefault();
-    console.log(imageUrl);
-    // setIsCreatePost(true);
-    // handleSubmitData();
-    // upload();
-    //validate form post
-    // setvalidatePost({
-    //   name: validateNullFormPost(postInfor.name),
-    //   brand: validateNullFormPost(postInfor.brand),
-    //   status: validateNullFormPost(postInfor.status),
-    //   guarantee: validateNullFormPost(postInfor.guarantee),
-    //   price: !isFree ? validatePrice(postInfor.price) : "",
-    //   address: validateNullFormPost(address),
-    //   title: validateNullFormPost(postInfor.title),
-    //   description: validateNullFormPost(postInfor.description),
-    //   category: "",
-    //   cpu: "",
-    //   gpu: "",
-    //   ram: "",
-    //   rom: "",
-    //   storage_type: "",
-    //   storage: "",
-    //   city: "",
-    //   district: "",
-    //   wards: "",
-    //   public_status: "",
-    // });
-
-    // if (isTrade) {
-    //   setvalidatePostTrade({
-    //     name: validateNullFormPost(postTradeInfor.name),
-    //     brand: validateNullFormPost(postTradeInfor.brand),
-    //     status: validateNullFormPost(postTradeInfor.status),
-    //     guarantee: validateNullFormPost(postTradeInfor.guarantee),
-    //     description: validateNullFormPost(postTradeInfor.description),
-    //     category: "",
-    //     cpu: "",
-    //     gpu: "",
-    //     ram: "",
-    //     rom: "",
-    //     storage_type: "",
-    //     storage: "",
-    //   });
-    // }
+    // validate form post
+    setvalidatePost({
+      name: validateNullFormPost(postInfor.name),
+      brand:
+        Number(postInfor.category) !== 3
+          ? validateNullFormPost(postInfor.brand)
+          : "",
+      status: validateNullFormPost(postInfor.status),
+      color:
+        Number(postInfor.category) !== 3
+          ? validateNullFormPost(postInfor.color)
+          : "",
+      price: !isFree ? validatePrice(postInfor.price) : "",
+      address: validateNullFormPost(address),
+      title: validateNullFormPost(postInfor.title),
+      description: validateNullFormPost(postInfor.description),
+      image: file.length > 0 ? "" : "Bạn cần đăng ít nhất 1 hình ảnh",
+    });
+    let validate = true;
+    if (
+      validateNullFormPost(postInfor.name) !== "" &&
+      validateNullFormPost(postInfor.status) !== "" &&
+      validateNullFormPost(address) !== "" &&
+      validateNullFormPost(postInfor.title) !== "" &&
+      validateNullFormPost(postInfor.description) !== ""
+    )
+      validate = false;
+    if (file.length <= 0) validate = false;
+    if (!isFree && validatePrice(postInfor.price) !== "") validate = false;
+    if (
+      Number(postInfor.category) !== 3 &&
+      validateNullFormPost(postInfor.brand) !== "" &&
+      validateNullFormPost(postInfor.color) !== ""
+    )
+      validate = false;
+    console.log(file.length, validate);
+    if (validate) createPost();
   };
 
-  const fetchAllDataFeild = async () => {
-    //data rom, category, storage
+  useEffect(() => {
+    fetchBrand(postInfor.category);
+    return () => {};
+  }, [postInfor.category]);
+
+  const [brandCategory, setbrandCategory] = useState([]);
+  const fetchBrand = async (id) => {
+    if (id == "1" || id == "2")
+      try {
+        await axios.get(`${apiGetBrandByCategory}/${id}`).then((res) => {
+          const brands = res.data.data;
+          console.log("brands by category", res.data.data);
+          setbrandCategory(brands);
+        });
+      } catch (error) {
+        return { statusCode: 500, body: error.toString() };
+      }
   };
-  //tao post cha
+  //tao post
   const createPost = async () => {
     const postData = {
-      is_trade: 0,
-      post_trade_id: 0,
+      post_trade_id: null,
       title: postInfor.title,
       category_id: Number(postInfor.category),
       name: postInfor.name,
       description: postInfor.description,
       ram: Number(postInfor.ram),
-      storage: 128,
-      status: "Mới",
-      price: Number(postInfor.price),
-      address: address,
-      public_status: 1,
+      storage: Number(postInfor.storage),
       video_url:
         "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+      status: Number(postInfor.status),
+      price: Number(postInfor.price),
+      address: address,
+      public_status: Number(postInfor.public_status),
       guarantee: Number(postInfor.guarantee),
+      sold: 0,
+      color: postInfor.color,
+      cpu: postInfor.cpu,
+      gpu: postInfor.gpu,
+      storage_type: Number(postInfor.storage_type),
+      brand_id: Number(postInfor.brand),
+      display_size: Number(postInfor.display_size),
+      file: fileObject,
     };
-    console.log(postData);
-    // createPostChild(10);
+
+    console.log("post", postData);
     await axios
-      .post(apiGetAllPost, postData, { headers: headers })
+      .post(apiPost, postData, { headers: headers })
       .then((res) => {
         const p = res.data.data;
-        console.log("post", p);
-        createPostChild(p.id);
-        // setTimeout(() => {
-        handleSaveImage(p.id);
-        // }, 10000);
+        console.log("post success", p, res);
+        if (res.data.status == 1) saveImages(fileObject, p.id);
+        else toast.error("Tạo bài viết không thành công");
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error("Tạo bài viết không thành công");
+      });
+  };
+  const handleSaveImage = async (post_id, url, is_banner) => {
+    const imageData = {
+      post_id: post_id,
+      is_banner: is_banner,
+      image_url: url,
+    };
+    // responses.push(
+    await axios
+      .post(apiImages, imageData, { headers: headers })
+      .then((res) => {
+        const i = res.data.data;
+        console.log("imagesss", i);
       })
       .catch((error) => {
         console.error(error);
       });
   };
-  const handleSaveImage = async (post_id) => {
-    const imageData = [];
-    const responses = [];
-    for (let i = 0; i < imageUrl.length; i++) {
-      imageData.push({
-        post_id: post_id,
-        is_banner: i === 0 ? 1 : 0,
-        image_url: imageUrl[i],
-      });
-      responses.push(
-        await axios
-          .post(apiImages, imageData[i], { headers: headers })
-          .then((res) => {
-            const i = res.data.data;
-            console.log("imagesss", i);
-          })
-          .catch((error) => {
-            console.error(error);
-          })
-      );
-    }
-    console.log(imageData);
-    console.log(imageUrl);
-  };
 
-  //tao post con o day
-  const createPostChild = async (post_id) => {
-    if (Number(postInfor.category) == 1) {
-      const postChildMobile = {
-        post_id: post_id,
-        color: postInfor.color,
-        brand_id: Number(postInfor.brand),
-      };
-      await axios
-        .post(apiPostMobile, postChildMobile, { headers: headers })
-        .then((res) => {
-          console.log("post mobile", res.data.data);
-          setIsCreatePost(false);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      // console.log(postChildMobile);
-    } else if (Number(postInfor.category) == 2) {
-      const postChildLaptop = {
-        post_id: post_id,
-        color: postInfor.color,
-        cpu: postInfor.cpu,
-        gpu: postInfor.gpu,
-        storage_type: postInfor.storage_type,
-        brand_id: Number(postInfor.brand),
-        display_size: Number(postInfor.display_size),
-      };
-      await axios
-        .post(apiPostLaptop, postChildLaptop, { headers: headers })
-        .then((res) => {
-          console.log("post laptop", res.data.data);
-          setIsCreatePost(false);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      // console.log(postChildLaptop);
-    } else if (Number(postInfor.category) == 3) {
-      const postChildPc = {
-        post_id: post_id,
-        cpu: postInfor.cpu,
-        gpu: postInfor.gpu,
-        storage_type: postInfor.storage_type,
-      };
-      await axios
-        .post(apiPostPc, postChildPc, { headers: headers })
-        .then((res) => {
-          console.log("post pc", res.data.data);
-          setIsCreatePost(false);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      // console.log(postChildPc);
-    } else {
-      //noting
-      setIsCreatePost(false);
-    }
+  const up = async (fileImage) => {
+    const formData = new FormData();
+    formData.append("file", fileImage);
+    console.log(formData);
+    await axios
+      .post(apiImages, formData, { headers: headers })
+      .then((res) => {
+        console.log("post image", res.data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
     <div className="createPostContainer container">
-      {/* <button onClick={() => handleDrop(fileObject)}>upload</button> */}
+      <button onClick={() => testUpload(fileObject)}>upload</button>
       <Breadcrumb arrLink={postBreadcrumb} />
       <MetaTag
         title={"Tạo bài viết"}
@@ -605,13 +542,14 @@ export default function CreatePost() {
         <Modal.Body>
           <form>
             <div className="form-outline mb-3">
-              <label className="form-label" htmlFor="form6Example4">
+              <label className="form-label" htmlFor="post-city">
                 <b>Tỉnh, thành phố*</b>
               </label>
               <select
                 className="form-select"
                 aria-label="Disabled select example"
                 name="city"
+                id="post-city"
                 onChange={(e) => handleOnChangeAddress(e)}
                 required
               >
@@ -625,13 +563,14 @@ export default function CreatePost() {
               <p className="validate-form-address">{validatePost.city}</p>
             </div>
             <div className="form-outline mb-3">
-              <label className="form-label" htmlFor="form6Example4">
+              <label className="form-label" htmlFor="post-district">
                 <b>Quận, huyện, thị xã*</b>
               </label>
               <select
                 className="form-select"
                 aria-label="Disabled select example"
                 name="district"
+                id="post-district"
                 onChange={(e) => handleOnChangeAddress(e)}
                 required
               >
@@ -645,13 +584,14 @@ export default function CreatePost() {
               <p className="validate-form-address">{validatePost.district}</p>
             </div>
             <div className="form-outline mb-3">
-              <label className="form-label" htmlFor="form6Example4">
+              <label className="form-label" htmlFor="post-ward">
                 <b>Phường, xã, thị trấn*</b>
               </label>
               <select
                 className="form-select"
                 aria-label="Disabled select example"
                 name="wards"
+                id="post-ward"
                 onChange={(e) => handleOnChangeAddress(e)}
                 required
               >
@@ -681,77 +621,106 @@ export default function CreatePost() {
       ) : (
         <Grid container className="form-container">
           <Grid item xs={12} md={4} className="create-post-images">
-            <div className="custom-file">
-              <label htmlFor="file-upload" className="custom-file-upload">
-                <i className="fas fa-upload"></i> Thêm ảnh
-              </label>
-              <input
-                type="file"
-                className="custom-file-input"
-                id="file-upload"
-                // multiple
-                onChange={(e) => uploadSingleFile(e)}
-              />
-            </div>
-            <div className="mt-3 view-preview row">
-              {file.length > 0 &&
-                file.map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="col-lg-6 col-md-4 col-sm-6 image-preview mb-2 "
-                    >
-                      <div className="image-selected">
-                        <img src={item} alt="" width="100%" />
-                        <i
-                          className="fas fa-times-circle fa delete-image"
-                          onClick={() => deleteFile(index)}
-                        ></i>
-                        {index === 0 ? (
-                          <div className="title-cover-image">
-                            <p>Ảnh bìa</p>
-                          </div>
-                        ) : null}
+            <div className="image-post">
+              <div className="image-validate">
+                <p>{validatePost.image}</p>
+              </div>
+              <div className="custom-file">
+                <label htmlFor="file-upload" className="custom-file-upload">
+                  <i className="fas fa-upload"></i> Thêm ảnh
+                </label>
+                <input
+                  type="file"
+                  className="custom-file-input"
+                  id="file-upload"
+                  // multiple
+                  onChange={(e) => uploadSingleFile(e)}
+                />
+              </div>
+              <div className="mt-3 view-preview row">
+                {file.length > 0 &&
+                  file.map((item, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="col-lg-6 col-md-4 col-sm-6 image-preview mb-2 "
+                      >
+                        <div className="image-selected">
+                          <img src={item} alt="" width="100%" />
+                          <i
+                            className="fas fa-times-circle fa delete-image"
+                            onClick={() => deleteFile(index)}
+                          ></i>
+                          {index === 0 ? (
+                            <div className="title-cover-image">
+                              <p>Ảnh bìa</p>
+                            </div>
+                          ) : null}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+              </div>
             </div>
+            {/* <div className="video-post">
+              <div className="custom-video">
+                <label htmlFor="video-upload" className="custom-video-upload">
+                  <i className="fas fa-upload"></i> Thêm video
+                </label>
+                <input
+                  type="file"
+                  className="custom-video-input"
+                  id="video-upload"
+                  // multiple
+                  onChange={(e) => uploadSingleFile(e)}
+                />
+              </div>
+              <div className="mt-3 view-preview row"></div>
+            </div> */}
           </Grid>
           <Grid item xs={12} md={8} className="create-post-detail">
-            <form className="form-product">
-              <div className="mb-3">
-                <h3>Thông tin sản phẩm đăng bán</h3>
-              </div>
-              <div className="form-outline mb-3">
-                <label className="form-label" htmlFor="form6Example3">
-                  Loại sản phẩm
-                </label>
-                <select
-                  className="form-select"
-                  aria-label="Disabled select example"
-                  required
-                  name="category"
-                  onChange={(e) => handleOnChange(e)}
-                  placeholder="Loại sản phẩm"
-                >
-                  <option value="1">Điện thoại, Máy tính bảng</option>
-                  <option value="2">Laptop</option>
-                  <option value="3">PC</option>
-                </select>
-                <p className="validate-form-text">{validatePost.category}</p>
-              </div>
+            <div className="mb-3">
+              <h3>Thông tin sản phẩm đăng bán</h3>
+            </div>
+            <div className="form-outline mb-3">
+              <label className="form-label" htmlFor="post-category">
+                Loại sản phẩm
+              </label>
+              <select
+                className="form-select"
+                aria-label="Disabled select example"
+                required
+                id="post-category"
+                name="category"
+                onChange={(e) => handleOnChange(e)}
+                placeholder="Loại sản phẩm"
+              >
+                <option value="1">Điện thoại, Máy tính bảng</option>
+                <option value="2">Laptop</option>
+                <option value="3">PC</option>
+              </select>
+              <p className="validate-form-text">{validatePost.category}</p>
+            </div>
+            <form
+              className="form-product"
+              id="form-create-post"
+              onSubmit={(e) => onSubmitForm(e)}
+            >
               <div className="mb-3 mt-4">
                 <h4>Thông tin chi tiết</h4>
               </div>
               <div className="form-outline mb-3">
-                <label className="form-label" htmlFor="form6Example4">
+                <label className="form-label" htmlFor="post-name">
                   Tên sản phẩm&nbsp;<span style={{ color: "red" }}>*</span>
                 </label>
                 <input
                   type="text"
-                  id="form6Example4"
-                  className="form-control"
+                  id="post-name"
+                  className={
+                    validatePost.name
+                      ? "form-control is-invalid"
+                      : "form-control"
+                  }
                   placeholder="Tên sản phẩm"
                   name="name"
                   onChange={(e) => handleOnChange(e)}
@@ -762,38 +731,51 @@ export default function CreatePost() {
                 <div className="row mb-3">
                   <div className="col">
                     <div className="form-outline">
-                      <label className="form-label" htmlFor="form6Example4">
+                      <label className="form-label" htmlFor="post-brand">
                         Hãng sản xuất&nbsp;
                         <span style={{ color: "red" }}>*</span>
                       </label>
                       <select
-                        className="form-select"
+                        className={
+                          validatePost.brand
+                            ? "form-select is-invalid"
+                            : "form-select"
+                        }
                         aria-label="Disabled select example"
                         name="brand"
+                        id="post-brand"
                         onChange={(e) => handleOnChange(e)}
                       >
                         <option>Hãng sản xuất</option>
-                        <option value="1">Apple</option>
-                        <option value="2">Samsung</option>
-                        <option value="3">Xiaomi</option>
+                        {brandCategory &&
+                          brandCategory.map((data, index) => (
+                            <option key={index} value={data.id}>
+                              {data.name}
+                            </option>
+                          ))}
                       </select>
                       <p className="validate-form-text">{validatePost.brand}</p>
                     </div>
                   </div>
                   <div className="col">
                     <div className="form-outline">
-                      <label className="form-label" htmlFor="form6Example4">
+                      <label className="form-label" htmlFor="post-color">
                         Màu sắc&nbsp;
-                        <span style={{ color: "red" }}>*</span>s
+                        <span style={{ color: "red" }}>*</span>
                       </label>
                       <input
                         type="text"
-                        id="form6Example4"
-                        className="form-control"
+                        id="post-color"
+                        className={
+                          validatePost.color
+                            ? "form-control is-invalid"
+                            : "form-control"
+                        }
                         placeholder="Màu sắc"
                         name="color"
                         onChange={(e) => handleOnChange(e)}
                       />
+                      <p className="validate-form-text">{validatePost.color}</p>
                     </div>
                   </div>
                 </div>
@@ -801,18 +783,23 @@ export default function CreatePost() {
               <div className="row mb-3">
                 <div className="col">
                   <div className="form-outline">
-                    <label className="form-label" htmlFor="form6Example1">
+                    <label className="form-label" htmlFor="post-status">
                       Tình trạng&nbsp;<span style={{ color: "red" }}>*</span>
                     </label>
                     <select
-                      className="form-select"
+                      className={
+                        validatePost.status
+                          ? "form-select is-invalid"
+                          : "form-select"
+                      }
                       aria-label="Disabled select example"
                       name="status"
+                      id="post-status"
                       onChange={(e) => handleOnChange(e)}
                     >
                       <option value="0">Tình trạng</option>
                       {statusData.map((data, index) => (
-                        <option key={index} value={data.value}>
+                        <option key={index} value={data.id}>
                           {data.value}
                         </option>
                       ))}
@@ -823,12 +810,12 @@ export default function CreatePost() {
                 {Number(postInfor.category) < 3 && (
                   <div className="col">
                     <div className="form-outline">
-                      <label className="form-label" htmlFor="form6Example2">
-                        Bảo hành&nbsp;<span style={{ color: "red" }}>*</span>
+                      <label className="form-label" htmlFor="post-guarantee">
+                        Bảo hành
                       </label>
                       <input
                         type="number"
-                        id="form6Example4"
+                        id="post-guarantee"
                         className="form-control"
                         placeholder="Thời gian bảo hành"
                         min={0}
@@ -837,9 +824,6 @@ export default function CreatePost() {
                         onChange={(e) => handleOnChange(e)}
                       />
                     </div>
-                    <p className="validate-form-text">
-                      {validatePost.guarantee}
-                    </p>
                   </div>
                 )}
               </div>
@@ -848,12 +832,12 @@ export default function CreatePost() {
                 <div className="row mb-3">
                   <div className="col">
                     <div className="form-outline">
-                      <label className="form-label" htmlFor="form6Example1">
+                      <label className="form-label" htmlFor="post-cpu">
                         Bộ vi xử lý (CPU)
                       </label>
                       <input
                         type="text"
-                        id="form6Example4"
+                        id="post-cpu"
                         className="form-control"
                         placeholder="Bộ vi xử lý"
                         name="cpu"
@@ -864,12 +848,12 @@ export default function CreatePost() {
                   </div>
                   <div className="col">
                     <div className="form-outline">
-                      <label className="form-label" htmlFor="form6Example2">
+                      <label className="form-label" htmlFor="post-gpu">
                         Card đồ họa (GPU)
                       </label>
                       <input
                         type="text"
-                        id="form6Example4"
+                        id="post-gpu"
                         className="form-control"
                         placeholder="Card đồ họa dời"
                         name="gpu"
@@ -883,12 +867,12 @@ export default function CreatePost() {
               <div className="row mb-3">
                 <div className="col">
                   <div className="form-outline">
-                    <label className="form-label" htmlFor="form6Example1">
+                    <label className="form-label" htmlFor="post-ram">
                       Ram (GB)
                     </label>
                     <input
                       type="number"
-                      id="form6Example4"
+                      id="post-ram"
                       className="form-control"
                       placeholder="Ram"
                       min={0}
@@ -902,12 +886,13 @@ export default function CreatePost() {
                 {Number(postInfor.category) == 2 && (
                   <div className="col">
                     <div className="form-outline">
-                      <label className="form-label" htmlFor="form6Example2">
+                      <label className="form-label" htmlFor="post-display-size">
                         Kích thước màn hình
                       </label>
                       <select
                         className="form-select"
                         aria-label="Disabled select example"
+                        id="post-display-size"
                         name="display_size"
                         onChange={(e) => handleOnChange(e)}
                       >
@@ -919,30 +904,35 @@ export default function CreatePost() {
                         <option value="16">16</option>
                         <option value="17.3">17.3</option>
                       </select>
-                      <p className="validate-form-text">{validatePost.rom}</p>
+                      <p className="validate-form-text">
+                        {validatePost.display_size}
+                      </p>
                     </div>
                   </div>
                 )}
                 {Number(postInfor.category) == 1 && (
                   <div className="col">
                     <div className="form-outline">
-                      <label className="form-label" htmlFor="form6Example2">
-                        Bộ nhớ trong (ROM)
+                      <label className="form-label" htmlFor="post-storage">
+                        Dung lượng bộ nhớ
                       </label>
                       <select
                         className="form-select"
                         aria-label="Disabled select example"
-                        name="rom"
+                        name="storage"
+                        id="post-storage"
                         onChange={(e) => handleOnChange(e)}
                       >
-                        <option value="0">Bộ nhớ trong</option>
+                        <option value="0">Dung lượng bộ nhớ</option>
                         {storageData.map((data, index) => (
                           <option key={index} value={data.value}>
                             {`${data.value}GB`}
                           </option>
                         ))}
                       </select>
-                      <p className="validate-form-text">{validatePost.rom}</p>
+                      <p className="validate-form-text">
+                        {validatePost.storage}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -951,13 +941,14 @@ export default function CreatePost() {
                 <div className="row mb-3">
                   <div className="col">
                     <div className="form-outline">
-                      <label className="form-label" htmlFor="form6Example1">
+                      <label className="form-label" htmlFor="post-storage-type">
                         Loại ổ cứng
                       </label>
                       <select
                         className="form-select"
                         aria-label="Disabled select example"
                         name="storage_type"
+                        id="post-storage-type"
                         onChange={(e) => handleOnChange(e)}
                       >
                         <option>Loại ổ cứng</option>
@@ -972,13 +963,14 @@ export default function CreatePost() {
                   </div>
                   <div className="col">
                     <div className="form-outline">
-                      <label className="form-label" htmlFor="form6Example2">
+                      <label className="form-label" htmlFor="post-storage">
                         Dung lượng ổ cứng
                       </label>
                       <select
                         className="form-select"
                         aria-label="Disabled select example"
                         name="storage"
+                        id="post-storage"
                         onChange={(e) => handleOnChange(e)}
                       >
                         <option value="0">Dung lượng ổ cứng cứng</option>
@@ -996,13 +988,17 @@ export default function CreatePost() {
                 </div>
               )}
               <div className="form-outline mb-3">
-                <label className="form-label" htmlFor="form6Example5">
+                <label className="form-label" htmlFor="post-address">
                   Địa chỉ&nbsp;<span style={{ color: "red" }}>*</span>
                 </label>
                 <input
                   type="text"
-                  id="form6Example5"
-                  className="form-control"
+                  id="post-address"
+                  className={
+                    validatePost.address
+                      ? "form-control is-invalid"
+                      : "form-control"
+                  }
                   placeholder="Chọn địa chỉ"
                   readOnly
                   value={address}
@@ -1024,13 +1020,17 @@ export default function CreatePost() {
               </div>
               {!isFree && (
                 <div className="form-outline mb-3">
-                  <label className="form-label" htmlFor="form6Example6">
+                  <label className="form-label" htmlFor="post-price">
                     Giá bán&nbsp;<span style={{ color: "red" }}>*</span>
                   </label>
                   <input
                     type="number"
-                    id="form6Example6"
-                    className="form-control"
+                    id="post-price"
+                    className={
+                      validatePost.price
+                        ? "form-control is-invalid"
+                        : "form-control"
+                    }
                     placeholder="Giá bán"
                     name="price"
                     onChange={(e) => handleOnChange(e)}
@@ -1042,26 +1042,34 @@ export default function CreatePost() {
                 <h4>Tiêu đề và mô tả</h4>
               </div>
               <div className="form-outline mb-3">
-                <label className="form-label" htmlFor="form6Example3">
+                <label className="form-label" htmlFor="post-title">
                   Tiêu đề&nbsp;<span style={{ color: "red" }}>*</span>
                 </label>
                 <input
                   type="text"
-                  id="form6Example3"
-                  className="form-control"
-                  placeholder="Tiêu đề"
+                  id="post-title"
+                  className={
+                    validatePost.title
+                      ? "form-control is-invalid"
+                      : "form-control"
+                  }
                   name="title"
+                  placeholder="Tiêu đề"
                   onChange={(e) => handleOnChange(e)}
                 />
                 <p className="validate-form-text">{validatePost.title}</p>
               </div>
               <div className="form-outline mb-3">
-                <label className="form-label" htmlFor="form6Example7">
+                <label className="form-label" htmlFor="post-description">
                   Mô tả chi tiết&nbsp;<span style={{ color: "red" }}>*</span>
                 </label>
                 <textarea
-                  className="form-control"
-                  id="form6Example7"
+                  className={
+                    validatePost.description
+                      ? "form-control is-invalid"
+                      : "form-control"
+                  }
+                  id="post-description"
                   rows="4"
                   placeholder="Mô tả chi tiết
                   - Mua khi nào
@@ -1073,7 +1081,7 @@ export default function CreatePost() {
                 <p className="validate-form-text">{validatePost.description}</p>
               </div>
               <div className="form-outline mb-3">
-                <label className="form-label" htmlFor="form6Example3">
+                <label className="form-label" htmlFor="post-public">
                   Chế độ bài viết
                 </label>
                 <select
@@ -1081,6 +1089,7 @@ export default function CreatePost() {
                   aria-label="Disabled select example"
                   required
                   name="category"
+                  id="post-public"
                   onChange={(e) => handleOnChange(e)}
                   placeholder="Chế độ bài viết"
                 >
@@ -1091,299 +1100,171 @@ export default function CreatePost() {
                   {validatePost.public_status}
                 </p>
               </div>
-              {/* <div className="mb-3 mt-4">
-                <h4>Bạn muốn đổi sang sản phẩm khác</h4>
-              </div>
-              <div className="mb-3 form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="tradeCheckbox"
-                  defaultChecked={isTrade}
-                  onClick={() => onClickTrade()}
-                />
-                <label className="form-check-label" htmlFor="tradeCheckbox">
-                  Đổi sản phẩm
-                </label>
-              </div> */}
-              {isTrade && (
-                <div className="form-trade-product">
-                  {/* form trade */}
-                  <div className="mb-3 mt-4">
-                    <h3>Thông tin sản phẩm muốn đổi</h3>
-                  </div>
-                  <div className="form-outline mb-3">
-                    <label className="form-label" htmlFor="form6Example3">
-                      Loại sản phẩm
-                    </label>
-                    <select
-                      className="form-select"
-                      aria-label="Disabled select example"
-                      required
-                      name="category"
-                      onClick={(e) => handleOnChangeTrade(e)}
-                      placeholder="Loại sản phẩm"
-                    >
-                      <option value="0">Điện thoại, Máy tính bảng</option>
-                      <option value="1">Laptop</option>
-                      <option value="2">PC</option>
-                    </select>
-                    <p className="validate-form-text">
-                      {validatePostTrade.category}
-                    </p>
-                  </div>
+            </form>
+            <div className="mb-3 mt-4">
+              <h4>Bạn muốn đổi sang sản phẩm khác</h4>
+            </div>
+            <div className="mb-3 form-check">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id="tradeCheckbox"
+                defaultChecked={isTrade}
+                onClick={() => onClickTrade()}
+              />
+              <label className="form-check-label" htmlFor="tradeCheckbox">
+                Đổi sản phẩm
+              </label>
+            </div>
+            {isTrade && (
+              <>
+                <div className="mb-3">
+                  <h3>Thông tin sản phẩm muốn đổi</h3>
+                </div>
+                <div className="form-outline mb-3">
+                  <label className="form-label" htmlFor="post-category">
+                    Loại sản phẩm
+                  </label>
+                  <select
+                    className="form-select"
+                    aria-label="Disabled select example"
+                    required
+                    id="post-category"
+                    name="category"
+                    onChange={(e) => handleOnChange(e)}
+                    placeholder="Loại sản phẩm"
+                  >
+                    <option value="1">Điện thoại, Máy tính bảng</option>
+                    <option value="2">Laptop</option>
+                    <option value="3">PC</option>
+                  </select>
+                  <p className="validate-form-text">{validatePost.category}</p>
+                </div>
+                <form
+                  className="form-product"
+                  id="form-create-post"
+                  onSubmit={(e) => onSubmitForm(e)}
+                >
                   <div className="mb-3 mt-4">
                     <h4>Thông tin chi tiết</h4>
                   </div>
                   <div className="form-outline mb-3">
-                    <label className="form-label" htmlFor="form6Example4">
+                    <label className="form-label" htmlFor="post-name">
                       Tên sản phẩm&nbsp;<span style={{ color: "red" }}>*</span>
                     </label>
                     <input
                       type="text"
-                      id="form6Example4"
-                      className="form-control"
+                      id="post-name"
+                      className={
+                        validatePost.name
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
                       placeholder="Tên sản phẩm"
+                      name="name"
+                      onChange={(e) => handleOnChange(e)}
                     />
-                    <p className="validate-form-text">
-                      {validatePostTrade.name}
-                    </p>
+                    <p className="validate-form-text">{validatePost.name}</p>
                   </div>
-                  {postTradeInfor.category < 2 && (
-                    <div className="form-outline mb-3">
-                      <label className="form-label" htmlFor="form6Example4">
-                        Hãng sản xuất&nbsp;
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <select
-                        className="form-select"
-                        aria-label="Disabled select example"
-                      >
-                        <option>Hãng sản xuất</option>
-                        <option value="1">Apple</option>
-                        <option value="2">Samsung</option>
-                        <option value="3">Xiaomi</option>
-                      </select>
-                      <p className="validate-form-text">
-                        {validatePostTrade.brand}
-                      </p>
-                    </div>
-                  )}
                   <div className="row mb-3">
                     <div className="col">
                       <div className="form-outline">
-                        <label className="form-label" htmlFor="form6Example1">
+                        <label className="form-label" htmlFor="post-status">
                           Tình trạng&nbsp;
                           <span style={{ color: "red" }}>*</span>
                         </label>
                         <select
-                          className="form-select"
+                          className={
+                            validatePost.status
+                              ? "form-select is-invalid"
+                              : "form-select"
+                          }
                           aria-label="Disabled select example"
+                          name="status"
+                          id="post-status"
+                          onChange={(e) => handleOnChange(e)}
                         >
-                          <option>Tình trạng</option>
+                          <option value="0">Tình trạng</option>
                           {statusData.map((data, index) => (
-                            <option key={index} value={data.value}>
+                            <option key={index} value={data.id}>
                               {data.value}
                             </option>
                           ))}
                         </select>
                         <p className="validate-form-text">
-                          {validatePostTrade.status}
+                          {validatePost.status}
                         </p>
                       </div>
                     </div>
-                    {postTradeInfor.category < 2 && (
-                      <div className="col">
-                        <div className="form-outline">
-                          <label className="form-label" htmlFor="form6Example2">
-                            Bảo hành (Tháng)&nbsp;
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <input
-                            type="number"
-                            id="form6Example4"
-                            className="form-control"
-                            placeholder="Thời gian bảo hành"
-                            min={0}
-                            defaultValue={0}
-                          />
-                          <p className="validate-form-text">
-                            {validatePostTrade.guarantee}
-                          </p>
-                        </div>
-                      </div>
-                    )}
                   </div>
-                  {postTradeInfor.category > 0 && (
-                    <div className="row mb-3">
-                      <div className="col">
-                        <div className="form-outline">
-                          <label className="form-label" htmlFor="form6Example1">
-                            Bộ vi xử lý (CPU)
-                          </label>
-                          <select
-                            className="form-select"
-                            aria-label="Disabled select example"
-                          >
-                            <option>Bộ vi xử lý</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                          </select>
-                          <p className="validate-form-text">
-                            {validatePostTrade.cpu}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="col">
-                        <div className="form-outline">
-                          <label className="form-label" htmlFor="form6Example2">
-                            Card đồ họa (GPU)
-                          </label>
-                          <select
-                            className="form-select"
-                            aria-label="Disabled select example"
-                          >
-                            <option>Card đồ họa</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                          </select>
-                          <p className="validate-form-text">
-                            {validatePostTrade.gpu}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  <div className="row mb-3">
-                    <div className="col">
-                      <div className="form-outline">
-                        <label className="form-label" htmlFor="form6Example1">
-                          Ram
-                        </label>
-                        <select
-                          className="form-select"
-                          aria-label="Disabled select example"
-                        >
-                          <option>Ram</option>
-                          <option value="1">One</option>
-                          <option value="2">Two</option>
-                          <option value="3">Three</option>
-                        </select>
-                        <p className="validate-form-text">
-                          {validatePostTrade.ram}
-                        </p>
-                      </div>
-                    </div>
-                    {postTradeInfor.category == 0 && (
-                      <div className="col">
-                        <div className="form-outline">
-                          <label className="form-label" htmlFor="form6Example2">
-                            Bộ nhớ trong (ROM)
-                          </label>
-                          <select
-                            className="form-select"
-                            aria-label="Disabled select example"
-                          >
-                            <option value="0">Bộ nhớ trong</option>
-                            {storageData.map((data, index) => (
-                              <option key={index} value={data.value}>
-                                {`${data.value}GB`}
-                              </option>
-                            ))}
-                          </select>
-                          <p className="validate-form-text">
-                            {validatePostTrade.rom}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  {postTradeInfor.category > 0 && (
-                    <div className="row mb-3">
-                      <div className="col">
-                        <div className="form-outline">
-                          <label className="form-label" htmlFor="form6Example1">
-                            Loại ổ cứng
-                          </label>
-                          <select
-                            className="form-select"
-                            aria-label="Disabled select example"
-                          >
-                            <option>Loại ổ cứng</option>
-                            <option value="1">HDD</option>
-                            <option value="2">SDD</option>
-                            <option value="3">SSHD</option>
-                          </select>
-                          <p className="validate-form-text">
-                            {validatePostTrade.storage_type}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="col">
-                        <div className="form-outline">
-                          <label className="form-label" htmlFor="form6Example2">
-                            Dung lượng ổ cứng
-                          </label>
-                          <select
-                            className="form-select"
-                            aria-label="Disabled select example"
-                          >
-                            <option>Dung lượng ổ cứng cứng</option>
-                            <option value="1">128gb</option>
-                            <option value="2">256gb</option>
-                            <option value="3">512gb</option>
-                            <option value="3">1tb</option>
-                          </select>
-                          <p className="validate-form-text">
-                            {validatePostTrade.storage}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                   <div className="mb-3 mt-4">
-                    <h4>Mô tả</h4>
+                    <h4>Tiêu đề và mô tả</h4>
                   </div>
                   <div className="form-outline mb-3">
-                    <label className="form-label" htmlFor="form6Example7">
+                    <label className="form-label" htmlFor="post-title">
+                      Tiêu đề&nbsp;<span style={{ color: "red" }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="post-title"
+                      className={
+                        validatePost.title
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      name="title"
+                      placeholder="Tiêu đề"
+                      onChange={(e) => handleOnChange(e)}
+                    />
+                    <p className="validate-form-text">{validatePost.title}</p>
+                  </div>
+                  <div className="form-outline mb-3">
+                    <label className="form-label" htmlFor="post-description">
                       Mô tả chi tiết&nbsp;
                       <span style={{ color: "red" }}>*</span>
                     </label>
                     <textarea
-                      className="form-control"
-                      id="form6Example7"
+                      className={
+                        validatePost.description
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      id="post-description"
                       rows="4"
-                      placeholder="Mô tả chi tiết"
+                      placeholder="Mô tả chi tiết
+                  - Sản phẩm như thế nào
+                  - Chất lượng ra sao
+                  - Nhu cầu cụ thể như thế nào"
+                      name="description"
+                      onChange={(e) => handleOnChange(e)}
                     ></textarea>
                     <p className="validate-form-text">
-                      {validatePostTrade.description}
+                      {validatePost.description}
                     </p>
                   </div>
-                </div>
-              )}
-              <div className="row mb-3">
-                <div className="col">
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-block btn-preview"
-                    onClick={(e) => toPreview(e)}
-                  >
-                    Xem trước
-                  </button>
-                </div>
-                <div className="col">
-                  <button
-                    type="submit"
-                    className="btn btn-success btn-block btn-submit"
-                    onClick={(e) => onSubmitForm(e)}
-                  >
-                    Đăng tin
-                  </button>
-                </div>
+                </form>
+              </>
+            )}
+            <div className="row mb-3">
+              <div className="col">
+                <button
+                  type="button"
+                  className="btn btn-primary btn-block btn-preview"
+                  onClick={(e) => toPreview(e)}
+                >
+                  Xem trước
+                </button>
               </div>
-            </form>
+              <div className="col">
+                <button
+                  type="submit"
+                  className="btn btn-success btn-block btn-submit"
+                  onClick={(e) => onSubmitForm(e)}
+                >
+                  Đăng tin
+                </button>
+              </div>
+            </div>
           </Grid>
         </Grid>
       )}

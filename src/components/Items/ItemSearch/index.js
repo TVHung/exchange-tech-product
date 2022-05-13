@@ -1,9 +1,14 @@
 import React from "react";
+import { formatPrice } from "../../../utils/common";
 import "./_itemSearch.scss";
 
-export default function ItemSearch() {
+export default function ItemSearch({ data }) {
+  const toDetail = () => {
+    window.location.href = `/detail/${data.id}`;
+  };
+
   return (
-    <div>
+    <div onClick={() => toDetail()}>
       <div className="post-result py-2 px-2 pb-2">
         <div className="row">
           <div className="col-lg-3">
@@ -16,8 +21,11 @@ export default function ItemSearch() {
           </div>
           <div className="col-lg-9">
             <div className="d-md-flex align-items-md-center">
-              <div className="name">Iphone 13 pro component</div>
-              <div className="ms-auto code">Hà nội</div>
+              <div className="name">{data.name}</div>
+              <div className="ms-auto code">
+                <i className="fas fa-map-marker-alt"></i>{" "}
+                {data.address && data.address.split(", ")[2]}
+              </div>
             </div>
             <div className="rating">
               {" "}
@@ -28,14 +36,12 @@ export default function ItemSearch() {
               <span className="far fa-star"></span>
             </div>
             <div className="d-flex flex-column tags pt-1">
-              <div>
-                <i className="fas fa-dollar-sign"></i> Miễn phí
+              <div className="search-item-price">
+                <i className="fas fa-dollar-sign"></i> {formatPrice(data.price)}
+                đ
               </div>
               <div>
-                <i className="fas fa-memory"></i> 4GB
-              </div>
-              <div>
-                <i class="fas fa-hdd"></i> 512GB
+                <i className="fas fa-info-circle"></i> {data.description}
               </div>
             </div>
           </div>

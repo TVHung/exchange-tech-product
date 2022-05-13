@@ -243,7 +243,7 @@ export default function Login({ type }) {
                       // disabled={renderProps.disabled}
                       // disabled={true}
                     >
-                      Continue with Google
+                      Tiếp tục với Google
                     </Button>
                   )}
                 ></GoogleLogin>
@@ -252,7 +252,7 @@ export default function Login({ type }) {
             <hr style={{ marginTop: 20, opacity: 0.5 }} />
             <Grid container>
               <a href="/login" className="textLogin">
-                Have an account? Login
+                Bạn đã có tài khoản? Login
               </a>
             </Grid>
           </form>

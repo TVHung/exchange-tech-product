@@ -159,7 +159,7 @@ export default function Navigation() {
             <li className="option" onClick={closeMobileMenu}>
               <a href="/" className="underline">
                 <i className="fas fa-user-cog icon-btn"></i>
-                Quản lý
+                Quản lý tin
               </a>
             </li>
             <li className="option" onClick={closeMobileMenu}>
@@ -201,7 +201,7 @@ export default function Navigation() {
             <MenuIcon className="menu-icon" />
           )}
         </div>
-        {isAuth ? (
+        {getCookie("access_token") ? (
           <div className="drop-layout-function">
             <i
               className="fas fa-ellipsis-v dot-menu-icon"

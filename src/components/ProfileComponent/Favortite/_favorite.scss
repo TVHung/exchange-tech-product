@@ -1,0 +1,9 @@
+@import "../../../assets/css/valiables";
+@import "../../../assets/css/common";
+
+.my-favorite-post {
+    padding-top: 10px;
+    h3 {
+        @include fontSize1();
+    }
+}

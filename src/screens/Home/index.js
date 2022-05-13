@@ -13,6 +13,7 @@ import banner3 from "../../assets/image/banner3.jpg";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllPost } from "./../../redux/actions/postActions";
+import { headers } from "../../constants";
 
 const dataSlides = [
   {
@@ -46,30 +47,46 @@ export default function Home() {
   };
 
   useEffect(() => {
-    console.log(get_all_post);
-    return () => {};
-  }, [get_all_post]);
-
-  useEffect(() => {
     getAllPost();
     setTimeout(() => {
       setPreload(true);
-    }, 500);
+    }, 1000);
     return () => {
       setPreload(false);
     };
   }, []);
 
+  useEffect(() => {
+    if (get_all_post) setPreload(true);
+  }, [get_all_post]);
+
   const [fileSelected, setFileSelected] = useState("");
+  // const upload = async () => {
+  //   const formData = new FormData();
+  //   formData.append("file", fileSelected);
+  //   formData.append("upload_preset", "weedzflm");
+  //   await axios
+  //     .post("https://api.cloudinary.com/v1_1/trhung/image/upload", formData)
+  //     .then((res) => {
+  //       console.log(res);
+  //     });
+  // };
+
   const upload = async () => {
-    const formData = new FormData();
-    formData.append("file", fileSelected);
-    formData.append("upload_preset", "weedzflm");
-    await axios
-      .post("https://api.cloudinary.com/v1_1/trhung/image/upload", formData)
-      .then((res) => {
-        console.log(res);
-      });
+    const formData = {
+      file: fileSelected,
+    };
+    console.log(fileSelected);
+    // await axios
+    //   .post("http://127.0.0.1:8000/api/upload", formData, {
+    //     headers: headers,
+    //   })
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
   };
 
   return (
@@ -81,7 +98,7 @@ export default function Home() {
       {!preload ? (
         <Preloading />
       ) : (
-        <>
+        <div className="home-posts">
           {/* <div>
             <input
               type="file"
@@ -99,7 +116,7 @@ export default function Home() {
           <ListItem dataList={get_all_post} />
           <h3>Bài viết đổi sản phẩm</h3>
           <ListItem dataList={get_all_post} />
-        </>
+        </div>
       )}
     </div>
   );

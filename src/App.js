@@ -10,11 +10,11 @@ import Dashboard from "./screens/admin/Dashboard";
 import Footer from "./components/Footer";
 import Chat from "./screens/Chat";
 import CreatePost from "./screens/CreatePost";
+import EditPost from "./screens/EditPost";
 import Search from "./screens/Search";
 import PreviewPost from "./screens/CreatePost/PreviewPost";
 import Detail from "./screens/Detail";
 import Profile from "./screens/Profile";
-import { ProfileEdit } from "./components/ProfileComponent";
 import { Fragment } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUser } from "./redux/actions/userActions";
 import { getCookie } from "./utils/cookie";
 import ScrollUp from "./components/ScrollUp";
+import "./utils/loader";
 toast.configure();
 
 function App() {
@@ -56,18 +57,24 @@ function App() {
               <Dashboard />;
             }}
           />
-          <Route exact path="/chat" render={(props) => <Chat />} />
-          <Route exact path="/create-post" render={(props) => <CreatePost />} />
           <Route exact path="/search" render={(props) => <Search />} />
-          <Route
+          {/* <Route exact path="/create-post" render={(props) => <CreatePost />} /> */}
+          {/* <Route
             exact
             path="/create-post/preview"
             render={(props) => <PreviewPost />}
-          />
-          {/* <PrivateRoute
+          /> */}
+          <PrivateRoute path="/chat" exact component={Chat} isAuth={isAuth} />
+          <PrivateRoute
             path="/create-post"
             exact
             component={CreatePost}
+            isAuth={isAuth}
+          />
+          <PrivateRoute
+            path="/edit-post/:id"
+            exact
+            component={EditPost}
             isAuth={isAuth}
           />
           <PrivateRoute
@@ -75,7 +82,7 @@ function App() {
             exact
             component={PreviewPost}
             isAuth={isAuth}
-          /> */}
+          />
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/detail/:id" render={(props) => <Detail />} />
@@ -83,12 +90,6 @@ function App() {
             path="/profile"
             exact
             component={Profile}
-            isAuth={isAuth}
-          />
-          <PrivateRoute
-            path="/profile/edit"
-            exact
-            component={ProfileEdit}
             isAuth={isAuth}
           />
           <Route path="/:someString" component={Error} />
