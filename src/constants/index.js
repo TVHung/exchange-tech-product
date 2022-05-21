@@ -19,9 +19,13 @@ export const apiFetchMyPosts = `${api}/my-posts`;
 export const apiFetchRecommendPosts = `${api}/recommend-posts`;
 export const apiWishList = `${api}/wish-list`;
 
+//api post trade
+export const apiPostTrade = `${api}/post-trades`;
+
 //api image
 export const apiImages = `${api}/post-image`;
 export const apiUpload = `${api}/upload`;
+export const apiUploadVideo = `${api}/upload-video`;
 
 //api address
 export const apiAddress = `https://provinces.open-api.vn/api`;
@@ -43,6 +47,14 @@ export const headers = {
   Authorization: `Bearer ${getCookie("access_token")}`,
 };
 
+export const headerFiles = {
+  "Content-Type": "multipart/form-data",
+  Authorization: `Bearer ${getCookie("access_token")}`,
+};
+
+export const maxSizeImage = 2048000;
+export const maxSizeVideo = 10240000;
+
 export const storageData = [
   { value: 8 },
   { value: 16 },
@@ -55,14 +67,14 @@ export const storageData = [
 ];
 
 export const statusData = [
-  { id: 1, value: "Mới" },
-  { id: 2, value: "Cũ (90-99%)" },
-  { id: 3, value: "Cũ (<90%)" },
+  { id: 0, value: "Mới" },
+  { id: 1, value: "Cũ (90-99%)" },
+  { id: 2, value: "Cũ (<90%)" },
 ];
 export const storageTypeData = [
-  { id: 1, value: "HDD", type: 0 },
-  { id: 2, value: "SSD", type: 1 },
-  { id: 3, value: "SSHD", type: 2 },
+  { id: 0, value: "HDD", type: 0 },
+  { id: 1, value: "SSD", type: 1 },
+  { id: 2, value: "SSHD", type: 2 },
 ];
 export const categoryData = [
   { id: 1, value: "Điện thoại, máy tính bảng" },
@@ -71,7 +83,7 @@ export const categoryData = [
 ];
 export const videoData = [
   { id: 1, value: "Có video" },
-  { id: 2, value: "Không có video" },
+  { id: 0, value: "Không có video" },
 ];
 //filter
 export const priceStep = 200000;
@@ -207,7 +219,7 @@ export const displaySizeData = [
 ];
 export const cardData = [
   { id: 1, value: "Có GPU" },
-  { id: 2, value: "Không có CPU" },
+  { id: 0, value: "Không có CPU" },
 ];
 export const marksStorage = [
   {

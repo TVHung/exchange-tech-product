@@ -9,7 +9,7 @@ function ListItem({ dataList }) {
       <Grid container alignItems="stretch" spacing={1}>
         {dataList &&
           dataList.map((data) => (
-            <Grid key={data.id} item xs={12} sm={6} md={3} lg={2}>
+            <Grid key={data.id} item xs={6} sm={4} md={3} lg={2}>
               <Item data={data} />
             </Grid>
           ))}

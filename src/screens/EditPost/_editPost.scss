@@ -1,7 +1,7 @@
 @import "../../assets/css/valiables";
 @import "../../assets/css/common";
 
-.editPostContainer {
+.createPostContainer {
   position: relative;
   .form-container {
     .create-post-images {
@@ -30,15 +30,35 @@
           width: 100%;
           text-align: center;
         }
+        .custom-video-non-upload {
+          cursor: not-allowed;
+          border: grey 2px solid;
+          color: grey;
+          border-radius: 5px;
+          padding: 5px;
+          width: 100%;
+          text-align: center;
+        }
       }
       .view-preview {
+        position: relative;
         .image-preview {
+          height: 100px;
           .image-selected {
+            border: 1px solid $base-color-2;
+            height: 100%;
+            text-align: center;
             position: relative;
+            img {
+              height: 100%;
+              width: auto;
+            }
             .delete-image {
               position: absolute;
-              top: 5px;
-              right: 5px;
+              top: -5px;
+              right: -5px;
+              cursor: pointer;
+              color: $base-color-2;
             }
             .title-cover-image {
               position: absolute;
@@ -55,6 +75,13 @@
               }
             }
           }
+        }
+        .delete-video-icon {
+          position: absolute;
+          top: -5px;
+          left: -5px;
+          color: $base-color-2;
+          cursor: pointer;
         }
       }
       .image-validate {

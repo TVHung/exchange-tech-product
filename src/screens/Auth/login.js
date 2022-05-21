@@ -15,6 +15,7 @@ import MetaTag from "../../components/MetaTag";
 import { apiLogin } from "../../constants";
 import { setCookie } from "./../../utils/cookie";
 import { validateEmail, validatePassword } from "../../validations";
+import Loading from "../../components/Loading";
 
 const UseFocus = () => {
   const htmlElRef = useRef(null);
@@ -32,6 +33,7 @@ export default function Login() {
   const [errorPassword, setErrorPassword] = useState("");
   const [errorLogin, setErrorLogin] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -52,6 +54,7 @@ export default function Login() {
   //check login
   const handleSubmitLogin = async (e) => {
     if (e) e.preventDefault();
+    setIsLoading(true);
     let userLogin = {
       email: user.email,
       password: user.password,
@@ -70,10 +73,12 @@ export default function Login() {
             toast.success("Đăng nhập thành công");
             setCookie("access_token", data.access_token, 3600);
           }
+          setIsLoading(false);
           setErrorLogin("");
           window.location.href = `/`;
         })
         .catch((error) => {
+          setIsLoading(false);
           toast.error("Đặng nhập không thành công");
           setErrorLogin("Email hoặc mật khẩu không đúng");
         });
@@ -88,7 +93,7 @@ export default function Login() {
   };
   const loginFailure = (response) => {
     // console.log(response);
-    // toast.error("Đặng nhập không thành công");
+    toast.error("Đặng nhập không thành công");
   };
 
   return (
@@ -97,129 +102,132 @@ export default function Login() {
         title="Login"
         description={"Đăng nhập, đăng kí để trao đổi, mua bán sản phẩm"}
       />
-
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className="paperLogin">
-          <p className="titleLogin">Login</p>
-          <form className="formLogin" noValidate>
-            <TextField
-              error={errorEmail != "" ? true : false}
-              variant="filled"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              onChange={(e) => handleOnChange(e)}
-              className="inputLogin"
-            />
-            <p id="validateEmail" className="nofiLogin">
-              {errorEmail}
-            </p>
-            <TextField
-              error={errorPassword != "" ? true : false}
-              variant="filled"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              id="password"
-              autoComplete="current-password"
-              onChange={(e) => handleOnChange(e)}
-              className="inputLogin"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={() => handleClickShowPassword()}
-                      onMouseDown={() => handleMouseDownPassword()}
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <p id="validateEmail" className="nofiLogin">
-              {errorPassword}
-            </p>
-            <p id="validateEmail" className="nofiLogin">
-              {errorLogin}
-            </p>
-            <div style={{ marginTop: 10 }}>
-              <Button
-                type="submit"
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
+          <div className="paperLogin">
+            <p className="titleLogin">Login</p>
+            <form className="formLogin" noValidate>
+              <TextField
+                error={errorEmail != "" ? true : false}
+                variant="filled"
+                margin="normal"
+                required
                 fullWidth
-                variant="contained"
-                color="primary"
-                className="submitLogin"
-                onClick={(e) => handleSubmitLogin(e)}
-              >
-                Đăng nhập
-              </Button>
-            </div>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <GoogleLogin
-                  clientId={
-                    "217349199407-r0efehl3tjiavtkk5b8c035bqj5aer2q.apps.googleusercontent.com"
-                  }
-                  onSuccess={(res) => loginSuccess(res)}
-                  onFailure={(res) => loginFailure(res)}
-                  isSignedIn={true}
-                  cookiePolicy={"single_host_origin"}
-                  render={(renderProps) => (
-                    <Button
-                      type="button"
-                      fullWidth
-                      variant="contained"
-                      className="submitLogin"
-                      style={{
-                        marginTop: 20,
-                        color: "#05042c",
-                        background: "#fafafa",
-                      }}
-                      startIcon={
-                        <img
-                          alt="googleIcon"
-                          src={logoGoogle}
-                          width="20px"
-                          height="20px"
-                        />
-                      }
-                      onClick={renderProps.onClick}
-                      disabled={renderProps.disabled}
-                      // disabled={true}
-                    >
-                      Tiếp tục với Google
-                    </Button>
-                  )}
-                ></GoogleLogin>
+                id="email"
+                label="Email"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                onChange={(e) => handleOnChange(e)}
+                className="inputLogin"
+              />
+              <p id="validateEmail" className="nofiLogin">
+                {errorEmail}
+              </p>
+              <TextField
+                error={errorPassword != "" ? true : false}
+                variant="filled"
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                id="password"
+                autoComplete="current-password"
+                onChange={(e) => handleOnChange(e)}
+                className="inputLogin"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => handleClickShowPassword()}
+                        onMouseDown={() => handleMouseDownPassword()}
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <p id="validateEmail" className="nofiLogin">
+                {errorPassword}
+              </p>
+              <p id="validateEmail" className="nofiLogin">
+                {errorLogin}
+              </p>
+              <div style={{ marginTop: 10 }}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className="submitLogin"
+                  onClick={(e) => handleSubmitLogin(e)}
+                >
+                  Đăng nhập
+                </Button>
+              </div>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <GoogleLogin
+                    clientId={
+                      "217349199407-r0efehl3tjiavtkk5b8c035bqj5aer2q.apps.googleusercontent.com"
+                    }
+                    // onSuccess={(res) => loginSuccess(res)}
+                    // onFailure={(res) => loginFailure(res)}
+                    isSignedIn={true}
+                    cookiePolicy={"single_host_origin"}
+                    render={(renderProps) => (
+                      <Button
+                        type="button"
+                        fullWidth
+                        variant="contained"
+                        className="submitLogin"
+                        style={{
+                          marginTop: 20,
+                          color: "#05042c",
+                          background: "#fafafa",
+                        }}
+                        startIcon={
+                          <img
+                            alt="googleIcon"
+                            src={logoGoogle}
+                            width="20px"
+                            height="20px"
+                          />
+                        }
+                        onClick={renderProps.onClick}
+                        disabled={renderProps.disabled}
+                        // disabled={true}
+                      >
+                        Tiếp tục với Google
+                      </Button>
+                    )}
+                  ></GoogleLogin>
+                </Grid>
               </Grid>
-            </Grid>
-            <hr style={{ marginTop: 20, opacity: 0.5 }} />
-            <Grid container>
-              <Grid item xs={6}>
-                <a href="/register" className="textLogin">
-                  Không thể đăng nhập?
-                </a>
+              <hr style={{ marginTop: 20, opacity: 0.5 }} />
+              <Grid container>
+                <Grid item xs={6}>
+                  <a href="/register" className="textLogin">
+                    Không thể đăng nhập?
+                  </a>
+                </Grid>
+                <Grid item xs={6}>
+                  <a href="/register" className="textLogin">
+                    Đăng kí một tài khoản
+                  </a>
+                </Grid>
               </Grid>
-              <Grid item xs={6}>
-                <a href="/register" className="textLogin">
-                  Đăng kí một tài khoản
-                </a>
-              </Grid>
-            </Grid>
-          </form>
-        </div>
-      </Container>
+            </form>
+          </div>
+        </Container>
+      )}
     </div>
   );
 }

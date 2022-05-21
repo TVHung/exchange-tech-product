@@ -16,6 +16,10 @@ import {
   apiPost,
   apiGetBrandByCategory,
   apiUpload,
+  categoryData,
+  storageTypeData,
+  apiUploadVideo,
+  headerFiles,
 } from "./../../constants";
 import { toast } from "react-toastify";
 import {
@@ -49,6 +53,7 @@ export default function CreatePost() {
 
   const [isCreatePost, setIsCreatePost] = useState(false);
   const [imageUrl, setImageUrl] = useState([]);
+  const [videoFile, setVideoFile] = useState();
   const [postInfor, setPostInfor] = useState({
     category: 1, //1:phone, 2: laptop, 3: pc
     name: "",
@@ -58,7 +63,7 @@ export default function CreatePost() {
     cpu: null,
     gpu: null,
     ram: null,
-    storage_type: "",
+    storage_type: null,
     storage: null,
     address: "",
     price: null,
@@ -66,22 +71,15 @@ export default function CreatePost() {
     description: "",
     display_size: null,
     public_status: 1,
-    trade: 0,
+    is_trade: 0,
     color: "",
     video_url: "",
   });
   const [postTradeInfor, setPostTradeInfor] = useState({
     category: 1, //1:phone, 2: laptop, 3: pc
     name: "",
-    brand: "",
-    status: "",
     guarantee: null,
-    cpu: "",
-    gpu: "",
-    ram: null,
-    storage_type: null,
-    display_size: null,
-    storage: null,
+    title: "",
     description: "",
   });
   const [validatePost, setvalidatePost] = useState({
@@ -96,17 +94,8 @@ export default function CreatePost() {
     image: "",
   });
   const [validatePostTrade, setvalidatePostTrade] = useState({
-    category: 1, //1:phone, 2: laptop, 3: pc
     name: "",
-    brand: "",
-    status: "",
-    guarantee: "",
-    cpu: "",
-    gpu: "",
-    ram: "",
-    storage_type: "",
-    display_size: "",
-    storage: "",
+    title: "",
     description: "",
   });
   useEffect(() => {
@@ -115,6 +104,7 @@ export default function CreatePost() {
       setPostTradeInfor({});
       setvalidatePost({});
       setvalidatePostTrade({});
+      setVideoFile();
     };
   }, []);
   const handleOnChangeAddress = (e) => {
@@ -149,13 +139,13 @@ export default function CreatePost() {
       setPostInfor({
         category: value, //1:phone, 2: laptop, 3: pc
         name: "",
-        brand: "",
-        status: "",
+        brand: null,
+        status: null,
         guarantee: null,
-        cpu: "",
-        gpu: "",
+        cpu: null,
+        gpu: null,
         ram: null,
-        storage_type: "",
+        storage_type: null,
         storage: null,
         address: "",
         price: null,
@@ -163,8 +153,9 @@ export default function CreatePost() {
         description: "",
         display_size: null,
         public_status: 1,
-        trade: 0,
+        is_trade: 0,
         color: "",
+        video_url: "",
       });
     }
   };
@@ -183,7 +174,11 @@ export default function CreatePost() {
       setFileOject([...fileObject, e.target.files[0]]);
     }
   };
-
+  const uploadSingleVideo = (e) => {
+    if (e.target.files[0]) {
+      setVideoFile(e.target.files[0]);
+    }
+  };
   const deleteFile = (e) => {
     const s = file.filter((item, index) => index !== e);
     const o = fileObject.filter((item, index) => index !== e);
@@ -192,15 +187,10 @@ export default function CreatePost() {
   };
 
   const testUpload = async (files) => {
-    const dataFiles = {
-      file: files,
-    };
-    const headers = {
-      "Content-type": "application/json",
-      Authorization: `Bearer ${getCookie("access_token")}`,
-    };
+    const imageData = new FormData();
+    imageData.append("file", videoFile, "product");
     await axios
-      .post(apiUpload, dataFiles, { headers: headers })
+      .post(apiUploadVideo, imageData, { headers: headerFiles })
       .then((res) => {
         console.log(res);
       })
@@ -370,13 +360,9 @@ export default function CreatePost() {
     window.location.href = "/create-post/preview";
   };
 
-  const onClickTrade = () => {
-    setIsTrade(!isTrade);
-    let trade = "trade";
-    setPostInfor((prevState) => ({
-      ...prevState,
-      [trade]: isTrade ? 1 : 0,
-    }));
+  const onClickTrade = (e) => {
+    const { checked } = e.target;
+    setIsTrade(checked);
   };
 
   const onClickFree = () => {
@@ -417,22 +403,50 @@ export default function CreatePost() {
     let validate = true;
     if (
       validateNullFormPost(postInfor.name) !== "" &&
-      validateNullFormPost(postInfor.status) !== "" &&
+      validateNullFormPost(postInfor.status) !== null &&
       validateNullFormPost(address) !== "" &&
       validateNullFormPost(postInfor.title) !== "" &&
       validateNullFormPost(postInfor.description) !== ""
     )
       validate = false;
     if (file.length <= 0) validate = false;
-    if (!isFree && validatePrice(postInfor.price) !== "") validate = false;
+    if (!isFree && validatePrice(postInfor.price) !== null) validate = false;
     if (
-      Number(postInfor.category) !== 3 &&
-      validateNullFormPost(postInfor.brand) !== "" &&
+      Number(postInfor.category) > 3 &&
+      validateNullFormPost(postInfor.brand) !== null &&
       validateNullFormPost(postInfor.color) !== ""
     )
       validate = false;
-    console.log(file.length, validate);
+    if (isTrade) {
+      setvalidatePostTrade({
+        name: validateNullFormPost(postTradeInfor.name),
+        title: validateNullFormPost(postTradeInfor.title),
+        description: validateNullFormPost(postTradeInfor.description),
+      });
+      if (
+        validateNullFormPost(postTradeInfor.name) !== "" &&
+        validateNullFormPost(postTradeInfor.title) !== "" &&
+        validateNullFormPost(postTradeInfor.description) !== ""
+      )
+        validate = false;
+    }
     if (validate) createPost();
+    // uploadVideo();
+  };
+
+  const uploadVideo = async () => {
+    const data = {
+      file: videoFile,
+    };
+    await axios
+      .post(apiUploadVideo, data, { headers: headers })
+      .then((res) => {
+        console.log("video upload success", res);
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error("Tạo bài viết không thành công");
+      });
   };
 
   useEffect(() => {
@@ -455,16 +469,17 @@ export default function CreatePost() {
   };
   //tao post
   const createPost = async () => {
+    var mergePostData;
     const postData = {
-      post_trade_id: null,
+      is_trade: isTrade ? 1 : 0,
       title: postInfor.title,
       category_id: Number(postInfor.category),
       name: postInfor.name,
       description: postInfor.description,
-      ram: Number(postInfor.ram),
-      storage: Number(postInfor.storage),
-      video_url:
-        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+      ram: Number(postInfor.ram) == 0 ? null : Number(postInfor.ram),
+      storage:
+        Number(postInfor.storage) == 0 ? null : Number(postInfor.storage),
+      video_url: videoFile,
       status: Number(postInfor.status),
       price: Number(postInfor.price),
       address: address,
@@ -475,19 +490,34 @@ export default function CreatePost() {
       cpu: postInfor.cpu,
       gpu: postInfor.gpu,
       storage_type: Number(postInfor.storage_type),
-      brand_id: Number(postInfor.brand),
-      display_size: Number(postInfor.display_size),
+      brand_id: Number(postInfor.brand) == 0 ? null : Number(postInfor.brand),
+      display_size:
+        Number(postInfor.display_size) == 0
+          ? null
+          : Number(postInfor.display_size),
       file: fileObject,
     };
 
-    console.log("post", postData);
+    if (isTrade) {
+      const dataPostTrade = {
+        category_idTrade: Number(postTradeInfor.category),
+        nameTrade: postTradeInfor.name,
+        guaranteeTrade: Number(postTradeInfor.guarantee),
+        titleTrade: postTradeInfor.title,
+        descriptionTrade: postTradeInfor.description,
+      };
+      mergePostData = { ...postData, ...dataPostTrade };
+    } else {
+      mergePostData = { ...postData };
+    }
+
+    console.log("post", mergePostData);
     await axios
-      .post(apiPost, postData, { headers: headers })
+      .post(apiPost, mergePostData, { headers: headers })
       .then((res) => {
         const p = res.data.data;
         console.log("post success", p, res);
         if (res.data.status == 1) saveImages(fileObject, p.id);
-        else toast.error("Tạo bài viết không thành công");
       })
       .catch((error) => {
         console.error(error);
@@ -528,7 +558,7 @@ export default function CreatePost() {
 
   return (
     <div className="createPostContainer container">
-      <button onClick={() => testUpload(fileObject)}>upload</button>
+      {/* <button onClick={() => testUpload(fileObject)}>upload</button> */}
       <Breadcrumb arrLink={postBreadcrumb} />
       <MetaTag
         title={"Tạo bài viết"}
@@ -662,7 +692,7 @@ export default function CreatePost() {
                   })}
               </div>
             </div>
-            {/* <div className="video-post">
+            <div className="video-post">
               <div className="custom-video">
                 <label htmlFor="video-upload" className="custom-video-upload">
                   <i className="fas fa-upload"></i> Thêm video
@@ -672,11 +702,17 @@ export default function CreatePost() {
                   className="custom-video-input"
                   id="video-upload"
                   // multiple
-                  onChange={(e) => uploadSingleFile(e)}
+                  onChange={(e) => uploadSingleVideo(e)}
                 />
               </div>
-              <div className="mt-3 view-preview row"></div>
-            </div> */}
+              <div className="mt-3 view-preview row">
+                {videoFile && (
+                  <video width="400" controls>
+                    <source src={URL.createObjectURL(videoFile)} />
+                  </video>
+                )}
+              </div>
+            </div>
           </Grid>
           <Grid item xs={12} md={8} className="create-post-detail">
             <div className="mb-3">
@@ -951,10 +987,12 @@ export default function CreatePost() {
                         id="post-storage-type"
                         onChange={(e) => handleOnChange(e)}
                       >
-                        <option>Loại ổ cứng</option>
-                        <option value="HDD">HDD</option>
-                        <option value="SDD">SDD</option>
-                        <option value="SSHD">SSHD</option>
+                        <option value={null}>Loại ổ cứng</option>
+                        {storageTypeData.map((data, index) => (
+                          <option key={index} value={data.id}>
+                            {data.value}
+                          </option>
+                        ))}
                       </select>
                       <p className="validate-form-text">
                         {validatePost.storage_type}
@@ -1026,6 +1064,7 @@ export default function CreatePost() {
                   <input
                     type="number"
                     id="post-price"
+                    min={0}
                     className={
                       validatePost.price
                         ? "form-control is-invalid"
@@ -1088,13 +1127,13 @@ export default function CreatePost() {
                   className="form-select"
                   aria-label="Disabled select example"
                   required
-                  name="category"
+                  name="public_status"
                   id="post-public"
                   onChange={(e) => handleOnChange(e)}
                   placeholder="Chế độ bài viết"
                 >
-                  <option value="0">Công khai</option>
-                  <option value="1">Riêng tư</option>
+                  <option value="1">Công khai</option>
+                  <option value="0">Riêng tư</option>
                 </select>
                 <p className="validate-form-text">
                   {validatePost.public_status}
@@ -1110,7 +1149,7 @@ export default function CreatePost() {
                 className="form-check-input"
                 id="tradeCheckbox"
                 defaultChecked={isTrade}
-                onClick={() => onClickTrade()}
+                onClick={(e) => onClickTrade(e)}
               />
               <label className="form-check-label" htmlFor="tradeCheckbox">
                 Đổi sản phẩm
@@ -1122,23 +1161,25 @@ export default function CreatePost() {
                   <h3>Thông tin sản phẩm muốn đổi</h3>
                 </div>
                 <div className="form-outline mb-3">
-                  <label className="form-label" htmlFor="post-category">
+                  <label className="form-label" htmlFor="post-trade-category">
                     Loại sản phẩm
                   </label>
                   <select
                     className="form-select"
                     aria-label="Disabled select example"
                     required
-                    id="post-category"
+                    id="post-trade-category"
                     name="category"
-                    onChange={(e) => handleOnChange(e)}
+                    onChange={(e) => handleOnChangeTrade(e)}
                     placeholder="Loại sản phẩm"
                   >
-                    <option value="1">Điện thoại, Máy tính bảng</option>
-                    <option value="2">Laptop</option>
-                    <option value="3">PC</option>
+                    {categoryData &&
+                      categoryData.map((data, index) => (
+                        <option key={index} value={data.id}>
+                          {data.value}
+                        </option>
+                      ))}
                   </select>
-                  <p className="validate-form-text">{validatePost.category}</p>
                 </div>
                 <form
                   className="form-product"
@@ -1149,97 +1190,90 @@ export default function CreatePost() {
                     <h4>Thông tin chi tiết</h4>
                   </div>
                   <div className="form-outline mb-3">
-                    <label className="form-label" htmlFor="post-name">
+                    <label className="form-label" htmlFor="post-trade-name">
                       Tên sản phẩm&nbsp;<span style={{ color: "red" }}>*</span>
                     </label>
                     <input
                       type="text"
-                      id="post-name"
+                      id="post-trade-name"
                       className={
-                        validatePost.name
+                        validatePostTrade.name
                           ? "form-control is-invalid"
                           : "form-control"
                       }
                       placeholder="Tên sản phẩm"
                       name="name"
-                      onChange={(e) => handleOnChange(e)}
+                      onChange={(e) => handleOnChangeTrade(e)}
                     />
-                    <p className="validate-form-text">{validatePost.name}</p>
-                  </div>
-                  <div className="row mb-3">
-                    <div className="col">
-                      <div className="form-outline">
-                        <label className="form-label" htmlFor="post-status">
-                          Tình trạng&nbsp;
-                          <span style={{ color: "red" }}>*</span>
-                        </label>
-                        <select
-                          className={
-                            validatePost.status
-                              ? "form-select is-invalid"
-                              : "form-select"
-                          }
-                          aria-label="Disabled select example"
-                          name="status"
-                          id="post-status"
-                          onChange={(e) => handleOnChange(e)}
-                        >
-                          <option value="0">Tình trạng</option>
-                          {statusData.map((data, index) => (
-                            <option key={index} value={data.id}>
-                              {data.value}
-                            </option>
-                          ))}
-                        </select>
-                        <p className="validate-form-text">
-                          {validatePost.status}
-                        </p>
-                      </div>
-                    </div>
+                    <p className="validate-form-text">
+                      {validatePostTrade.name}
+                    </p>
                   </div>
                   <div className="mb-3 mt-4">
                     <h4>Tiêu đề và mô tả</h4>
                   </div>
                   <div className="form-outline mb-3">
-                    <label className="form-label" htmlFor="post-title">
+                    <label className="form-label" htmlFor="post-trade-title">
                       Tiêu đề&nbsp;<span style={{ color: "red" }}>*</span>
                     </label>
                     <input
                       type="text"
-                      id="post-title"
+                      id="post-trade-title"
                       className={
-                        validatePost.title
+                        validatePostTrade.title
                           ? "form-control is-invalid"
                           : "form-control"
                       }
                       name="title"
                       placeholder="Tiêu đề"
-                      onChange={(e) => handleOnChange(e)}
+                      onChange={(e) => handleOnChangeTrade(e)}
                     />
-                    <p className="validate-form-text">{validatePost.title}</p>
+                    <p className="validate-form-text">
+                      {validatePostTrade.title}
+                    </p>
+                  </div>
+                  <div className="form-outline  mb-3">
+                    <label
+                      className="form-label"
+                      htmlFor="post-trade-guarantee"
+                    >
+                      Bảo hành
+                    </label>
+                    <input
+                      type="number"
+                      id="post-trade-guarantee"
+                      className="form-control"
+                      placeholder="Thời gian bảo hành"
+                      min={0}
+                      name="guarantee"
+                      onChange={(e) => handleOnChangeTrade(e)}
+                    />
                   </div>
                   <div className="form-outline mb-3">
-                    <label className="form-label" htmlFor="post-description">
+                    <label
+                      className="form-label"
+                      htmlFor="post-trade-description"
+                    >
                       Mô tả chi tiết&nbsp;
                       <span style={{ color: "red" }}>*</span>
                     </label>
                     <textarea
                       className={
-                        validatePost.description
+                        validatePostTrade.description
                           ? "form-control is-invalid"
                           : "form-control"
                       }
-                      id="post-description"
+                      id="post-trade-description"
                       rows="4"
                       placeholder="Mô tả chi tiết
-                  - Sản phẩm như thế nào
-                  - Chất lượng ra sao
-                  - Nhu cầu cụ thể như thế nào"
+                - Sản phẩm như thế nào
+                - Chất lượng ra sao
+                - Nhu cầu cụ thể như thế nào"
                       name="description"
-                      onChange={(e) => handleOnChange(e)}
+                      onChange={(e) => handleOnChangeTrade(e)}
                     ></textarea>
                     <p className="validate-form-text">
-                      {validatePost.description}
+                      {validatePostTrade.description}
                     </p>
                   </div>
                 </form>

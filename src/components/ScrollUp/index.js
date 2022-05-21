@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { scrollToTop } from "../../utils/common";
 import "./_scrollUp.scss";
 
 export default function ScrollUp() {
@@ -11,12 +12,6 @@ export default function ScrollUp() {
     } else if (scrolled <= 300) {
       setVisible(false);
     }
-  };
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
   };
 
   window.addEventListener("scroll", toggleVisible);

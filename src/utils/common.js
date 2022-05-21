@@ -140,3 +140,10 @@ export const getValueListFilter = (marks, value) => {
   }
   return val;
 };
+
+export const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};

@@ -50,6 +50,12 @@ export default function ListPost() {
         return el.sold === 1;
       });
       setMyPostFilter(notSoldPost);
+    } else if (name == "private") {
+      var privatePost = my_posts.filter(function (el) {
+        return el.public_status === 0;
+      });
+      console.log("private", privatePost);
+      setMyPostFilter(privatePost);
     } else {
       setMyPostFilter(my_posts);
     }
@@ -131,6 +137,19 @@ export default function ListPost() {
               />
               <label className="form-check-label" htmlFor="my-post-sold">
                 Đã bán
+              </label>
+            </div>
+            <div className="form-check filter-header-sort">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="private"
+                id="my-post-private"
+                onChange={(e) => onChangeCheckStatus(e)}
+                checked={filter === "private"}
+              />
+              <label className="form-check-label" htmlFor="my-post-private">
+                Đã ẩn
               </label>
             </div>
           </div>

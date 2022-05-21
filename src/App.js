@@ -58,13 +58,8 @@ function App() {
             }}
           />
           <Route exact path="/search" render={(props) => <Search />} />
-          {/* <Route exact path="/create-post" render={(props) => <CreatePost />} /> */}
-          {/* <Route
-            exact
-            path="/create-post/preview"
-            render={(props) => <PreviewPost />}
-          /> */}
-          <PrivateRoute path="/chat" exact component={Chat} isAuth={isAuth} />
+          <Route exact path="/chat" render={(props) => <Chat />} />
+          {/* <PrivateRoute path="/chat" exact component={Chat} isAuth={isAuth} /> */}
           <PrivateRoute
             path="/create-post"
             exact
