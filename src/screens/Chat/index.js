@@ -6,6 +6,8 @@ import Preloading from "../../components/Loading";
 import ChatItem from "../../components/ChatItem";
 import avt from "../../assets/image/avt.jpg";
 import Search from "../../components/Navigation/Search";
+import Breadcrumb from "./../../components/Breadcrumb";
+import { chatBreadcrumb } from "../../constants/breadcrumData";
 
 const data = [
   { id: 1, readed: false },
@@ -27,6 +29,7 @@ export default function Chat() {
 
   return (
     <div className="chat-container container">
+      <Breadcrumb arrLink={chatBreadcrumb} />
       <MetaTag title={"Tin nhắn"} description={"Kết nối với người mua, bán"} />
       {!preload ? (
         <Preloading />

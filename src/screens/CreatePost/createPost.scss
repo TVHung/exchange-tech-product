@@ -33,12 +33,20 @@
       }
       .view-preview {
         .image-preview {
+          height: 100px;
           .image-selected {
+            border: 1px solid $base-color-2;
+            height: 100%;
+            text-align: center;
             position: relative;
+            img {
+              height: 100%;
+              width: auto;
+            }
             .delete-image {
               position: absolute;
-              top: 5px;
-              right: 5px;
+              top: -5px;
+              right: -5px;
             }
             .title-cover-image {
               position: absolute;
