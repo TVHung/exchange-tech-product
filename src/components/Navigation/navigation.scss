@@ -216,7 +216,7 @@ a {
     .up-btn {
       cursor: pointer;
       height: 45px;
-      width: 140px;
+      min-width: 140px;
       float: left;
       margin-left: 10px;
       @include makeCenter();

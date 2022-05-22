@@ -147,3 +147,7 @@ export const scrollToTop = () => {
     behavior: "smooth",
   });
 };
+
+export const setLinkDirect = () => {
+  localStorage.setItem("linkDirect", window.location.pathname);
+};

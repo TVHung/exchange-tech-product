@@ -13,6 +13,7 @@ import {
   changeParamString,
   formatPrice,
   getValueListFilter,
+  setLinkDirect,
 } from "../../utils/common";
 import { searchPostByName } from "../../redux/actions/postActions";
 import { useHistory } from "react-router-dom";
@@ -278,6 +279,7 @@ export default function Search() {
   };
 
   useEffect(() => {
+    setLinkDirect();
     return () => {
       //clear data
       setsearchValue("");

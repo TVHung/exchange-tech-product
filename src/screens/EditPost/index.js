@@ -23,6 +23,8 @@ import {
   maxSizeVideo,
   headerFiles,
   apiUploadVideo,
+  maxNumImage,
+  maxSizeImage,
 } from "./../../constants";
 import { toast } from "react-toastify";
 import {
@@ -34,7 +36,7 @@ import Breadcrumb from "../../components/Breadcrumb";
 import { postBreadcrumb } from "../../constants/breadcrumData";
 import { getCookie } from "../../utils/cookie";
 import { useParams } from "react-router-dom";
-import { scrollToTop } from "../../utils/common";
+import { scrollToTop, setLinkDirect } from "../../utils/common";
 
 export default function EditPost() {
   const [preload, setPreload] = useState(true);
@@ -111,29 +113,20 @@ export default function EditPost() {
     description: "",
     image: "",
     video: "",
-  });
-  const [validatePostTrade, setvalidatePostTrade] = useState({
-    category: 1, //1:phone, 2: laptop, 3: pc
-    name: "",
-    brand: "",
-    status: "",
-    guarantee: "",
-    cpu: "",
-    gpu: "",
-    ram: "",
-    storage_type: "",
-    display_size: "",
-    storage: "",
-    description: "",
+
+    nameTrade: "",
+    titleTrade: "",
+    descriptionTrade: "",
+    guaranteeTrade: "",
   });
   const params = useParams();
   useEffect(() => {
+    setLinkDirect();
     fetchAllData(params.id);
     return () => {
       setPostInfor({});
       setPostTradeInfor({});
       setvalidatePost({});
-      setvalidatePostTrade({});
       setVideoFile();
     };
   }, []);
@@ -152,41 +145,7 @@ export default function EditPost() {
       ...prevState,
       [name]: value,
     }));
-    if (name === "category") {
-      setvalidatePost({
-        name: "",
-        brand: "",
-        status: "",
-        color: "",
-        price: "",
-        address: "",
-        title: "",
-        description: "",
-        image: "",
-      });
-      //reset form post
-      document.getElementById("form-create-post").reset();
-      setPostInfor({
-        category: value, //1:phone, 2: laptop, 3: pc
-        name: "",
-        brand: "",
-        status: "",
-        guarantee: null,
-        cpu: "",
-        gpu: "",
-        ram: null,
-        storage_type: "",
-        storage: null,
-        address: "",
-        price: null,
-        title: "",
-        description: "",
-        display_size: null,
-        public_status: 1,
-        is_trade: 0,
-        color: "",
-      });
-    }
+    console.log("change data", name, value);
   };
   const handleOnChangeTrade = (e) => {
     const { name, value } = e.target;
@@ -199,22 +158,34 @@ export default function EditPost() {
   const [file, setFile] = useState([]);
   const [fileObject, setFileOject] = useState([]);
   const uploadSingleFile = (e) => {
-    if (e.target.files[0]) {
-      setFile([...file, URL.createObjectURL(e.target.files[0])]);
-      setFileOject([...fileObject, e.target.files[0]]);
+    let fileImage = e.target.files[0];
+    let image = "image";
+    let mess = "";
+    if (file.length + imageUrlEdit.length < maxNumImage && fileImage) {
+      if (fileImage.size <= maxSizeImage) {
+        setFile([...file, URL.createObjectURL(fileImage)]);
+        setFileOject([...fileObject, fileImage]);
+      } else mess = "Bạn chỉ được đăng ảnh kích thước tối đa 2mb";
+    } else {
+      mess = `Bạn chỉ được đăng tối đa ${maxNumImage} ảnh`;
     }
+    setvalidatePost((prevState) => ({
+      ...prevState,
+      [image]: mess,
+    }));
   };
 
   const uploadSingleVideo = (e) => {
     //check size video < 30mb
-    if (e.target.files[0]) {
+    let fileVideo = e.target.files[0];
+    if (fileVideo) {
       let video = "video";
       let mess = "";
-      if (e.target.files[0].size > maxSizeVideo) {
+      if (fileVideo.size > maxSizeVideo) {
         mess = "Bạn chỉ được có thể đăng video dưới 10mb";
       } else {
         mess = "";
-        setVideoFile(e.target.files[0]);
+        setVideoFile(fileVideo);
       }
       setvalidatePost((prevState) => ({
         ...prevState,
@@ -251,24 +222,6 @@ export default function EditPost() {
     setImageUrlEdit(imageUrlEdit.filter((item) => item.id !== id));
   };
 
-  const testUpload = async (files) => {
-    const dataFiles = {
-      file: files,
-    };
-    const headers = {
-      "Content-type": "application/json",
-      Authorization: `Bearer ${getCookie("access_token")}`,
-    };
-    await axios
-      .post(apiUpload, dataFiles, { headers: headers })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
   const saveImages = (files, post_id) => {
     const uploaders = files.map((file, index) => {
       const formData = new FormData();
@@ -289,7 +242,7 @@ export default function EditPost() {
           const data = response.data;
           const fileURL = data.secure_url;
           setImageUrl((imageUrl) => [...imageUrl, fileURL]);
-          let isBanner = 0;
+          let isBanner = imageUrlEdit.length > 0 ? 0 : 1;
           handleSaveImage(post_id, fileURL, isBanner);
         });
     });
@@ -445,75 +398,47 @@ export default function EditPost() {
   };
 
   const onClickTrade = () => {
-    setIsTrade(!isTrade);
     let is_trade = "is_trade";
     setPostInfor((prevState) => ({
       ...prevState,
-      [is_trade]: isTrade ? 1 : 0,
+      [is_trade]: !isTrade ? 1 : 0,
     }));
+    setIsTrade(!isTrade);
+    console.log(isTrade);
   };
 
   const onClickFree = () => {
     setIsFree(!isFree);
-    let price = "preice";
+    let price = "price";
     if (isFree)
       setPostInfor((prevState) => ({
         ...prevState,
         [price]: 0,
       }));
-    else
-      setPostInfor((prevState) => ({
-        ...prevState,
-        [price]: null,
-      }));
   };
 
   const onSubmitForm = (event) => {
     event.preventDefault();
-    setPreload(true);
+    // setPreload(true);
     scrollToTop();
     setvalidatePost({
-      name: validateNullFormPost(postInfor.name),
-      brand:
-        Number(postInfor.category) !== 3
-          ? validateNullFormPost(postInfor.brand)
-          : "",
-      status: validateNullFormPost(postInfor.status),
-      color:
-        Number(postInfor.category) !== 3
-          ? validateNullFormPost(postInfor.color)
-          : "",
-      price: !isFree ? validatePrice(postInfor.price) : "",
-      address: validateNullFormPost(address),
-      title: validateNullFormPost(postInfor.title),
-      description: validateNullFormPost(postInfor.description),
-      image:
-        file.length <= 0 && imageUrlEdit.length <= 0
-          ? "Bạn cần đăng ít nhất 1 hình ảnh"
-          : "",
+      name: "",
+      brand: "",
+      status: "",
+      color: "",
+      address: "",
+      price: "",
+      title: "",
+      description: "",
+      image: "",
+      video: "",
+
+      nameTrade: "",
+      titleTrade: "",
+      descriptionTrade: "",
+      guaranteeTrade: "",
     });
-    let validate = true;
-    if (
-      validateNullFormPost(postInfor.name) !== "" &&
-      validateNullFormPost(postInfor.status) !== "" &&
-      validateNullFormPost(address) !== "" &&
-      validateNullFormPost(postInfor.title) !== "" &&
-      validateNullFormPost(postInfor.description) !== ""
-    )
-      validate = false;
-    if (file.length <= 0 && imageUrlEdit.length <= 0) validate = false;
-    if (!isFree && validatePrice(postInfor.price) !== "") validate = false;
-    if (
-      Number(postInfor.category) !== 3 &&
-      validateNullFormPost(postInfor.brand) !== "" &&
-      validateNullFormPost(postInfor.color) !== ""
-    )
-      validate = false;
-    if (validate) {
-      updatePost();
-      if (isTrade) updatePostTrade();
-    } else setPreload(false);
-    // uploadVideo();
+    updatePost();
   };
 
   useEffect(() => {
@@ -535,19 +460,31 @@ export default function EditPost() {
       }
   };
 
-  const uploadVideo = async () => {
-    const videoData = new FormData();
-    videoData.append("file", videoFile, "product");
-    console.log(videoData);
-    // await axios
-    //   .post(apiUploadVideo, videoData, { headers: headerFiles })
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
-  };
+  // const uploadVideo = async () => {
+  //   const videoData = new FormData();
+  //   videoData.append("file", videoFile, "product");
+  //   console.log("update video");
+  //   await axios
+  //     .post(apiUploadVideo, videoData, { headers: headerFiles })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       let data = res.data;
+  //       if (data.status) {
+  //         //thanh cong
+  //         let video_url = "video_url";
+  //         setPostInfor((prevState) => ({
+  //           ...prevState,
+  //           [video_url]: data.data,
+  //         }));
+  //         updatePost();
+  //       } else {
+  //         //that bai
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
   //tao post
   const updatePost = async () => {
     var mergePostData = null;
@@ -572,6 +509,7 @@ export default function EditPost() {
       brand_id: Number(postInfor.brand),
       display_size: Number(postInfor.display_size),
       fileVideo: videoFile,
+      video_url: postInfor.video_url,
       is_delete_video: isDeleteVideo,
       is_delete_image: deleteImageId,
     };
@@ -588,56 +526,40 @@ export default function EditPost() {
       mergePostData = { ...postData };
     }
 
-    console.log("post", mergePostData, isTrade);
-    await axios
-      .put(`${apiPost}/${params.id}`, mergePostData, { headers: headers })
-      .then((res) => {
-        const p = res.data.data;
-        console.log("post success", p, res);
-        if (res.data.status == 1) saveImages(fileObject, params.id);
-        else {
+    console.log("post", mergePostData);
+    let image = "image";
+    if (!((file && file.length) || imageUrlEdit.length)) {
+      setvalidatePost((prevState) => ({
+        ...prevState,
+        [image]: "Bạn cần đăng ít nhất 1 hình ảnh",
+      }));
+    } else
+      await axios
+        .put(`${apiPost}/${params.id}`, mergePostData, { headers: headers })
+        .then((res) => {
+          const p = res.data.data;
+          console.log("post success", p, res);
+          if (res.data.status == 1) saveImages(fileObject, params.id);
+          else {
+            handleValidate(res.data);
+          }
+          setPreload(false);
+        })
+        .catch((error) => {
+          console.error(error);
           setPreload(false);
           toast.error("Cập nhật bài viết không thành công");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        setPreload(false);
-        toast.error("Cập nhật bài viết không thành công");
-      });
+        });
   };
 
-  const updatePostTrade = async (type) => {
-    const dataPostTrade = {
-      category: Number(postTradeInfor.category),
-      name: postTradeInfor.name,
-      guarantee: Number(postTradeInfor.guarantee),
-      title: postTradeInfor.title,
-      description: postTradeInfor.description,
-    };
-    console.log("post trade update", dataPostTrade);
-    if (type == "update")
-      await axios
-        .put(`${apiPostTrade}/${params.id}`, dataPostTrade, {
-          headers: headers,
-        })
-        .then((res) => {
-          console.log("post trade", res);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    if (type == "create")
-      await axios
-        .post(`${apiPostTrade}`, dataPostTrade, {
-          headers: headers,
-        })
-        .then((res) => {
-          console.log("create post trade", res);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+  const handleValidate = (validateData) => {
+    Object.keys(validateData).forEach(function (key) {
+      console.log(key, validateData[key]);
+      setvalidatePost((prevState) => ({
+        ...prevState,
+        [key]: validateData[key][0],
+      }));
+    });
   };
 
   const [postDetail, setPostDetail] = useState({});
@@ -842,7 +764,7 @@ export default function EditPost() {
                       </div>
                     );
                   })}
-                {file.length > 0 &&
+                {file &&
                   file.map((item, index) => {
                     return (
                       <div
@@ -855,7 +777,7 @@ export default function EditPost() {
                             className="fas fa-times-circle fa delete-image"
                             onClick={() => deleteFile(index)}
                           ></i>
-                          {index === 0 ? (
+                          {index === 0 && imageUrlEdit.length === 0 ? (
                             <div className="title-cover-image">
                               <p>Ảnh bìa</p>
                             </div>
@@ -1007,8 +929,7 @@ export default function EditPost() {
                   <div className="col">
                     <div className="form-outline">
                       <label className="form-label" htmlFor="post-color">
-                        Màu sắc&nbsp;
-                        <span style={{ color: "red" }}>*</span>
+                        Màu sắc
                       </label>
                       <input
                         type="text"
@@ -1079,7 +1000,6 @@ export default function EditPost() {
                   </div>
                 )}
               </div>
-              {console.log("cate", Number(postInfor.category))}
               {Number(postInfor.category) > 1 && (
                 <div className="row mb-3">
                   <div className="col">
@@ -1414,7 +1334,9 @@ export default function EditPost() {
                         </option>
                       ))}
                   </select>
-                  <p className="validate-form-text">{validatePost.category}</p>
+                  <p className="validate-form-text">
+                    {validatePost.category_idTrade}
+                  </p>
                 </div>
                 <form
                   className="form-product"
@@ -1432,7 +1354,7 @@ export default function EditPost() {
                       type="text"
                       id="post-trade-name"
                       className={
-                        validatePost.name
+                        validatePost.nameTrade
                           ? "form-control is-invalid"
                           : "form-control"
                       }
@@ -1441,7 +1363,9 @@ export default function EditPost() {
                       defaultValue={postTradeInfor.name}
                       onChange={(e) => handleOnChangeTrade(e)}
                     />
-                    <p className="validate-form-text">{validatePost.name}</p>
+                    <p className="validate-form-text">
+                      {validatePost.nameTrade}
+                    </p>
                   </div>
                   <div className="mb-3 mt-4">
                     <h4>Tiêu đề và mô tả</h4>
@@ -1454,7 +1378,7 @@ export default function EditPost() {
                       type="text"
                       id="post-trade-title"
                       className={
-                        validatePost.title
+                        validatePost.titleTrade
                           ? "form-control is-invalid"
                           : "form-control"
                       }
@@ -1463,7 +1387,9 @@ export default function EditPost() {
                       defaultValue={postTradeInfor.title}
                       onChange={(e) => handleOnChangeTrade(e)}
                     />
-                    <p className="validate-form-text">{validatePost.title}</p>
+                    <p className="validate-form-text">
+                      {validatePost.titleTrade}
+                    </p>
                   </div>
                   <div className="form-outline  mb-3">
                     <label
@@ -1493,7 +1419,7 @@ export default function EditPost() {
                     </label>
                     <textarea
                       className={
-                        validatePost.description
+                        validatePost.descriptionTrade
                           ? "form-control is-invalid"
                           : "form-control"
                       }
@@ -1508,7 +1434,7 @@ export default function EditPost() {
                       onChange={(e) => handleOnChangeTrade(e)}
                     ></textarea>
                     <p className="validate-form-text">
-                      {validatePost.description}
+                      {validatePost.descriptionTrade}
                     </p>
                   </div>
                 </form>

@@ -52,8 +52,9 @@ export const headerFiles = {
   Authorization: `Bearer ${getCookie("access_token")}`,
 };
 
-export const maxSizeImage = 2048000;
-export const maxSizeVideo = 10240000;
+export const maxNumImage = 6;
+export const maxSizeImage = 2097152; //2mb
+export const maxSizeVideo = 10485760; //10mb
 
 export const storageData = [
   { value: 8 },

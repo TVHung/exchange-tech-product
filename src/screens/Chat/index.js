@@ -8,6 +8,7 @@ import avt from "../../assets/image/avt.jpg";
 import Search from "../../components/Navigation/Search";
 import Breadcrumb from "./../../components/Breadcrumb";
 import { chatBreadcrumb } from "../../constants/breadcrumData";
+import { setLinkDirect } from "../../utils/common";
 
 const data = [
   { id: 1, readed: false },
@@ -21,6 +22,7 @@ export default function Chat() {
   const [inputVal, setInputVal] = useState("");
 
   useEffect(() => {
+    setLinkDirect();
     setTimeout(() => {
       setPreload(true);
     }, 500);

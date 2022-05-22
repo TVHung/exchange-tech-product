@@ -1,25 +1,17 @@
 import React, { useState, useEffect } from "react";
 import "./profile.scss";
 import Preloading from "../../components/Loading";
-import { Box, Tab } from "@material-ui/core";
-import { TabContext, TabList, TabPanel } from "@material-ui/lab";
-import {
-  AccountInfor,
-  Favorite,
-  ListPost,
-} from "../../components/ProfileComponent";
+import { AccountInfor } from "../../components/ProfileComponent";
 import MetaTag from "../../components/MetaTag";
+import Breadcrumb from "../../components/Breadcrumb";
+import { profileBreadcrumb } from "../../constants/breadcrumData";
+import { setLinkDirect } from "../../utils/common";
 
 export default function Profile() {
   const [preload, setPreload] = useState(false);
-  const [value, setValue] = React.useState("1");
-  const [key, setKey] = useState("home");
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
 
   useEffect(() => {
+    setLinkDirect();
     setTimeout(() => {
       setPreload(true);
     }, 500);
@@ -35,37 +27,10 @@ export default function Profile() {
       {!preload ? (
         <Preloading />
       ) : (
-        <Box sx={{ width: "100%", typography: "body1" }}>
-          <TabContext value={value}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <TabList
-                onChange={handleChange}
-                aria-label="lab API tabs example"
-              >
-                <Tab label="Tài khoản" value="1" className="profile-tab" />
-                <Tab
-                  label="Bài viết của bạn"
-                  value="2"
-                  className="profile-tab"
-                />
-                <Tab
-                  label="Bài viết quan tâm"
-                  value="3"
-                  className="profile-tab"
-                />
-              </TabList>
-            </Box>
-            <TabPanel value="1">
-              <AccountInfor />
-            </TabPanel>
-            <TabPanel value="2">
-              <ListPost />
-            </TabPanel>
-            <TabPanel value="3">
-              <Favorite />
-            </TabPanel>
-          </TabContext>
-        </Box>
+        <div className="account-manager">
+          <Breadcrumb arrLink={profileBreadcrumb} />
+          <AccountInfor />
+        </div>
       )}
     </div>
   );

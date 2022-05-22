@@ -20,18 +20,7 @@ export const gameBreadcrumb = [
   { name: "Mobile", direct: "/mobile" },
   { name: "Iphone 13 promax", direct: "/ip" },
 ];
-export const staticBreadcrumb = [
+export const postManagerBreadcrumb = [
   { name: "Trang chủ", direct: "/" },
-  { name: "Trang phân tích", direct: "/games" },
-];
-export const subcritionBreadcrumb = [
-  { name: "Trang chủ", direct: "/" },
-  { name: "Trang cha mẹ", direct: "/parent" },
-  { name: "Gói dịch vụ", direct: "/checkout" },
-];
-export const paymentBreadcrumb = [
-  { name: "Trang chủ", direct: "/" },
-  { name: "Trang cha mẹ", direct: "/parent" },
-  { name: "Gói dịch vụ", direct: "/checkout" },
-  { name: "Thanh toán", direct: "/payment" },
+  { name: "Quản lý bài viết", direct: "/post-manager" },
 ];

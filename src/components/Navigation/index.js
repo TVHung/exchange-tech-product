@@ -157,19 +157,9 @@ export default function Navigation() {
               </a>
             </li>
             <li className="option" onClick={closeMobileMenu}>
-              <a href="/" className="underline">
+              <a href="/post-manager" className="underline">
                 <i className="fas fa-user-cog icon-btn"></i>
                 Quản lý tin
-              </a>
-            </li>
-            <li className="option" onClick={closeMobileMenu}>
-              <a href="/" className="underline">
-                <i className="fas fa-bell icon-btn">
-                  <div className="nofi-dot">
-                    <p className="nofi-num">3</p>
-                  </div>
-                </i>
-                Thông báo
               </a>
             </li>
             <li className="option" onClick={closeMobileMenu}>
@@ -182,16 +172,33 @@ export default function Navigation() {
                 Tin nhắn
               </a>
             </li>
-            <li className="option mobile-option" onClick={closeMobileMenu}>
-              <a href="/login" className="underline">
-                Đăng nhập
-              </a>
-            </li>
-            <li className="option mobile-option" onClick={closeMobileMenu}>
-              <a href="/register" className="underline">
-                Đăng ký
-              </a>
-            </li>
+            {!getCookie("access_token") ? (
+              <>
+                <li className="option mobile-option" onClick={closeMobileMenu}>
+                  <a href="/login" className="underline">
+                    Đăng nhập
+                  </a>
+                </li>
+                <li className="option mobile-option" onClick={closeMobileMenu}>
+                  <a href="/register" className="underline">
+                    Đăng ký
+                  </a>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="option mobile-option" onClick={closeMobileMenu}>
+                  <a href="/profile" className="underline">
+                    <i className="fas fa-user icon-btn"></i>Trang cá nhân
+                  </a>
+                </li>
+                <li className="option mobile-option" onClick={closeMobileMenu}>
+                  <a href="/create-post" className="underline">
+                    <i className="fas fa-edit icon-btn"></i>Đăng bài
+                  </a>
+                </li>
+              </>
+            )}
           </ul>
         </div>
         <div className="mobile-menu" onClick={handleClickMobile}>

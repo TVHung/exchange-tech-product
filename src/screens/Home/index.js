@@ -14,6 +14,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllPost } from "./../../redux/actions/postActions";
 import { headers } from "../../constants";
+import { setLinkDirect } from "../../utils/common";
 
 const dataSlides = [
   {
@@ -47,6 +48,7 @@ export default function Home() {
   };
 
   useEffect(() => {
+    setLinkDirect();
     getAllPost();
     setTimeout(() => {
       setPreload(true);
