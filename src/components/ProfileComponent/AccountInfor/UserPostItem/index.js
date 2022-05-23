@@ -52,14 +52,6 @@ export default function UserPostItem({ data, handleShow }) {
             </div>
           </div>
         </div>
-        <div className="d-flex justify-content-end mt-1">
-          <div className="btn btn-danger mx-1" onClick={(e) => handleDelete(e)}>
-            <span>Xóa</span>
-          </div>
-          <div className="btn enquiry mx-1" onClick={(e) => handleEdit(e)}>
-            <span>Chỉnh sửa</span>
-          </div>
-        </div>
       </div>
     </div>
   );

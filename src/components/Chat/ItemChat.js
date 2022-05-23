@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Grid } from "@material-ui/core";
 import avt from "../../assets/image/avt.jpg";
-import "./chatItem.scss";
+import "./_itemChat.scss";
 
-export default function ChatItem({ item }) {
+export default function ItemChat({ item }) {
   const onClickChat = () => {};
 
   return (

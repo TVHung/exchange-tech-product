@@ -273,7 +273,11 @@ export default function AccountUserInfor() {
               <input
                 type="text"
                 id="profile-address"
-                className="form-control"
+                className={
+                  validateProfile.address
+                    ? "form-control is-invalid"
+                    : "form-control"
+                }
                 placeholder="Địa chỉ"
                 name="address"
                 defaultValue={user_profile.address}
@@ -289,7 +293,11 @@ export default function AccountUserInfor() {
                 <input
                   type="text"
                   id="profile-facebook"
-                  className="form-control"
+                  className={
+                    validateProfile.facebook_url
+                      ? "form-control is-invalid"
+                      : "form-control"
+                  }
                   placeholder="Đường dẫn tài khoản facebook"
                   name="facebook_url"
                   defaultValue={user_profile.facebook_url}
@@ -307,7 +315,11 @@ export default function AccountUserInfor() {
               <input
                 type="text"
                 id="profile-phone"
-                className="form-control"
+                className={
+                  validateProfile.phone
+                    ? "form-control is-invalid"
+                    : "form-control"
+                }
                 placeholder="Số điện thoại"
                 name="phone"
                 defaultValue={user_profile.phone}

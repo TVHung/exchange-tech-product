@@ -7,18 +7,32 @@ import { Favorite, ListPost } from "../../components/ProfileComponent";
 import MetaTag from "../../components/MetaTag";
 import Breadcrumb from "../../components/Breadcrumb";
 import { postManagerBreadcrumb } from "../../constants/breadcrumData";
-import { setLinkDirect } from "../../utils/common";
+import { setLinkDirect, insertParam } from "../../utils/common";
+import { useHistory } from "react-router-dom";
+import { getParam } from "./../../utils/common";
 
 export default function PostManager() {
   const [preload, setPreload] = useState(false);
-  const [value, setValue] = React.useState("1");
+  const [value, setValue] = React.useState("profile");
+  const history = useHistory();
+
+  const insertParams = (key, value) => {
+    let params = insertParam(key, value);
+    history.push({
+      pathname: "/post-manager",
+      search: `?${params}`,
+    });
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    insertParams("tab", newValue);
   };
 
   useEffect(() => {
     setLinkDirect();
+    if (getParam("tab")) setValue(getParam("tab"));
+    else insertParams("tab", "profile");
     setTimeout(() => {
       setPreload(true);
     }, 500);
@@ -45,20 +59,20 @@ export default function PostManager() {
                 >
                   <Tab
                     label="Bài viết của bạn"
-                    value="1"
+                    value="profile"
                     className="profile-tab"
                   />
                   <Tab
                     label="Bài viết quan tâm"
-                    value="2"
+                    value="post-favorite"
                     className="profile-tab"
                   />
                 </TabList>
               </Box>
-              <TabPanel value="1">
+              <TabPanel value="profile">
                 <ListPost />
               </TabPanel>
-              <TabPanel value="2">
+              <TabPanel value="post-favorite">
                 <Favorite />
               </TabPanel>
             </TabContext>

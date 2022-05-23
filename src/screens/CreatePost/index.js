@@ -34,30 +34,17 @@ import { postBreadcrumb } from "../../constants/breadcrumData";
 import { getCookie } from "../../utils/cookie";
 import { maxSizeImage } from "./../../constants/index";
 import { scrollToTop, setLinkDirect } from "../../utils/common";
+import AddressSelect from "../../components/AddressSelect";
 
 export default function CreatePost() {
   const [preload, setPreload] = useState(false);
   const [isTrade, setIsTrade] = useState(false);
   const [isFree, setIsFree] = useState(false);
 
-  //address handle
-  const [show, setShow] = useState(false);
-  const [dataCity, setDataCity] = useState([]);
-  const [dataDistrict, setDataDistrict] = useState([]);
-  const [dataWard, setDataWard] = useState([]);
-  const [address, setAddress] = useState("");
-  const [addressDetail, setAddressDetail] = useState({
-    city: "",
-    district: "",
-    wards: "",
-    cityName: "",
-    districtName: "",
-    wardName: "",
-  });
-
   const [isCreatePost, setIsCreatePost] = useState(false);
   const [imageUrl, setImageUrl] = useState([]);
   const [videoFile, setVideoFile] = useState();
+  const [address, setAddress] = useState("");
   const [postInfor, setPostInfor] = useState({
     category: 1, //1:phone, 2: laptop, 3: pc
     name: "",
@@ -115,15 +102,7 @@ export default function CreatePost() {
       setVideoFile();
     };
   }, []);
-  const handleOnChangeAddress = (e) => {
-    const { name, value } = e.target;
-    setAddressDetail((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-    if (name == "city") fetchDistrict(value); //lay gia tri de render ra quan, huyen
-    if (name == "district") fetchWard(value); //lay gia tri de render ra xa
-  };
+
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setPostInfor((prevState) => ({
@@ -258,131 +237,156 @@ export default function CreatePost() {
     });
   };
 
-  const handleOkAddress = () => {
-    let cityName = "city";
-    let districtName = "district";
-    let wardName = "wards";
-    if (isNull(addressDetail.city) || addressDetail.city == "0")
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [cityName]: "Bạn chưa chọn tỉnh, thành phố",
-      }));
-    else
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [cityName]: "",
-      }));
-    if (isNull(addressDetail.district) || addressDetail.district == "0")
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [districtName]: "Bạn chưa chọn quận, huyện, thị xã",
-      }));
-    else
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [districtName]: "",
-      }));
-    if (isNull(addressDetail.wards) || addressDetail.wards == "0")
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [wardName]: "Bạn chưa chọn phường, xã, thị trấn",
-      }));
-    else
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [wardName]: "",
-      }));
-    if (
-      addressDetail.city !== "" &&
-      addressDetail.district !== "" &&
-      addressDetail.wards !== "" &&
-      addressDetail.city !== "0" &&
-      addressDetail.district !== "0" &&
-      addressDetail.wards !== "0"
-    ) {
-      let city, district, wards;
-      for (let i = 0; i < dataCity.length; i++) {
-        if (dataCity[i].code == addressDetail.city) {
-          city = dataCity[i].name;
-          let name = "cityName";
-          // eslint-disable-next-line no-loop-func
-          setAddressDetail((prevState) => ({
-            ...prevState,
-            [name]: city,
-          }));
-        }
-      }
-      for (let i = 0; i < dataDistrict.length; i++) {
-        if (dataDistrict[i].code == addressDetail.district) {
-          district = dataDistrict[i].name;
-          let name = "districtName";
-          // eslint-disable-next-line no-loop-func
-          setAddressDetail((prevState) => ({
-            ...prevState,
-            [name]: district,
-          }));
-        }
-      }
-      for (let i = 0; i < dataWard.length; i++) {
-        if (dataWard[i].code == addressDetail.wards) {
-          wards = dataWard[i].name;
-          let name = "wardName";
-          // eslint-disable-next-line no-loop-func
-          setAddressDetail((prevState) => ({
-            ...prevState,
-            [name]: wards,
-          }));
-        }
-      }
-      setAddress(`${wards}, ${district}, ${city}`);
-      handleClose();
-    } else {
-      setAddress("");
-    }
-  };
-  const handleClose = () => {
-    setShow(false);
-  };
-  const handleShow = () => {
-    fetchCity();
-    setShow(true);
-  };
+  // //address handle
+  // const [show, setShow] = useState(false);
+  // const [dataCity, setDataCity] = useState([]);
+  // const [dataDistrict, setDataDistrict] = useState([]);
+  // const [dataWard, setDataWard] = useState([]);
+  // const [address, setAddress] = useState("");
+  // const [addressDetail, setAddressDetail] = useState({
+  //   city: "",
+  //   district: "",
+  //   wards: "",
+  //   cityName: "",
+  //   districtName: "",
+  //   wardName: "",
+  // });
 
-  const fetchCity = async () => {
-    await axios
-      .get(apiCity)
-      .then((res) => {
-        const data = res.data;
-        setDataCity(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+  // const handleOnChangeAddress = (e) => {
+  //   const { name, value } = e.target;
+  //   setAddressDetail((prevState) => ({
+  //     ...prevState,
+  //     [name]: value,
+  //   }));
+  //   if (name == "city") fetchDistrict(value); //lay gia tri de render ra quan, huyen
+  //   if (name == "district") fetchWard(value); //lay gia tri de render ra xa
+  // };
 
-  const fetchDistrict = async (city_id) => {
-    await axios
-      .get(`${apiDistrict}/${city_id}/?depth=2`)
-      .then((res) => {
-        const data = res.data;
-        setDataDistrict(data.districts);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+  // const handleOkAddress = () => {
+  //   let cityName = "city";
+  //   let districtName = "district";
+  //   let wardName = "wards";
+  //   if (isNull(addressDetail.city) || addressDetail.city == "0")
+  //     setvalidatePost((prevState) => ({
+  //       ...prevState,
+  //       [cityName]: "Bạn chưa chọn tỉnh, thành phố",
+  //     }));
+  //   else
+  //     setvalidatePost((prevState) => ({
+  //       ...prevState,
+  //       [cityName]: "",
+  //     }));
+  //   if (isNull(addressDetail.district) || addressDetail.district == "0")
+  //     setvalidatePost((prevState) => ({
+  //       ...prevState,
+  //       [districtName]: "Bạn chưa chọn quận, huyện, thị xã",
+  //     }));
+  //   else
+  //     setvalidatePost((prevState) => ({
+  //       ...prevState,
+  //       [districtName]: "",
+  //     }));
+  //   if (isNull(addressDetail.wards) || addressDetail.wards == "0")
+  //     setvalidatePost((prevState) => ({
+  //       ...prevState,
+  //       [wardName]: "Bạn chưa chọn phường, xã, thị trấn",
+  //     }));
+  //   else
+  //     setvalidatePost((prevState) => ({
+  //       ...prevState,
+  //       [wardName]: "",
+  //     }));
+  //   if (
+  //     addressDetail.city !== "" &&
+  //     addressDetail.district !== "" &&
+  //     addressDetail.wards !== "" &&
+  //     addressDetail.city !== "0" &&
+  //     addressDetail.district !== "0" &&
+  //     addressDetail.wards !== "0"
+  //   ) {
+  //     let city, district, wards;
+  //     for (let i = 0; i < dataCity.length; i++) {
+  //       if (dataCity[i].code == addressDetail.city) {
+  //         city = dataCity[i].name;
+  //         let name = "cityName";
+  //         // eslint-disable-next-line no-loop-func
+  //         setAddressDetail((prevState) => ({
+  //           ...prevState,
+  //           [name]: city,
+  //         }));
+  //       }
+  //     }
+  //     for (let i = 0; i < dataDistrict.length; i++) {
+  //       if (dataDistrict[i].code == addressDetail.district) {
+  //         district = dataDistrict[i].name;
+  //         let name = "districtName";
+  //         // eslint-disable-next-line no-loop-func
+  //         setAddressDetail((prevState) => ({
+  //           ...prevState,
+  //           [name]: district,
+  //         }));
+  //       }
+  //     }
+  //     for (let i = 0; i < dataWard.length; i++) {
+  //       if (dataWard[i].code == addressDetail.wards) {
+  //         wards = dataWard[i].name;
+  //         let name = "wardName";
+  //         // eslint-disable-next-line no-loop-func
+  //         setAddressDetail((prevState) => ({
+  //           ...prevState,
+  //           [name]: wards,
+  //         }));
+  //       }
+  //     }
+  //     setAddress(`${wards}, ${district}, ${city}`);
+  //     handleClose();
+  //   } else {
+  //     setAddress("");
+  //   }
+  // };
+  // const handleClose = () => {
+  //   setShow(false);
+  // };
+  // const handleShow = () => {
+  //   fetchCity();
+  //   setShow(true);
+  // };
 
-  const fetchWard = async (district_id) => {
-    await axios
-      .get(`${apiWard}/${district_id}/?depth=2`)
-      .then((res) => {
-        const data = res.data;
-        setDataWard(data.wards);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+  // const fetchCity = async () => {
+  //   await axios
+  //     .get(apiCity)
+  //     .then((res) => {
+  //       const data = res.data;
+  //       setDataCity(data);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
+
+  // const fetchDistrict = async (city_id) => {
+  //   await axios
+  //     .get(`${apiDistrict}/${city_id}/?depth=2`)
+  //     .then((res) => {
+  //       const data = res.data;
+  //       setDataDistrict(data.districts);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
+
+  // const fetchWard = async (district_id) => {
+  //   await axios
+  //     .get(`${apiWard}/${district_id}/?depth=2`)
+  //     .then((res) => {
+  //       const data = res.data;
+  //       setDataWard(data.wards);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
 
   const toPreview = (e) => {
     window.location.href = "/create-post/preview";
@@ -393,14 +397,15 @@ export default function CreatePost() {
     setIsTrade(checked);
   };
 
-  const onClickFree = () => {
+  const onClickFree = (e) => {
+    const { checked } = e.target;
     let price = "price";
-    if (!isFree)
+    if (checked)
       setPostInfor((prevState) => ({
         ...prevState,
         [price]: 0,
       }));
-    setIsFree(!isFree);
+    setIsFree(checked);
   };
 
   const onSubmitForm = (event) => {
@@ -566,7 +571,7 @@ export default function CreatePost() {
         description={"Đăng bán, trao đổi, tắng sản phẩm"}
       />
       {/* modal address */}
-      <Modal show={show} onHide={() => handleClose()} centered>
+      {/* <Modal show={show} onHide={() => handleClose()} centered>
         <Modal.Header closeButton>
           <Modal.Title>Chọn địa chỉ</Modal.Title>
         </Modal.Header>
@@ -645,7 +650,7 @@ export default function CreatePost() {
             Xong
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
       {isCreatePost && <Preloading />}
       {preload ? (
         <Preloading />
@@ -1039,7 +1044,7 @@ export default function CreatePost() {
                 <label className="form-label" htmlFor="post-address">
                   Địa chỉ&nbsp;<span style={{ color: "red" }}>*</span>
                 </label>
-                <input
+                {/* <input
                   type="text"
                   id="post-address"
                   className={
@@ -1051,6 +1056,10 @@ export default function CreatePost() {
                   readOnly
                   value={address}
                   onClick={() => handleShow()}
+                /> */}
+                <AddressSelect
+                  setAddress={setAddress}
+                  validateAddress={validatePost.address}
                 />
                 <p className="validate-form-text">{validatePost.address}</p>
               </div>
@@ -1060,7 +1069,7 @@ export default function CreatePost() {
                   className="form-check-input"
                   id="freeCheckbox"
                   defaultChecked={isFree}
-                  onClick={() => onClickFree()}
+                  onChange={(e) => onClickFree(e)}
                 />
                 <label className="form-check-label" htmlFor="freeCheckbox">
                   Tặng miễn phí
@@ -1159,7 +1168,7 @@ export default function CreatePost() {
                 className="form-check-input"
                 id="tradeCheckbox"
                 defaultChecked={isTrade}
-                onClick={(e) => onClickTrade(e)}
+                onChange={(e) => onClickTrade(e)}
               />
               <label className="form-check-label" htmlFor="tradeCheckbox">
                 Đổi sản phẩm

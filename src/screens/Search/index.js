@@ -599,46 +599,46 @@ export default function Search() {
                     </Collapse>
                   </div>
                 ) : null}
-                {/* {categoryValue == "1" || categoryValue == "2" ? ( */}
-                <div className="box border-bottom-custom">
-                  <div className="box-label text-uppercase d-flex align-items-center">
-                    Hãng{" "}
-                    <button
-                      className="btn ms-auto collapse-filter"
-                      name="brand"
-                      onClick={() => showHideCollapse("brand")}
-                      aria-controls="collpase-brand-filter"
-                      aria-expanded={openBrand}
-                    >
-                      {" "}
-                      {openBrand ? (
-                        <i className="fas fa-minus"></i>
-                      ) : (
-                        <i className="fas fa-plus"></i>
-                      )}{" "}
-                    </button>
-                  </div>
-                  <Collapse in={openBrand}>
-                    <div id="collpase-brand-filter">
-                      {brandCategoryValue &&
-                        brandCategoryValue.map((data, index) => (
-                          <div className="my-1" key={index}>
-                            {" "}
-                            <label className="tick">
-                              {data.name}{" "}
-                              <input
-                                type="checkbox"
-                                value={data.id}
-                                onChange={onChangeBrand}
-                              />{" "}
-                              <span className="check"></span>{" "}
-                            </label>{" "}
-                          </div>
-                        ))}
+                {categoryValue == "1" || categoryValue == "2" ? (
+                  <div className="box border-bottom-custom">
+                    <div className="box-label text-uppercase d-flex align-items-center">
+                      Hãng{" "}
+                      <button
+                        className="btn ms-auto collapse-filter"
+                        name="brand"
+                        onClick={() => showHideCollapse("brand")}
+                        aria-controls="collpase-brand-filter"
+                        aria-expanded={openBrand}
+                      >
+                        {" "}
+                        {openBrand ? (
+                          <i className="fas fa-minus"></i>
+                        ) : (
+                          <i className="fas fa-plus"></i>
+                        )}{" "}
+                      </button>
                     </div>
-                  </Collapse>
-                </div>
-                {/* ) : null} */}
+                    <Collapse in={openBrand}>
+                      <div id="collpase-brand-filter">
+                        {brandCategoryValue &&
+                          brandCategoryValue.map((data, index) => (
+                            <div className="my-1" key={index}>
+                              {" "}
+                              <label className="tick">
+                                {data.name}{" "}
+                                <input
+                                  type="checkbox"
+                                  value={data.id}
+                                  onChange={onChangeBrand}
+                                />{" "}
+                                <span className="check"></span>{" "}
+                              </label>{" "}
+                            </div>
+                          ))}
+                      </div>
+                    </Collapse>
+                  </div>
+                ) : null}
                 <div className="box border-bottom-custom">
                   <div className="box-label text-uppercase d-flex align-items-center">
                     Bộ nhớ{" "}

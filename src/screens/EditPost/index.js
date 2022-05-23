@@ -397,20 +397,22 @@ export default function EditPost() {
       });
   };
 
-  const onClickTrade = () => {
+  const onClickTrade = (e) => {
+    const { checked } = e.target;
     let is_trade = "is_trade";
     setPostInfor((prevState) => ({
       ...prevState,
-      [is_trade]: !isTrade ? 1 : 0,
+      [is_trade]: checked ? 1 : 0,
     }));
-    setIsTrade(!isTrade);
-    console.log(isTrade);
+    setIsTrade(checked);
+    console.log(checked);
   };
 
-  const onClickFree = () => {
-    setIsFree(!isFree);
+  const onClickFree = (e) => {
+    const { checked } = e.target;
+    setIsFree(checked);
     let price = "price";
-    if (isFree)
+    if (checked)
       setPostInfor((prevState) => ({
         ...prevState,
         [price]: 0,
@@ -575,6 +577,7 @@ export default function EditPost() {
           console.log("post", post);
           setPreload(false);
           setPostDetail(post);
+          if (post.price == 0) setIsFree(true);
           const name = "category";
           const value = post.category_id;
           setPostInfor((prevState) => ({
@@ -851,14 +854,11 @@ export default function EditPost() {
                 onChange={(e) => handleOnChange(e)}
                 placeholder="Loại sản phẩm"
                 disabled={true}
+                value={postDetail.category_id}
               >
                 {categoryData &&
                   categoryData.map((data, index) => (
-                    <option
-                      key={index}
-                      value={data.id}
-                      selected={postDetail.category_id == data.id}
-                    >
+                    <option key={index} value={data.id}>
                       {data.value}
                     </option>
                   ))}
@@ -910,15 +910,12 @@ export default function EditPost() {
                         name="brand"
                         id="post-brand"
                         onChange={(e) => handleOnChange(e)}
+                        value={postDetail.brand_id}
                       >
                         <option>Hãng sản xuất</option>
                         {brandCategory &&
                           brandCategory.map((data, index) => (
-                            <option
-                              key={index}
-                              value={data.id}
-                              selected={postDetail.brand_id == data.id}
-                            >
+                            <option key={index} value={data.id}>
                               {data.name}
                             </option>
                           ))}
@@ -965,14 +962,11 @@ export default function EditPost() {
                       name="status"
                       id="post-status"
                       onChange={(e) => handleOnChange(e)}
+                      value={postDetail.status}
                     >
                       <option value="0">Tình trạng</option>
                       {statusData.map((data, index) => (
-                        <option
-                          key={index}
-                          value={data.id}
-                          selected={postDetail.status == data.id}
-                        >
+                        <option key={index} value={data.id}>
                           {data.value}
                         </option>
                       ))}
@@ -1091,14 +1085,11 @@ export default function EditPost() {
                         name="storage"
                         id="post-storage"
                         onChange={(e) => handleOnChange(e)}
+                        value={postDetail.storage}
                       >
                         <option value="0">Dung lượng bộ nhớ</option>
                         {storageData.map((data, index) => (
-                          <option
-                            key={index}
-                            value={data.value}
-                            selected={postDetail.storage == data.value}
-                          >
+                          <option key={index} value={data.value}>
                             {`${data.value}GB`}
                           </option>
                         ))}
@@ -1123,14 +1114,11 @@ export default function EditPost() {
                         name="storage_type"
                         id="post-storage-type"
                         onChange={(e) => handleOnChange(e)}
+                        value={postDetail.storage_type}
                       >
                         <option>Loại ổ cứng</option>
                         {storageTypeData.map((data, index) => (
-                          <option
-                            key={index}
-                            value={data.id}
-                            selected={postDetail.storage_type == data.id}
-                          >
+                          <option key={index} value={data.id}>
                             {data.value}
                           </option>
                         ))}
@@ -1151,14 +1139,11 @@ export default function EditPost() {
                         name="storage"
                         id="post-storage"
                         onChange={(e) => handleOnChange(e)}
+                        value={postDetail.storage}
                       >
                         <option value="0">Dung lượng ổ cứng cứng</option>
                         {storageData.map((data, index) => (
-                          <option
-                            key={index}
-                            value={data.value}
-                            selected={postDetail.storage == data.value}
-                          >
+                          <option key={index} value={data.value}>
                             {`${data.value}GB`}
                           </option>
                         ))}
@@ -1194,9 +1179,8 @@ export default function EditPost() {
                   type="checkbox"
                   className="form-check-input"
                   id="freeCheckbox"
-                  checked={isFree}
-                  defaultChecked={postDetail.price == 0}
-                  onClick={() => onClickFree()}
+                  defaultChecked={isFree}
+                  onChange={(e) => onClickFree(e)}
                 />
                 <label className="form-check-label" htmlFor="freeCheckbox">
                   Tặng miễn phí
@@ -1280,9 +1264,10 @@ export default function EditPost() {
                   id="post-public"
                   onChange={(e) => handleOnChange(e)}
                   placeholder="Chế độ bài viết"
+                  value={postDetail.public_status}
                 >
-                  <option value="0">Công khai</option>
-                  <option value="1">Riêng tư</option>
+                  <option value={1}>Công khai</option>
+                  <option value={0}>Riêng tư</option>
                 </select>
                 <p className="validate-form-text">
                   {validatePost.public_status}
@@ -1299,7 +1284,7 @@ export default function EditPost() {
                 className="form-check-input"
                 id="tradeCheckbox"
                 defaultChecked={isTrade}
-                onClick={() => onClickTrade()}
+                onChange={(e) => onClickTrade(e)}
               />
               <label className="form-check-label" htmlFor="tradeCheckbox">
                 Đổi sản phẩm
@@ -1322,14 +1307,11 @@ export default function EditPost() {
                     name="category"
                     onChange={(e) => handleOnChangeTrade(e)}
                     placeholder="Loại sản phẩm"
+                    value={postTradeInfor.category_id}
                   >
                     {categoryData &&
                       categoryData.map((data, index) => (
-                        <option
-                          key={index}
-                          value={data.id}
-                          selected={postTradeInfor.category_id == data.id}
-                        >
+                        <option key={index} value={data.id}>
                           {data.value}
                         </option>
                       ))}

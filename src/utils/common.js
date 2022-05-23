@@ -93,6 +93,12 @@ export const deleteParam = (parameter) => {
   }
 };
 
+export const getParam = (feild) => {
+  var url = new URL(window.location.href);
+  var paramString = url.searchParams.get(feild);
+  return paramString;
+};
+
 //thay doi xoa chuoi khi chon nhieu truong
 export const changeParamString = (feild, value) => {
   var url = new URL(window.location.href);

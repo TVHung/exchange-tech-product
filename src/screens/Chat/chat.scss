@@ -7,13 +7,6 @@
   padding-bottom: 20px;
   height: auto;
 }
-
-// @media (min-width: 1500px) {
-//   .chat-container {
-//     @include width-lg-container();
-//   }
-// }
-
 @media (max-width: 960px) {
   .chat-left {
     display: none;

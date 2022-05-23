@@ -280,7 +280,7 @@ export default function Navigation() {
             Trang cá nhân
           </MenuItem>
         </Link>
-        <Link to="/profile">
+        <Link to="/post-manager?tab=post-favorite">
           <MenuItem className="menu-content">
             <ListItemIcon>
               <i className="fas fa-bookmark"></i>

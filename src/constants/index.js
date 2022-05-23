@@ -14,6 +14,8 @@ export const apiProfile = `${api}/profiles`;
 
 //api post
 export const apiPost = `${api}/posts`;
+export const apiPostRecently = `${api}/posts-recently`;
+export const apiPostHasTrade = `${api}/posts-has-trade`;
 export const apiGetAllPost = `${api}/posts`;
 export const apiFetchPostDetail = `${api}/posts`;
 export const apiFetchPostDetailWithCheck = `${api}/get-post-edit`;

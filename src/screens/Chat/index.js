@@ -8,6 +8,7 @@ import Search from "../../components/Navigation/Search";
 import Breadcrumb from "./../../components/Breadcrumb";
 import { chatBreadcrumb } from "../../constants/breadcrumData";
 import { setLinkDirect } from "../../utils/common";
+import ItemChat from "../../components/Chat/ItemChat.js";
 
 const data = [
   { id: 1, readed: false },
@@ -38,7 +39,9 @@ export default function Chat() {
         <Grid container className="chatContainer">
           <Grid item className="chat-left" xs={4}>
             {data.map((item) => (
-              <Grid key={item.id} item xs={12}></Grid>
+              <Grid key={item.id} item xs={12}>
+                <ItemChat item={item} />
+              </Grid>
             ))}
           </Grid>
           <Grid item className="chat-right" sm={12} md={8}>
