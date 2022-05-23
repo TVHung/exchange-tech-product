@@ -18,7 +18,6 @@ export const searchBreadcrumb = [
 export const gameBreadcrumb = [
   { name: "Trang chủ", direct: "/" },
   { name: "Mobile", direct: "/mobile" },
-  { name: "Iphone 13 promax", direct: "/ip" },
 ];
 export const postManagerBreadcrumb = [
   { name: "Trang chủ", direct: "/" },

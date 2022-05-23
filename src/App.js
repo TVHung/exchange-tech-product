@@ -27,6 +27,7 @@ import ScrollUp from "./components/ScrollUp";
 import "./utils/loader";
 import PostManager from "./screens/PostManager";
 import AuthRoute from "./routes/auth/AuthRoute";
+import ProfileUser from "./screens/ProfileUser";
 toast.configure();
 
 function App() {
@@ -80,10 +81,11 @@ function App() {
           <AuthRoute exact path="/login" component={Login} />
           <AuthRoute exact path="/register" component={Register} />
           <Route exact path="/detail/:id" render={(props) => <Detail />} />
+          <Route exact path="/profile/:id" render={(props) => <Profile />} />
           <PrivateRoute
             path="/profile"
             exact
-            component={Profile}
+            component={ProfileUser}
             isAuth={isAuth}
           />
           <Route path="/:someString" component={Error} />

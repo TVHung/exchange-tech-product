@@ -9,6 +9,8 @@ export const apiGetAccountProfile = `${api}/auth/profile-user`;
 export const apiUserProfile = `${api}/profile-user`;
 export const apiGetUser = `${api}/users`;
 export const apiChangePass = `${api}/auth/change-pass`;
+//profile
+export const apiProfile = `${api}/profiles`;
 
 //api post
 export const apiPost = `${api}/posts`;
@@ -16,6 +18,7 @@ export const apiGetAllPost = `${api}/posts`;
 export const apiFetchPostDetail = `${api}/posts`;
 export const apiFetchPostDetailWithCheck = `${api}/get-post-edit`;
 export const apiFetchMyPosts = `${api}/my-posts`;
+export const apiFetchUserPosts = `${api}/user-posts`;
 export const apiFetchRecommendPosts = `${api}/recommend-posts`;
 export const apiWishList = `${api}/wish-list`;
 
@@ -71,6 +74,11 @@ export const statusData = [
   { id: 0, value: "Mới" },
   { id: 1, value: "Cũ (90-99%)" },
   { id: 2, value: "Cũ (<90%)" },
+];
+export const sexData = [
+  { id: 0, value: "Nam" },
+  { id: 1, value: "Nữ" },
+  { id: 2, value: "Khác" },
 ];
 export const storageTypeData = [
   { id: 0, value: "HDD", type: 0 },

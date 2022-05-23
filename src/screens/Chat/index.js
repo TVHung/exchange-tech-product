@@ -3,7 +3,6 @@ import "./chat.scss";
 import { Grid } from "@material-ui/core";
 import MetaTag from "../../components/MetaTag";
 import Preloading from "../../components/Loading";
-import ChatItem from "../../components/ChatItem";
 import avt from "../../assets/image/avt.jpg";
 import Search from "../../components/Navigation/Search";
 import Breadcrumb from "./../../components/Breadcrumb";
@@ -39,9 +38,7 @@ export default function Chat() {
         <Grid container className="chatContainer">
           <Grid item className="chat-left" xs={4}>
             {data.map((item) => (
-              <Grid key={item.id} item xs={12}>
-                <ChatItem item={item} />
-              </Grid>
+              <Grid key={item.id} item xs={12}></Grid>
             ))}
           </Grid>
           <Grid item className="chat-right" sm={12} md={8}>

@@ -77,6 +77,24 @@ export default function Item({ data, status }) {
             </span>
           </div>
         </div>
+        <div className="itemDrop">
+          <i
+            className="fas fa-heart favorite-heart"
+            onClick={() => toggleFavorite()}
+            style={{ color: !favorite ? "black" : "red" }}
+          ></i>
+          <div className="itemDrop-container">
+            <div className="itemDrop-content">
+              <p>{data.description}</p>
+            </div>
+            <div className="itemDrop-btn">
+              <Button className="item-btn-care" onClick={() => toDetail()}>
+                Chi tiết
+              </Button>
+              <Button className="item-btn-chat">Nhắn tin</Button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
