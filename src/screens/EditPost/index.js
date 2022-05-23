@@ -37,26 +37,13 @@ import { postBreadcrumb } from "../../constants/breadcrumData";
 import { getCookie } from "../../utils/cookie";
 import { useParams } from "react-router-dom";
 import { scrollToTop, setLinkDirect } from "../../utils/common";
+import AddressSelect from "../../components/AddressSelect";
 
 export default function EditPost() {
   const [preload, setPreload] = useState(true);
   const [isTrade, setIsTrade] = useState(false);
   const [isFree, setIsFree] = useState(false);
-
-  //address handle
-  const [show, setShow] = useState(false);
-  const [dataCity, setDataCity] = useState([]);
-  const [dataDistrict, setDataDistrict] = useState([]);
-  const [dataWard, setDataWard] = useState([]);
   const [address, setAddress] = useState("");
-  const [addressDetail, setAddressDetail] = useState({
-    city: "",
-    district: "",
-    wards: "",
-    cityName: "",
-    districtName: "",
-    wardName: "",
-  });
 
   const [isCreatePost, setIsCreatePost] = useState(false);
   const [imageUrl, setImageUrl] = useState([]);
@@ -130,15 +117,7 @@ export default function EditPost() {
       setVideoFile();
     };
   }, []);
-  const handleOnChangeAddress = (e) => {
-    const { name, value } = e.target;
-    setAddressDetail((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-    if (name == "city") fetchDistrict(value); //lay gia tri de render ra quan, huyen
-    if (name == "district") fetchWard(value); //lay gia tri de render ra xa
-  };
+
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setPostInfor((prevState) => ({
@@ -265,132 +244,6 @@ export default function EditPost() {
       .post(apiImages, imageData, { headers: headers })
       .then((res) => {
         const i = res.data.data;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const handleOkAddress = () => {
-    let cityName = "city";
-    let districtName = "district";
-    let wardName = "wards";
-    if (isNull(addressDetail.city) || addressDetail.city == "0")
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [cityName]: "Bạn chưa chọn tỉnh, thành phố",
-      }));
-    else
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [cityName]: "",
-      }));
-    if (isNull(addressDetail.district) || addressDetail.district == "0")
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [districtName]: "Bạn chưa chọn quận, huyện, thị xã",
-      }));
-    else
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [districtName]: "",
-      }));
-    if (isNull(addressDetail.wards) || addressDetail.wards == "0")
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [wardName]: "Bạn chưa chọn phường, xã, thị trấn",
-      }));
-    else
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [wardName]: "",
-      }));
-    if (
-      addressDetail.city !== "" &&
-      addressDetail.district !== "" &&
-      addressDetail.wards !== "" &&
-      addressDetail.city !== "0" &&
-      addressDetail.district !== "0" &&
-      addressDetail.wards !== "0"
-    ) {
-      let city, district, wards;
-      for (let i = 0; i < dataCity.length; i++) {
-        if (dataCity[i].code == addressDetail.city) {
-          city = dataCity[i].name;
-          let name = "cityName";
-          // eslint-disable-next-line no-loop-func
-          setAddressDetail((prevState) => ({
-            ...prevState,
-            [name]: city,
-          }));
-        }
-      }
-      for (let i = 0; i < dataDistrict.length; i++) {
-        if (dataDistrict[i].code == addressDetail.district) {
-          district = dataDistrict[i].name;
-          let name = "districtName";
-          // eslint-disable-next-line no-loop-func
-          setAddressDetail((prevState) => ({
-            ...prevState,
-            [name]: district,
-          }));
-        }
-      }
-      for (let i = 0; i < dataWard.length; i++) {
-        if (dataWard[i].code == addressDetail.wards) {
-          wards = dataWard[i].name;
-          let name = "wardName";
-          // eslint-disable-next-line no-loop-func
-          setAddressDetail((prevState) => ({
-            ...prevState,
-            [name]: wards,
-          }));
-        }
-      }
-      setAddress(`${wards}, ${district}, ${city}`);
-      handleClose();
-    } else {
-      setAddress("");
-    }
-  };
-  const handleClose = () => {
-    setShow(false);
-  };
-  const handleShow = () => {
-    fetchCity();
-    setShow(true);
-  };
-
-  const fetchCity = async () => {
-    await axios
-      .get(apiCity)
-      .then((res) => {
-        const data = res.data;
-        setDataCity(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const fetchDistrict = async (city_id) => {
-    await axios
-      .get(`${apiDistrict}/${city_id}/?depth=2`)
-      .then((res) => {
-        const data = res.data;
-        setDataDistrict(data.districts);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const fetchWard = async (district_id) => {
-    await axios
-      .get(`${apiWard}/${district_id}/?depth=2`)
-      .then((res) => {
-        const data = res.data;
-        setDataWard(data.wards);
       })
       .catch((error) => {
         console.error(error);
@@ -643,87 +496,6 @@ export default function EditPost() {
         title={"Chỉnh sửa bài viết"}
         description={"Đăng bán, trao đổi, tắng sản phẩm"}
       />
-      {/* modal address */}
-      <Modal show={show} onHide={() => handleClose()} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Chọn địa chỉ</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form>
-            <div className="form-outline mb-3">
-              <label className="form-label" htmlFor="post-city">
-                <b>Tỉnh, thành phố*</b>
-              </label>
-              <select
-                className="form-select"
-                aria-label="Disabled select example"
-                name="city"
-                id="post-city"
-                onChange={(e) => handleOnChangeAddress(e)}
-                required
-              >
-                <option value="0">Tỉnh, thành phố</option>
-                {dataCity.map((data, index) => (
-                  <option key={index} value={data.code}>
-                    {data.name}
-                  </option>
-                ))}
-              </select>
-              <p className="validate-form-address">{validatePost.city}</p>
-            </div>
-            <div className="form-outline mb-3">
-              <label className="form-label" htmlFor="post-district">
-                <b>Quận, huyện, thị xã*</b>
-              </label>
-              <select
-                className="form-select"
-                aria-label="Disabled select example"
-                name="district"
-                id="post-district"
-                onChange={(e) => handleOnChangeAddress(e)}
-                required
-              >
-                <option value="0">Quận, huyện, thị xã</option>
-                {dataDistrict.map((data, index) => (
-                  <option key={index} value={data.code}>
-                    {data.name}
-                  </option>
-                ))}
-              </select>
-              <p className="validate-form-address">{validatePost.district}</p>
-            </div>
-            <div className="form-outline mb-3">
-              <label className="form-label" htmlFor="post-ward">
-                <b>Phường, xã, thị trấn*</b>
-              </label>
-              <select
-                className="form-select"
-                aria-label="Disabled select example"
-                name="wards"
-                id="post-ward"
-                onChange={(e) => handleOnChangeAddress(e)}
-                required
-              >
-                <option value="0">Phường, xã, thị trấn</option>
-                {dataWard.map((data, index) => (
-                  <option key={index} value={data.code}>
-                    {data.name}
-                  </option>
-                ))}
-              </select>
-              <p className="validate-form-address">{validatePost.wards}</p>
-            </div>
-          </form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => handleClose()}>
-            Hủy
-          </Button>
-          <Button variant="primary" onClick={() => handleOkAddress()}>
-            Xong
-          </Button>
-        </Modal.Footer>
-      </Modal>
       {isCreatePost && <Preloading />}
       {preload ? (
         <Preloading />
@@ -1159,7 +931,12 @@ export default function EditPost() {
                 <label className="form-label" htmlFor="post-address">
                   Địa chỉ&nbsp;<span style={{ color: "red" }}>*</span>
                 </label>
-                <input
+                <AddressSelect
+                  address={address}
+                  setAddress={setAddress}
+                  validateAddress={validatePost.address}
+                />
+                {/* <input
                   type="text"
                   id="post-address"
                   className={
@@ -1171,7 +948,7 @@ export default function EditPost() {
                   value={address == "" ? postDetail.address : address}
                   readOnly
                   onClick={() => handleShow()}
-                />
+                /> */}
                 <p className="validate-form-text">{validatePost.address}</p>
               </div>
               <div className="mb-3 form-check">

@@ -1,0 +1,191 @@
+@import "../../assets/css/common";
+@import "../../assets/css/valiables";
+
+.chat-container {
+    margin-top: $height-sum;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    height: auto;
+}
+@media (max-width: 960px) {
+    .chat-left {
+        display: none;
+    }
+}
+//header
+.chat-mess-header {
+    height: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+    .chat-avatar {
+        float: left;
+        .chat-header-avatar {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            transition: ease-in-out 0.4s;
+            margin-right: 10px;
+            margin-left: 5px;
+        }
+    }
+    .chat-header-infor {
+        .chat-header-name {
+            padding: 0px;
+            margin: 0px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .chat-header-online {
+            font-size: 12px;
+            padding: 0px;
+            margin-bottom: 0px;
+        }
+    }
+}
+
+//item chat
+.chat-item-container {
+    padding: 5px;
+    height: auto;
+    border-radius: 10px;
+    margin-right: 3px;
+    position: relative;
+    &:hover {
+        cursor: pointer;
+    }
+
+    //   background-color: red;
+    .chat-account-avatar {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        transition: ease-in-out 0.4s;
+        margin-right: 10px;
+    }
+
+    .chat-item-infor {
+        padding-bottom: 10px;
+        .chat-item-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .chat-item-online {
+            font-size: 12px;
+        }
+    }
+
+    .chat-account-mess {
+        font-size: 14px;
+        float: left;
+        // font-weight: bolder;
+    }
+
+    .chat-dot-have-mess {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        position: absolute;
+        background-color: $base-color-2;
+        right: 10px;
+        top: 50%;
+    }
+}
+
+//input mess
+.chat-mess-input {
+    height: auto;
+    .chat-mess-suggest {
+        padding-top: 5px;
+        height: 35px;
+        width: 100%;
+        @include scroll-custom();
+        .mess-suggest {
+            cursor: pointer;
+            border: 2px $base-color-2 solid;
+            border-radius: 20px;
+            margin: 0px 5px 5px 5px;
+            span {
+                padding: 10px 10px !important;
+            }
+        }
+    }
+    .chat-mess-input-content {
+        height: 60px;
+        align-items: center;
+        display: flex;
+
+        .icon-send-media {
+            width: 10%;
+            @include makeCenter();
+            .icon-btn-chat {
+                float: left;
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .input-mess {
+            width: 80%;
+            .chat-input {
+                height: 45px;
+                background-color: #f4f4f4;
+                border-radius: 45px;
+                padding-left: 15px;
+                border: none;
+                outline: none;
+                font-size: 15px;
+                width: 100%;
+                transition: all 0.3s ease-out;
+                &:focus-within {
+                    // width: 100%;
+                }
+            }
+        }
+
+        .input-send {
+            width: 10%;
+            @include makeCenter();
+            .send-icon {
+                color: $base-color-2;
+                transition: all 0.1s ease-out;
+                &:hover {
+                    cursor: pointer;
+                    transform: scale(1.1);
+                }
+            }
+        }
+    }
+}
+
+.message-content {
+    height: auto;
+    .mess-sender,
+    .mess-receiver {
+        margin: 12px 0px;
+        .mess {
+            height: 100%;
+            padding: 5px 10px;
+            border: 1px solid $base-color-1;
+            border-radius: 20px;
+            .mess-time {
+                font-size: 12px;
+            }
+        }
+    }
+    .mess-sender {
+        @include makeRight();
+        .mess {
+            background-color: $base-color-1;
+            color: #fff;
+        }
+    }
+    .mess-receiver {
+        @include makeLeft();
+        .mess {
+            background-color: #fff;
+        }
+    }
+}

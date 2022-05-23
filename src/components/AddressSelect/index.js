@@ -5,7 +5,11 @@ import axios from "axios";
 import { apiCity, apiDistrict, apiWard } from "./../../constants";
 import { isNull } from "./../../validations";
 
-export default function AddressSelect({ setAddress, validateAddress }) {
+export default function AddressSelect({
+  address,
+  setAddress,
+  validateAddress,
+}) {
   //address handle
   const [show, setShow] = useState(false);
   const [dataCity, setDataCity] = useState([]);
@@ -263,7 +267,7 @@ export default function AddressSelect({ setAddress, validateAddress }) {
           }
           placeholder="Chọn địa chỉ"
           readOnly
-          value={addressSelect}
+          value={addressSelect == "" ? address : addressSelect}
           onClick={() => handleShow()}
         />
       </div>

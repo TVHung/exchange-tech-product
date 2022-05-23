@@ -35,7 +35,7 @@ export default function PostManager() {
     else insertParams("tab", "profile");
     setTimeout(() => {
       setPreload(true);
-    }, 500);
+    }, 1000);
     return () => {};
   }, []);
 
