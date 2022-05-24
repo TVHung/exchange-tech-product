@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./_detail.scss";
 import Preloading from "../../components/Loading";
 import SlideDetail from "../../components/SlideShow/SlideDetail";
-import { formatPrice, handleCalculateTime } from "../../utils/common";
+import {
+  formatPrice,
+  handleCalculateTime,
+  setLinkDirect,
+} from "../../utils/common";
 import {
   FacebookShareButton,
   FacebookIcon,
@@ -15,13 +19,14 @@ import {
   TelegramShareButton,
   TelegramIcon,
 } from "react-share";
-import ListItem from "./../../components/ListItemRecommend";
+import ListItemRecommend from "./../../components/ListItemRecommend";
 import StarRatings from "react-star-ratings";
 import CheckMark from "../../components/CheckMark";
 import {
   apiFetchPostDetail,
   apiFetchRecommendPosts,
   apiGetUser,
+  categoryData,
   headers,
 } from "../../constants";
 import axios from "axios";
@@ -36,22 +41,21 @@ export default function Detail() {
   const [postDetail, setPostDetail] = useState({});
   const [recommendPost, setRecommendPost] = useState([]);
   const [postUser, setPostUser] = useState({});
+  const [breadcrumb, setBreadcrumb] = useState([]);
   const params = useParams();
 
   useEffect(() => {
+    setLinkDirect();
     fetchAllData(params.id);
     fetchRecommendPost();
     return () => {};
   }, [params.id]);
 
-  const changeFavorite = () => {
-    setFavorite(!favorite);
-  };
   const changeRating = () => {
     setFavorite(!favorite);
   };
   const toProfile = (user_id) => {
-    window.location.href = "/profile";
+    window.location.href = `/profile/${user_id}`;
   };
   const toChat = () => {
     window.location.href = "/chat";
@@ -79,12 +83,24 @@ export default function Detail() {
           const post = responses[0].data.data;
           console.log("post", post);
           setPostDetail(post);
+          setDataBreadcrumb(post.category_id);
           fetchUserPost(post.user_id);
         })
       )
       .catch((errors) => {
         console.error(errors);
       });
+  };
+
+  const setDataBreadcrumb = (type) => {
+    let val = "";
+    categoryData.map((data) => {
+      if (type == data.id) val = data.value;
+    });
+    setBreadcrumb([
+      { name: "Trang chủ", direct: "/" },
+      { name: val, direct: "/" },
+    ]);
   };
 
   const fetchUserPost = async (user_id) => {
@@ -126,7 +142,7 @@ export default function Detail() {
         <Preloading />
       ) : (
         <>
-          <Breadcrumb arrLink={gameBreadcrumb} />
+          <Breadcrumb arrLink={breadcrumb} />
           <div className="row">
             <div className="col-sm-12 col-lg-8">
               <div className="detail-left">
@@ -145,15 +161,6 @@ export default function Detail() {
                 <div className="detail-left-content">
                   <h4>{postDetail.name}</h4>
                   <p>Giá: {formatPrice(postDetail.price)}đ</p>
-                  <div
-                    className="detail-favorite-heart"
-                    onClick={() => changeFavorite()}
-                  >
-                    <i
-                      className="fas fa-heart"
-                      style={{ color: favorite ? "grey" : "red" }}
-                    ></i>
-                  </div>
                 </div>
                 <div className="detail-left-description">
                   <p>{postDetail.description}</p>
@@ -190,62 +197,86 @@ export default function Detail() {
                     {/* mobile */}
                     {postDetail.category_id === 1 && (
                       <>
-                        <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                          <i className="fas fa-tags"></i>
-                          <span>Hãng: {postDetail.brand_id}</span>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                          <i className="fas fa-tags"></i>
-                          <span>Màu sắc: {postDetail.color}</span>
-                        </div>
+                        {postDetail.brand && (
+                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                            <i className="fas fa-tags"></i>
+                            <span>Hãng: {postDetail.brand.name}</span>
+                          </div>
+                        )}
+                        {postDetail.color && (
+                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                            <i className="fas fa-tags"></i>
+                            <span>Màu sắc: {postDetail.color}</span>
+                          </div>
+                        )}
                       </>
                     )}
                     {/* laptop */}
                     {postDetail.category_id === 2 && (
                       <>
-                        <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                          <i className="fas fa-tags"></i>
-                          <span>Hãng: {postDetail.brand_id}</span>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                          <i className="fas fa-tags"></i>
-                          <span>Màu sắc: {postDetail.color}</span>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                          <i className="fas fa-microchip"></i>
-                          <span>CPU: {postDetail.cpu}</span>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                          <i className="fas fa-microchip"></i>
-                          <span>GPU: {postDetail.gpu}</span>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                          <i className="fas fa-hdd"></i>
-                          <span>
-                            Loại ổ cứng: {postDetail.storage_type_value}
-                          </span>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                          <i className="fas fa-hdd"></i>
-                          <span>Màn hình: {postDetail.display_size}</span>
-                        </div>
+                        {postDetail.brand && (
+                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                            <i className="fas fa-tags"></i>
+                            <span>Hãng: {postDetail.brand.name}</span>
+                          </div>
+                        )}
+                        {postDetail.color && (
+                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                            <i className="fas fa-tags"></i>
+                            <span>Màu sắc: {postDetail.color}</span>
+                          </div>
+                        )}
+                        {postDetail.cpu && (
+                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                            <i className="fas fa-microchip"></i>
+                            <span>CPU: {postDetail.cpu}</span>
+                          </div>
+                        )}
+                        {postDetail.gpu && (
+                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                            <i className="fas fa-microchip"></i>
+                            <span>GPU: {postDetail.gpu}</span>
+                          </div>
+                        )}
+                        {postDetail.storage_type_value && (
+                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                            <i className="fas fa-hdd"></i>
+                            <span>
+                              Loại ổ cứng: {postDetail.storage_type_value}
+                            </span>
+                          </div>
+                        )}
+                        {postDetail.display_size && (
+                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                            <i className="fas fa-hdd"></i>
+                            <span>Màn hình: {postDetail.display_size}</span>
+                          </div>
+                        )}
                       </>
                     )}
                     {/* pc */}
                     {postDetail.category_id === 3 && (
                       <>
-                        <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                          <i className="fas fa-microchip"></i>
-                          <span>CPU: {postDetail.cpu}</span>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                          <i className="fas fa-microchip"></i>
-                          <span>GPU: {postDetail.gpu}</span>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                          <i className="fas fa-hdd"></i>
-                          <span>Loại ổ cứng: {postDetail.storage_type}</span>
-                        </div>
+                        {postDetail.cpu && (
+                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                            <i className="fas fa-microchip"></i>
+                            <span>CPU: {postDetail.cpu}</span>
+                          </div>
+                        )}
+                        {postDetail.gpu && (
+                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                            <i className="fas fa-microchip"></i>
+                            <span>GPU: {postDetail.gpu}</span>
+                          </div>
+                        )}
+                        {postDetail.storage_type_value && (
+                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                            <i className="fas fa-hdd"></i>
+                            <span>
+                              Loại ổ cứng: {postDetail.storage_type_value}
+                            </span>
+                          </div>
+                        )}
                       </>
                     )}
                   </div>
@@ -255,25 +286,33 @@ export default function Detail() {
                 <div className="detail-left">
                   <div className="detail-left-content">
                     <h3>Sản phẩm mong muốn được đổi qua</h3>
-                    <h4>Tên: {postDetail.postTrade.name}</h4>
+                    {postDetail.postTrade.name && (
+                      <h4>Tên: {postDetail.postTrade.name}</h4>
+                    )}
                   </div>
                   <div className="detail-left-description">
                     <p>{postDetail.postTrade.description}</p>
                   </div>
                   <div className="detail-properties">
                     <div className="row">
-                      <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                        <i className="fas fa-tags"></i>
-                        <span>
-                          Loaị sản phẩm: {postDetail.postTrade.category}
-                        </span>
-                      </div>
-                      {postDetail.postTrade.guarantee && (
+                      {postDetail.postTrade.category && (
                         <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                           <i className="fas fa-tags"></i>
                           <span>
-                            Bảo hành: {postDetail.postTrade.guarantee}
+                            Loaị sản phẩm: {postDetail.postTrade.category}
                           </span>
+                        </div>
+                      )}
+                      {postDetail.postTrade.guarantee && (
+                        <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                          <i className="fas fa-tags"></i>
+                          {postDetail.postTrade.guarantee > 0 ? (
+                            <span>
+                              Bảo hành: {postDetail.postTrade.guarantee}
+                            </span>
+                          ) : (
+                            <span>Bảo hành: Không</span>
+                          )}
                         </div>
                       )}
                     </div>
@@ -381,7 +420,7 @@ export default function Detail() {
           <hr />
           <div className="related-products">
             <h3>Sản phẩm liên quan</h3>
-            <ListItem dataList={recommendPost} />
+            <ListItemRecommend dataList={recommendPost} />
           </div>
           <div className="copy-check-mark">
             <CheckMark stateCopy={stateCopy} setStateCopy={setStateCopy} />

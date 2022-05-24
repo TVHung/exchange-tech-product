@@ -9,13 +9,18 @@ export const apiGetAccountProfile = `${api}/auth/profile-user`;
 export const apiUserProfile = `${api}/profile-user`;
 export const apiGetUser = `${api}/users`;
 export const apiChangePass = `${api}/auth/change-pass`;
+//profile
+export const apiProfile = `${api}/profiles`;
 
 //api post
 export const apiPost = `${api}/posts`;
+export const apiPostRecently = `${api}/posts-recently`;
+export const apiPostHasTrade = `${api}/posts-has-trade`;
 export const apiGetAllPost = `${api}/posts`;
 export const apiFetchPostDetail = `${api}/posts`;
 export const apiFetchPostDetailWithCheck = `${api}/get-post-edit`;
 export const apiFetchMyPosts = `${api}/my-posts`;
+export const apiFetchUserPosts = `${api}/user-posts`;
 export const apiFetchRecommendPosts = `${api}/recommend-posts`;
 export const apiWishList = `${api}/wish-list`;
 
@@ -52,8 +57,9 @@ export const headerFiles = {
   Authorization: `Bearer ${getCookie("access_token")}`,
 };
 
-export const maxSizeImage = 2048000;
-export const maxSizeVideo = 10240000;
+export const maxNumImage = 6;
+export const maxSizeImage = 2097152; //2mb
+export const maxSizeVideo = 10485760; //10mb
 
 export const storageData = [
   { value: 8 },
@@ -70,6 +76,11 @@ export const statusData = [
   { id: 0, value: "Mới" },
   { id: 1, value: "Cũ (90-99%)" },
   { id: 2, value: "Cũ (<90%)" },
+];
+export const sexData = [
+  { id: 0, value: "Nam" },
+  { id: 1, value: "Nữ" },
+  { id: 2, value: "Khác" },
 ];
 export const storageTypeData = [
   { id: 0, value: "HDD", type: 0 },

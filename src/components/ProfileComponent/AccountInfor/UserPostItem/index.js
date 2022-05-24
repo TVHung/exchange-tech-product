@@ -1,9 +1,9 @@
 import React from "react";
 import { formatPrice } from "../../../../utils/common";
-import "./_myPostItem.scss";
+import "./_userPostItem.scss";
 import imgDefault from "../../../../assets/image/product-default.png";
 
-export default function MyPostItem({ data, handleShow }) {
+export default function UserPostItem({ data, handleShow }) {
   const toDetail = () => {
     window.location.href = `/detail/${data.id}`;
   };
@@ -50,14 +50,6 @@ export default function MyPostItem({ data, handleShow }) {
                 <i className="fas fa-info-circle"></i> {data.description}
               </div>
             </div>
-          </div>
-        </div>
-        <div className="d-flex justify-content-end mt-1">
-          <div className="btn btn-danger mx-1" onClick={(e) => handleDelete(e)}>
-            <span>Xóa</span>
-          </div>
-          <div className="btn enquiry mx-1" onClick={(e) => handleEdit(e)}>
-            <span>Chỉnh sửa</span>
           </div>
         </div>
       </div>

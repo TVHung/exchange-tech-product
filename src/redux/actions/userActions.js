@@ -43,13 +43,14 @@ export const fetchUserProfile = () => async (dispatch) => {
 };
 
 export const updateUserProfile = (data) => async (dispatch) => {
-  console.log("update");
+  console.log("update profile");
   try {
     await axios
       .put(apiUserProfile, data, {
         headers: headers,
       })
       .then((res) => {
+        console.log("data cap nhat", res);
         toast.success("Cập nhật thành công");
         dispatch(fetchUserProfile());
       });

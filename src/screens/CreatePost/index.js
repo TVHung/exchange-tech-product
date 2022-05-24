@@ -3,12 +3,8 @@ import "./createPost.scss";
 import { Grid } from "@material-ui/core";
 import MetaTag from "../../components/MetaTag";
 import Preloading from "../../components/Loading";
-import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 import {
-  apiCity,
-  apiDistrict,
-  apiWard,
   headers,
   apiImages,
   storageData,
@@ -20,40 +16,26 @@ import {
   storageTypeData,
   apiUploadVideo,
   headerFiles,
+  maxNumImage,
+  maxSizeVideo,
 } from "./../../constants";
 import { toast } from "react-toastify";
-import {
-  isNull,
-  validateNullFormPost,
-  validatePrice,
-} from "./../../validations";
 import Breadcrumb from "../../components/Breadcrumb";
 import { postBreadcrumb } from "../../constants/breadcrumData";
 import { getCookie } from "../../utils/cookie";
+import { maxSizeImage } from "./../../constants/index";
+import { scrollToTop, setLinkDirect } from "../../utils/common";
+import AddressSelect from "../../components/AddressSelect";
 
 export default function CreatePost() {
-  const [preload, setPreload] = useState(true);
+  const [preload, setPreload] = useState(false);
   const [isTrade, setIsTrade] = useState(false);
   const [isFree, setIsFree] = useState(false);
-
-  //address handle
-  const [show, setShow] = useState(false);
-  const [dataCity, setDataCity] = useState([]);
-  const [dataDistrict, setDataDistrict] = useState([]);
-  const [dataWard, setDataWard] = useState([]);
-  const [address, setAddress] = useState("");
-  const [addressDetail, setAddressDetail] = useState({
-    city: "",
-    district: "",
-    wards: "",
-    cityName: "",
-    districtName: "",
-    wardName: "",
-  });
 
   const [isCreatePost, setIsCreatePost] = useState(false);
   const [imageUrl, setImageUrl] = useState([]);
   const [videoFile, setVideoFile] = useState();
+  const [address, setAddress] = useState("");
   const [postInfor, setPostInfor] = useState({
     category: 1, //1:phone, 2: laptop, 3: pc
     name: "",
@@ -92,30 +74,26 @@ export default function CreatePost() {
     title: "",
     description: "",
     image: "",
-  });
-  const [validatePostTrade, setvalidatePostTrade] = useState({
-    name: "",
-    title: "",
-    description: "",
+    video: "",
+
+    nameTrade: "",
+    titleTrade: "",
+    descriptionTrade: "",
+    guaranteeTrade: "",
   });
   useEffect(() => {
+    setLinkDirect();
     return () => {
       setPostInfor({});
       setPostTradeInfor({});
       setvalidatePost({});
-      setvalidatePostTrade({});
+      setVideoFile();
+      setFile();
+      setFileOject();
       setVideoFile();
     };
   }, []);
-  const handleOnChangeAddress = (e) => {
-    const { name, value } = e.target;
-    setAddressDetail((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-    if (name == "city") fetchDistrict(value); //lay gia tri de render ra quan, huyen
-    if (name == "district") fetchWard(value); //lay gia tri de render ra xa
-  };
+
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setPostInfor((prevState) => ({
@@ -133,6 +111,12 @@ export default function CreatePost() {
         title: "",
         description: "",
         image: "",
+        video: "",
+
+        nameTrade: "",
+        titleTrade: "",
+        descriptionTrade: "",
+        guaranteeTrade: "",
       });
       //reset form post
       document.getElementById("form-create-post").reset();
@@ -169,14 +153,37 @@ export default function CreatePost() {
   const [file, setFile] = useState([]);
   const [fileObject, setFileOject] = useState([]);
   const uploadSingleFile = (e) => {
-    if (e.target.files[0]) {
-      setFile([...file, URL.createObjectURL(e.target.files[0])]);
-      setFileOject([...fileObject, e.target.files[0]]);
+    let fileImage = e.target.files[0];
+    let image = "image";
+    let mess = "";
+    if (file && file.length < maxNumImage && fileImage) {
+      if (fileImage.size <= maxSizeImage) {
+        setFile([...file, URL.createObjectURL(fileImage)]);
+        setFileOject([...fileObject, fileImage]);
+      } else mess = "Bạn chỉ được đăng ảnh kích thước tối đa 2mb";
+    } else {
+      mess = `Bạn chỉ được đăng tối đa ${maxNumImage} ảnh`;
     }
+    setvalidatePost((prevState) => ({
+      ...prevState,
+      [image]: mess,
+    }));
   };
   const uploadSingleVideo = (e) => {
-    if (e.target.files[0]) {
-      setVideoFile(e.target.files[0]);
+    let fileVideo = e.target.files[0];
+    if (fileVideo) {
+      let video = "video";
+      let mess = "";
+      if (fileVideo.size > maxSizeVideo) {
+        mess = "Bạn chỉ được có thể đăng video dưới 10mb";
+      } else {
+        mess = "";
+        setVideoFile(fileVideo);
+      }
+      setvalidatePost((prevState) => ({
+        ...prevState,
+        [video]: mess,
+      }));
     }
   };
   const deleteFile = (e) => {
@@ -186,17 +193,8 @@ export default function CreatePost() {
     setFileOject(o);
   };
 
-  const testUpload = async (files) => {
-    const imageData = new FormData();
-    imageData.append("file", videoFile, "product");
-    await axios
-      .post(apiUploadVideo, imageData, { headers: headerFiles })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const deleteVideoNew = () => {
+    setVideoFile();
   };
 
   const saveImages = (files, post_id) => {
@@ -225,135 +223,9 @@ export default function CreatePost() {
     });
     axios.all(uploaders).then((res) => {
       setIsCreatePost(false);
-      toast.success("Tạo thành công");
-      window.location.href = "/profile?tab=my-posts";
+      toast.success("Tạo bài viết thành công");
+      // window.location.href = "/post-manager";
     });
-  };
-
-  const handleOkAddress = () => {
-    let cityName = "city";
-    let districtName = "district";
-    let wardName = "wards";
-    if (isNull(addressDetail.city) || addressDetail.city == "0")
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [cityName]: "Bạn chưa chọn tỉnh, thành phố",
-      }));
-    else
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [cityName]: "",
-      }));
-    if (isNull(addressDetail.district) || addressDetail.district == "0")
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [districtName]: "Bạn chưa chọn quận, huyện, thị xã",
-      }));
-    else
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [districtName]: "",
-      }));
-    if (isNull(addressDetail.wards) || addressDetail.wards == "0")
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [wardName]: "Bạn chưa chọn phường, xã, thị trấn",
-      }));
-    else
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [wardName]: "",
-      }));
-    if (
-      addressDetail.city !== "" &&
-      addressDetail.district !== "" &&
-      addressDetail.wards !== "" &&
-      addressDetail.city !== "0" &&
-      addressDetail.district !== "0" &&
-      addressDetail.wards !== "0"
-    ) {
-      let city, district, wards;
-      for (let i = 0; i < dataCity.length; i++) {
-        if (dataCity[i].code == addressDetail.city) {
-          city = dataCity[i].name;
-          let name = "cityName";
-          // eslint-disable-next-line no-loop-func
-          setAddressDetail((prevState) => ({
-            ...prevState,
-            [name]: city,
-          }));
-        }
-      }
-      for (let i = 0; i < dataDistrict.length; i++) {
-        if (dataDistrict[i].code == addressDetail.district) {
-          district = dataDistrict[i].name;
-          let name = "districtName";
-          // eslint-disable-next-line no-loop-func
-          setAddressDetail((prevState) => ({
-            ...prevState,
-            [name]: district,
-          }));
-        }
-      }
-      for (let i = 0; i < dataWard.length; i++) {
-        if (dataWard[i].code == addressDetail.wards) {
-          wards = dataWard[i].name;
-          let name = "wardName";
-          // eslint-disable-next-line no-loop-func
-          setAddressDetail((prevState) => ({
-            ...prevState,
-            [name]: wards,
-          }));
-        }
-      }
-      setAddress(`${wards}, ${district}, ${city}`);
-      handleClose();
-    } else {
-      setAddress("");
-    }
-  };
-  const handleClose = () => {
-    setShow(false);
-  };
-  const handleShow = () => {
-    fetchCity();
-    setShow(true);
-  };
-
-  const fetchCity = async () => {
-    await axios
-      .get(apiCity)
-      .then((res) => {
-        const data = res.data;
-        setDataCity(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const fetchDistrict = async (city_id) => {
-    await axios
-      .get(`${apiDistrict}/${city_id}/?depth=2`)
-      .then((res) => {
-        const data = res.data;
-        setDataDistrict(data.districts);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const fetchWard = async (district_id) => {
-    await axios
-      .get(`${apiWard}/${district_id}/?depth=2`)
-      .then((res) => {
-        const data = res.data;
-        setDataWard(data.wards);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
   };
 
   const toPreview = (e) => {
@@ -365,88 +237,39 @@ export default function CreatePost() {
     setIsTrade(checked);
   };
 
-  const onClickFree = () => {
-    setIsFree(!isFree);
-    let price = "preice";
-    if (isFree)
+  const onClickFree = (e) => {
+    const { checked } = e.target;
+    let price = "price";
+    if (checked)
       setPostInfor((prevState) => ({
         ...prevState,
         [price]: 0,
       }));
-    else
-      setPostInfor((prevState) => ({
-        ...prevState,
-        [price]: null,
-      }));
+    setIsFree(checked);
   };
 
   const onSubmitForm = (event) => {
     event.preventDefault();
-    // validate form post
+    scrollToTop();
+    // setPreload(true);
     setvalidatePost({
-      name: validateNullFormPost(postInfor.name),
-      brand:
-        Number(postInfor.category) !== 3
-          ? validateNullFormPost(postInfor.brand)
-          : "",
-      status: validateNullFormPost(postInfor.status),
-      color:
-        Number(postInfor.category) !== 3
-          ? validateNullFormPost(postInfor.color)
-          : "",
-      price: !isFree ? validatePrice(postInfor.price) : "",
-      address: validateNullFormPost(address),
-      title: validateNullFormPost(postInfor.title),
-      description: validateNullFormPost(postInfor.description),
-      image: file.length > 0 ? "" : "Bạn cần đăng ít nhất 1 hình ảnh",
-    });
-    let validate = true;
-    if (
-      validateNullFormPost(postInfor.name) !== "" &&
-      validateNullFormPost(postInfor.status) !== null &&
-      validateNullFormPost(address) !== "" &&
-      validateNullFormPost(postInfor.title) !== "" &&
-      validateNullFormPost(postInfor.description) !== ""
-    )
-      validate = false;
-    if (file.length <= 0) validate = false;
-    if (!isFree && validatePrice(postInfor.price) !== null) validate = false;
-    if (
-      Number(postInfor.category) > 3 &&
-      validateNullFormPost(postInfor.brand) !== null &&
-      validateNullFormPost(postInfor.color) !== ""
-    )
-      validate = false;
-    if (isTrade) {
-      setvalidatePostTrade({
-        name: validateNullFormPost(postTradeInfor.name),
-        title: validateNullFormPost(postTradeInfor.title),
-        description: validateNullFormPost(postTradeInfor.description),
-      });
-      if (
-        validateNullFormPost(postTradeInfor.name) !== "" &&
-        validateNullFormPost(postTradeInfor.title) !== "" &&
-        validateNullFormPost(postTradeInfor.description) !== ""
-      )
-        validate = false;
-    }
-    if (validate) createPost();
-    // uploadVideo();
-  };
+      name: "",
+      brand: "",
+      status: "",
+      color: "",
+      address: "",
+      price: "",
+      title: "",
+      description: "",
+      image: "",
+      video: "",
 
-  const uploadVideo = async () => {
-    const data = {
-      file: videoFile,
-    };
-    await axios
-      .post(apiUploadVideo, data, { headers: headers })
-      .then((res) => {
-        console.log("video upload success", res);
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error("Tạo bài viết không thành công");
-      });
+      nameTrade: "",
+      titleTrade: "",
+      descriptionTrade: "",
+      guaranteeTrade: "",
+    });
+    createPost();
   };
 
   useEffect(() => {
@@ -480,8 +303,8 @@ export default function CreatePost() {
       storage:
         Number(postInfor.storage) == 0 ? null : Number(postInfor.storage),
       video_url: videoFile,
-      status: Number(postInfor.status),
-      price: Number(postInfor.price),
+      status: postInfor.status,
+      price: postInfor.price,
       address: address,
       public_status: Number(postInfor.public_status),
       guarantee: Number(postInfor.guarantee),
@@ -512,18 +335,41 @@ export default function CreatePost() {
     }
 
     console.log("post", mergePostData);
-    await axios
-      .post(apiPost, mergePostData, { headers: headers })
-      .then((res) => {
-        const p = res.data.data;
-        console.log("post success", p, res);
-        if (res.data.status == 1) saveImages(fileObject, p.id);
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error("Tạo bài viết không thành công");
-      });
+    let image = "image";
+    if (!(file && file.length)) {
+      setvalidatePost((prevState) => ({
+        ...prevState,
+        [image]: "Bạn cần đăng ít nhất 1 hình ảnh",
+      }));
+    } else
+      await axios
+        .post(apiPost, mergePostData, { headers: headers })
+        .then((res) => {
+          const p = res.data.data;
+          console.log("post success", p, res);
+          if (res.data.status == 1) saveImages(fileObject, p.id);
+          else {
+            handleValidate(res.data);
+          }
+          setPreload(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          setPreload(false);
+          toast.error("Tạo bài viết không thành công");
+        });
   };
+
+  const handleValidate = (validateData) => {
+    Object.keys(validateData).forEach(function (key) {
+      console.log(key, validateData[key]);
+      setvalidatePost((prevState) => ({
+        ...prevState,
+        [key]: validateData[key][0],
+      }));
+    });
+  };
+
   const handleSaveImage = async (post_id, url, is_banner) => {
     const imageData = {
       post_id: post_id,
@@ -564,97 +410,13 @@ export default function CreatePost() {
         title={"Tạo bài viết"}
         description={"Đăng bán, trao đổi, tắng sản phẩm"}
       />
-      {/* modal address */}
-      <Modal show={show} onHide={() => handleClose()} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Chọn địa chỉ</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form>
-            <div className="form-outline mb-3">
-              <label className="form-label" htmlFor="post-city">
-                <b>Tỉnh, thành phố*</b>
-              </label>
-              <select
-                className="form-select"
-                aria-label="Disabled select example"
-                name="city"
-                id="post-city"
-                onChange={(e) => handleOnChangeAddress(e)}
-                required
-              >
-                <option value="0">Tỉnh, thành phố</option>
-                {dataCity.map((data, index) => (
-                  <option key={index} value={data.code}>
-                    {data.name}
-                  </option>
-                ))}
-              </select>
-              <p className="validate-form-address">{validatePost.city}</p>
-            </div>
-            <div className="form-outline mb-3">
-              <label className="form-label" htmlFor="post-district">
-                <b>Quận, huyện, thị xã*</b>
-              </label>
-              <select
-                className="form-select"
-                aria-label="Disabled select example"
-                name="district"
-                id="post-district"
-                onChange={(e) => handleOnChangeAddress(e)}
-                required
-              >
-                <option value="0">Quận, huyện, thị xã</option>
-                {dataDistrict.map((data, index) => (
-                  <option key={index} value={data.code}>
-                    {data.name}
-                  </option>
-                ))}
-              </select>
-              <p className="validate-form-address">{validatePost.district}</p>
-            </div>
-            <div className="form-outline mb-3">
-              <label className="form-label" htmlFor="post-ward">
-                <b>Phường, xã, thị trấn*</b>
-              </label>
-              <select
-                className="form-select"
-                aria-label="Disabled select example"
-                name="wards"
-                id="post-ward"
-                onChange={(e) => handleOnChangeAddress(e)}
-                required
-              >
-                <option value="0">Phường, xã, thị trấn</option>
-                {dataWard.map((data, index) => (
-                  <option key={index} value={data.code}>
-                    {data.name}
-                  </option>
-                ))}
-              </select>
-              <p className="validate-form-address">{validatePost.wards}</p>
-            </div>
-          </form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => handleClose()}>
-            Hủy
-          </Button>
-          <Button variant="primary" onClick={() => handleOkAddress()}>
-            Xong
-          </Button>
-        </Modal.Footer>
-      </Modal>
       {isCreatePost && <Preloading />}
-      {!preload ? (
+      {preload ? (
         <Preloading />
       ) : (
         <Grid container className="form-container">
           <Grid item xs={12} md={4} className="create-post-images">
             <div className="image-post">
-              <div className="image-validate">
-                <p>{validatePost.image}</p>
-              </div>
               <div className="custom-file">
                 <label htmlFor="file-upload" className="custom-file-upload">
                   <i className="fas fa-upload"></i> Thêm ảnh
@@ -664,11 +426,12 @@ export default function CreatePost() {
                   className="custom-file-input"
                   id="file-upload"
                   // multiple
+                  accept="image/*"
                   onChange={(e) => uploadSingleFile(e)}
                 />
               </div>
               <div className="mt-3 view-preview row">
-                {file.length > 0 &&
+                {file &&
                   file.map((item, index) => {
                     return (
                       <div
@@ -691,6 +454,9 @@ export default function CreatePost() {
                     );
                   })}
               </div>
+              <div className="image-validate">
+                <p>{validatePost.image}</p>
+              </div>
             </div>
             <div className="video-post">
               <div className="custom-video">
@@ -702,15 +468,25 @@ export default function CreatePost() {
                   className="custom-video-input"
                   id="video-upload"
                   // multiple
+                  accept="video/*"
                   onChange={(e) => uploadSingleVideo(e)}
                 />
               </div>
               <div className="mt-3 view-preview row">
                 {videoFile && (
-                  <video width="400" controls>
-                    <source src={URL.createObjectURL(videoFile)} />
-                  </video>
+                  <>
+                    <video width="400" controls>
+                      <source src={URL.createObjectURL(videoFile)} />
+                    </video>
+                    <i
+                      className="fas fa-times-circle fa-2x fa delete-video-icon"
+                      onClick={() => deleteVideoNew()}
+                    ></i>
+                  </>
                 )}
+              </div>
+              <div className="image-validate">
+                <p>{validatePost.video}</p>
               </div>
             </div>
           </Grid>
@@ -796,8 +572,7 @@ export default function CreatePost() {
                   <div className="col">
                     <div className="form-outline">
                       <label className="form-label" htmlFor="post-color">
-                        Màu sắc&nbsp;
-                        <span style={{ color: "red" }}>*</span>
+                        Màu sắc
                       </label>
                       <input
                         type="text"
@@ -863,7 +638,6 @@ export default function CreatePost() {
                   </div>
                 )}
               </div>
-              {console.log("cate", Number(postInfor.category))}
               {Number(postInfor.category) > 1 && (
                 <div className="row mb-3">
                   <div className="col">
@@ -1029,18 +803,9 @@ export default function CreatePost() {
                 <label className="form-label" htmlFor="post-address">
                   Địa chỉ&nbsp;<span style={{ color: "red" }}>*</span>
                 </label>
-                <input
-                  type="text"
-                  id="post-address"
-                  className={
-                    validatePost.address
-                      ? "form-control is-invalid"
-                      : "form-control"
-                  }
-                  placeholder="Chọn địa chỉ"
-                  readOnly
-                  value={address}
-                  onClick={() => handleShow()}
+                <AddressSelect
+                  setAddress={setAddress}
+                  validateAddress={validatePost.address}
                 />
                 <p className="validate-form-text">{validatePost.address}</p>
               </div>
@@ -1050,7 +815,7 @@ export default function CreatePost() {
                   className="form-check-input"
                   id="freeCheckbox"
                   defaultChecked={isFree}
-                  onClick={() => onClickFree()}
+                  onChange={(e) => onClickFree(e)}
                 />
                 <label className="form-check-label" htmlFor="freeCheckbox">
                   Tặng miễn phí
@@ -1149,7 +914,7 @@ export default function CreatePost() {
                 className="form-check-input"
                 id="tradeCheckbox"
                 defaultChecked={isTrade}
-                onClick={(e) => onClickTrade(e)}
+                onChange={(e) => onClickTrade(e)}
               />
               <label className="form-check-label" htmlFor="tradeCheckbox">
                 Đổi sản phẩm
@@ -1197,7 +962,7 @@ export default function CreatePost() {
                       type="text"
                       id="post-trade-name"
                       className={
-                        validatePostTrade.name
+                        validatePost.nameTrade
                           ? "form-control is-invalid"
                           : "form-control"
                       }
@@ -1206,7 +971,7 @@ export default function CreatePost() {
                       onChange={(e) => handleOnChangeTrade(e)}
                     />
                     <p className="validate-form-text">
-                      {validatePostTrade.name}
+                      {validatePost.nameTrade}
                     </p>
                   </div>
                   <div className="mb-3 mt-4">
@@ -1220,7 +985,7 @@ export default function CreatePost() {
                       type="text"
                       id="post-trade-title"
                       className={
-                        validatePostTrade.title
+                        validatePost.titleTrade
                           ? "form-control is-invalid"
                           : "form-control"
                       }
@@ -1229,7 +994,7 @@ export default function CreatePost() {
                       onChange={(e) => handleOnChangeTrade(e)}
                     />
                     <p className="validate-form-text">
-                      {validatePostTrade.title}
+                      {validatePost.titleTrade}
                     </p>
                   </div>
                   <div className="form-outline  mb-3">
@@ -1248,6 +1013,9 @@ export default function CreatePost() {
                       name="guarantee"
                       onChange={(e) => handleOnChangeTrade(e)}
                     />
+                    <p className="validate-form-text">
+                      {validatePost.guaranteeTrade}
+                    </p>
                   </div>
                   <div className="form-outline mb-3">
                     <label
@@ -1259,7 +1027,7 @@ export default function CreatePost() {
                     </label>
                     <textarea
                       className={
-                        validatePostTrade.description
+                        validatePost.descriptionTrade
                           ? "form-control is-invalid"
                           : "form-control"
                       }
@@ -1273,7 +1041,7 @@ export default function CreatePost() {
                       onChange={(e) => handleOnChangeTrade(e)}
                     ></textarea>
                     <p className="validate-form-text">
-                      {validatePostTrade.description}
+                      {validatePost.descriptionTrade}
                     </p>
                   </div>
                 </form>

@@ -54,7 +54,7 @@ export default function Login() {
   //check login
   const handleSubmitLogin = async (e) => {
     if (e) e.preventDefault();
-    setIsLoading(true);
+    // setIsLoading(true);
     let userLogin = {
       email: user.email,
       password: user.password,
@@ -72,10 +72,10 @@ export default function Login() {
           if (data.access_token) {
             toast.success("Đăng nhập thành công");
             setCookie("access_token", data.access_token, 3600);
+            setErrorLogin("");
+            window.location.href = localStorage.getItem("linkDirect");
           }
           setIsLoading(false);
-          setErrorLogin("");
-          window.location.href = `/`;
         })
         .catch((error) => {
           setIsLoading(false);

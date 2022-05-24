@@ -5,15 +5,8 @@
   margin-top: $height-sum;
   padding-top: 20px;
   padding-bottom: 20px;
-  height: auto;
+  min-height: 400px !important;
 }
-
-// @media (min-width: 1500px) {
-//   .chat-container {
-//     @include width-lg-container();
-//   }
-// }
-
 @media (max-width: 960px) {
   .chat-left {
     display: none;
@@ -21,99 +14,20 @@
 }
 
 .chat-left {
-  min-height: auto;
   width: 100%;
+  height: calc(100vh - 230px);
+  @include scroll-custom();
 }
 
 .chat-right {
   width: 100%;
+  padding: 0px !important;
   border: #f4f4f4 solid 2px;
-  .chat-mess-header {
-    height: auto;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
-    .chat-avatar {
-      float: left;
-      .chat-header-avatar {
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        transition: ease-in-out 0.4s;
-        margin-right: 10px;
-        margin-left: 5px;
-      }
-    }
-    .chat-header-infor {
-      .chat-header-name {
-        padding: 0px;
-        margin: 0px;
-        font-weight: bold;
-        font-size: 16px;
-      }
-      .chat-header-online {
-        font-size: 12px;
-        padding: 0px;
-        margin-bottom: 0px;
-      }
-    }
-  }
+
   .chat-mess-content {
-    height: 300px;
-  }
-  .chat-mess-input {
-    height: auto;
-    .chat-mess-suggest {
-      height: auto;
-    }
-    .chat-mess-input-content {
-      height: 60px;
-      align-items: center;
-      display: flex;
-
-      .icon-send-media {
-        width: 10%;
-        .icon-btn-chat {
-          padding-right: 10px;
-          float: left;
-          &:hover {
-            cursor: pointer;
-          }
-        }
-      }
-
-      .input-mess {
-        width: 80%;
-        .chat-input {
-          height: 45px;
-          background-color: #f4f4f4;
-          border-radius: 45px;
-          padding-left: 15px;
-          border: none;
-          outline: none;
-          font-size: 15px;
-          width: 100%;
-          transition: all 0.3s ease-out;
-          &:focus-within {
-            // width: 100%;
-          }
-        }
-      }
-
-      .input-send {
-        width: 10%;
-        justify-content: center;
-        align-items: center;
-        display: flex;
-        .send-icon {
-          color: $base-color-2;
-          transition: all 0.1s ease-out;
-          &:hover {
-            cursor: pointer;
-            transform: scale(1.1);
-          }
-        }
-      }
-    }
+    background-color: #f5f2f2;
+    height: calc(100vh - 380px);
+    @include scroll-custom();
+    padding: 0px 10px;
   }
 }

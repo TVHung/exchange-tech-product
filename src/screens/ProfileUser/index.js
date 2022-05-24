@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import "./profile.scss";
+import "./_profileUser.scss";
 import Preloading from "../../components/Loading";
-import { AccountInfor } from "../../components/ProfileComponent";
 import MetaTag from "../../components/MetaTag";
 import Breadcrumb from "../../components/Breadcrumb";
 import { profileBreadcrumb } from "../../constants/breadcrumData";
 import { setLinkDirect } from "../../utils/common";
+import AccountUserInfor from "../../components/ProfileComponent/AccountUserInfor";
 
-export default function Profile() {
+export default function ProfileUser() {
   const [preload, setPreload] = useState(false);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function Profile() {
       ) : (
         <div className="account-manager">
           <Breadcrumb arrLink={profileBreadcrumb} />
-          <AccountInfor />
+          <AccountUserInfor />
         </div>
       )}
     </div>

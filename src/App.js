@@ -6,7 +6,6 @@ import Register from "./screens/Auth/register";
 import Navigation from "./components/Navigation";
 import Home from "./screens/Home";
 import Error from "./screens/Error";
-import Dashboard from "./screens/admin/Dashboard";
 import Footer from "./components/Footer";
 import Chat from "./screens/Chat";
 import CreatePost from "./screens/CreatePost";
@@ -26,6 +25,9 @@ import { fetchUser } from "./redux/actions/userActions";
 import { getCookie } from "./utils/cookie";
 import ScrollUp from "./components/ScrollUp";
 import "./utils/loader";
+import PostManager from "./screens/PostManager";
+import AuthRoute from "./routes/auth/AuthRoute";
+import ProfileUser from "./screens/ProfileUser";
 toast.configure();
 
 function App() {
@@ -50,16 +52,14 @@ function App() {
         <Navigation />
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route
-            exact
-            path="/dashboard"
-            render={(props) => {
-              <Dashboard />;
-            }}
-          />
           <Route exact path="/search" render={(props) => <Search />} />
-          <Route exact path="/chat" render={(props) => <Chat />} />
-          {/* <PrivateRoute path="/chat" exact component={Chat} isAuth={isAuth} /> */}
+          <PrivateRoute path="/chat" exact component={Chat} isAuth={isAuth} />
+          <PrivateRoute
+            path="/post-manager"
+            exact
+            component={PostManager}
+            isAuth={isAuth}
+          />
           <PrivateRoute
             path="/create-post"
             exact
@@ -78,13 +78,14 @@ function App() {
             component={PreviewPost}
             isAuth={isAuth}
           />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/register" component={Register} />
+          <AuthRoute exact path="/login" component={Login} />
+          <AuthRoute exact path="/register" component={Register} />
           <Route exact path="/detail/:id" render={(props) => <Detail />} />
+          <Route exact path="/profile/:id" render={(props) => <Profile />} />
           <PrivateRoute
             path="/profile"
             exact
-            component={Profile}
+            component={ProfileUser}
             isAuth={isAuth}
           />
           <Route path="/:someString" component={Error} />

@@ -15,8 +15,9 @@ export default function SlideDetail({ dataSlides, video_url }) {
 
   return (
     <div className="slideDetailContainer">
+      {console.log("datalisde", dataSlides)}
       <Slide {...properties}>
-        {dataSlides.length > 0 ? (
+        {dataSlides ? (
           dataSlides.map((data) => (
             <div key={data.id} className="slide-container">
               <img
@@ -35,9 +36,9 @@ export default function SlideDetail({ dataSlides, video_url }) {
             />
           </div>
         )}
-        {video_url.length && (
+        {video_url && (
           <div className="slide-container">
-            <video controls autoPlay className="slide-detail-video">
+            <video controls className="slide-detail-video">
               <source src={video_url} type="video/mp4" />
             </video>
           </div>

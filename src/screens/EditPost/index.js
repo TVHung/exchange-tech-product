@@ -23,6 +23,8 @@ import {
   maxSizeVideo,
   headerFiles,
   apiUploadVideo,
+  maxNumImage,
+  maxSizeImage,
 } from "./../../constants";
 import { toast } from "react-toastify";
 import {
@@ -34,27 +36,14 @@ import Breadcrumb from "../../components/Breadcrumb";
 import { postBreadcrumb } from "../../constants/breadcrumData";
 import { getCookie } from "../../utils/cookie";
 import { useParams } from "react-router-dom";
-import { scrollToTop } from "../../utils/common";
+import { scrollToTop, setLinkDirect } from "../../utils/common";
+import AddressSelect from "../../components/AddressSelect";
 
 export default function EditPost() {
   const [preload, setPreload] = useState(true);
   const [isTrade, setIsTrade] = useState(false);
   const [isFree, setIsFree] = useState(false);
-
-  //address handle
-  const [show, setShow] = useState(false);
-  const [dataCity, setDataCity] = useState([]);
-  const [dataDistrict, setDataDistrict] = useState([]);
-  const [dataWard, setDataWard] = useState([]);
   const [address, setAddress] = useState("");
-  const [addressDetail, setAddressDetail] = useState({
-    city: "",
-    district: "",
-    wards: "",
-    cityName: "",
-    districtName: "",
-    wardName: "",
-  });
 
   const [isCreatePost, setIsCreatePost] = useState(false);
   const [imageUrl, setImageUrl] = useState([]);
@@ -111,82 +100,31 @@ export default function EditPost() {
     description: "",
     image: "",
     video: "",
-  });
-  const [validatePostTrade, setvalidatePostTrade] = useState({
-    category: 1, //1:phone, 2: laptop, 3: pc
-    name: "",
-    brand: "",
-    status: "",
-    guarantee: "",
-    cpu: "",
-    gpu: "",
-    ram: "",
-    storage_type: "",
-    display_size: "",
-    storage: "",
-    description: "",
+
+    nameTrade: "",
+    titleTrade: "",
+    descriptionTrade: "",
+    guaranteeTrade: "",
   });
   const params = useParams();
   useEffect(() => {
+    setLinkDirect();
     fetchAllData(params.id);
     return () => {
       setPostInfor({});
       setPostTradeInfor({});
       setvalidatePost({});
-      setvalidatePostTrade({});
       setVideoFile();
     };
   }, []);
-  const handleOnChangeAddress = (e) => {
-    const { name, value } = e.target;
-    setAddressDetail((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-    if (name == "city") fetchDistrict(value); //lay gia tri de render ra quan, huyen
-    if (name == "district") fetchWard(value); //lay gia tri de render ra xa
-  };
+
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setPostInfor((prevState) => ({
       ...prevState,
       [name]: value,
     }));
-    if (name === "category") {
-      setvalidatePost({
-        name: "",
-        brand: "",
-        status: "",
-        color: "",
-        price: "",
-        address: "",
-        title: "",
-        description: "",
-        image: "",
-      });
-      //reset form post
-      document.getElementById("form-create-post").reset();
-      setPostInfor({
-        category: value, //1:phone, 2: laptop, 3: pc
-        name: "",
-        brand: "",
-        status: "",
-        guarantee: null,
-        cpu: "",
-        gpu: "",
-        ram: null,
-        storage_type: "",
-        storage: null,
-        address: "",
-        price: null,
-        title: "",
-        description: "",
-        display_size: null,
-        public_status: 1,
-        is_trade: 0,
-        color: "",
-      });
-    }
+    console.log("change data", name, value);
   };
   const handleOnChangeTrade = (e) => {
     const { name, value } = e.target;
@@ -199,22 +137,34 @@ export default function EditPost() {
   const [file, setFile] = useState([]);
   const [fileObject, setFileOject] = useState([]);
   const uploadSingleFile = (e) => {
-    if (e.target.files[0]) {
-      setFile([...file, URL.createObjectURL(e.target.files[0])]);
-      setFileOject([...fileObject, e.target.files[0]]);
+    let fileImage = e.target.files[0];
+    let image = "image";
+    let mess = "";
+    if (file.length + imageUrlEdit.length < maxNumImage && fileImage) {
+      if (fileImage.size <= maxSizeImage) {
+        setFile([...file, URL.createObjectURL(fileImage)]);
+        setFileOject([...fileObject, fileImage]);
+      } else mess = "Bạn chỉ được đăng ảnh kích thước tối đa 2mb";
+    } else {
+      mess = `Bạn chỉ được đăng tối đa ${maxNumImage} ảnh`;
     }
+    setvalidatePost((prevState) => ({
+      ...prevState,
+      [image]: mess,
+    }));
   };
 
   const uploadSingleVideo = (e) => {
     //check size video < 30mb
-    if (e.target.files[0]) {
+    let fileVideo = e.target.files[0];
+    if (fileVideo) {
       let video = "video";
       let mess = "";
-      if (e.target.files[0].size > maxSizeVideo) {
+      if (fileVideo.size > maxSizeVideo) {
         mess = "Bạn chỉ được có thể đăng video dưới 10mb";
       } else {
         mess = "";
-        setVideoFile(e.target.files[0]);
+        setVideoFile(fileVideo);
       }
       setvalidatePost((prevState) => ({
         ...prevState,
@@ -251,24 +201,6 @@ export default function EditPost() {
     setImageUrlEdit(imageUrlEdit.filter((item) => item.id !== id));
   };
 
-  const testUpload = async (files) => {
-    const dataFiles = {
-      file: files,
-    };
-    const headers = {
-      "Content-type": "application/json",
-      Authorization: `Bearer ${getCookie("access_token")}`,
-    };
-    await axios
-      .post(apiUpload, dataFiles, { headers: headers })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
   const saveImages = (files, post_id) => {
     const uploaders = files.map((file, index) => {
       const formData = new FormData();
@@ -289,7 +221,7 @@ export default function EditPost() {
           const data = response.data;
           const fileURL = data.secure_url;
           setImageUrl((imageUrl) => [...imageUrl, fileURL]);
-          let isBanner = 0;
+          let isBanner = imageUrlEdit.length > 0 ? 0 : 1;
           handleSaveImage(post_id, fileURL, isBanner);
         });
     });
@@ -318,202 +250,50 @@ export default function EditPost() {
       });
   };
 
-  const handleOkAddress = () => {
-    let cityName = "city";
-    let districtName = "district";
-    let wardName = "wards";
-    if (isNull(addressDetail.city) || addressDetail.city == "0")
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [cityName]: "Bạn chưa chọn tỉnh, thành phố",
-      }));
-    else
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [cityName]: "",
-      }));
-    if (isNull(addressDetail.district) || addressDetail.district == "0")
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [districtName]: "Bạn chưa chọn quận, huyện, thị xã",
-      }));
-    else
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [districtName]: "",
-      }));
-    if (isNull(addressDetail.wards) || addressDetail.wards == "0")
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [wardName]: "Bạn chưa chọn phường, xã, thị trấn",
-      }));
-    else
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [wardName]: "",
-      }));
-    if (
-      addressDetail.city !== "" &&
-      addressDetail.district !== "" &&
-      addressDetail.wards !== "" &&
-      addressDetail.city !== "0" &&
-      addressDetail.district !== "0" &&
-      addressDetail.wards !== "0"
-    ) {
-      let city, district, wards;
-      for (let i = 0; i < dataCity.length; i++) {
-        if (dataCity[i].code == addressDetail.city) {
-          city = dataCity[i].name;
-          let name = "cityName";
-          // eslint-disable-next-line no-loop-func
-          setAddressDetail((prevState) => ({
-            ...prevState,
-            [name]: city,
-          }));
-        }
-      }
-      for (let i = 0; i < dataDistrict.length; i++) {
-        if (dataDistrict[i].code == addressDetail.district) {
-          district = dataDistrict[i].name;
-          let name = "districtName";
-          // eslint-disable-next-line no-loop-func
-          setAddressDetail((prevState) => ({
-            ...prevState,
-            [name]: district,
-          }));
-        }
-      }
-      for (let i = 0; i < dataWard.length; i++) {
-        if (dataWard[i].code == addressDetail.wards) {
-          wards = dataWard[i].name;
-          let name = "wardName";
-          // eslint-disable-next-line no-loop-func
-          setAddressDetail((prevState) => ({
-            ...prevState,
-            [name]: wards,
-          }));
-        }
-      }
-      setAddress(`${wards}, ${district}, ${city}`);
-      handleClose();
-    } else {
-      setAddress("");
-    }
-  };
-  const handleClose = () => {
-    setShow(false);
-  };
-  const handleShow = () => {
-    fetchCity();
-    setShow(true);
-  };
-
-  const fetchCity = async () => {
-    await axios
-      .get(apiCity)
-      .then((res) => {
-        const data = res.data;
-        setDataCity(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const fetchDistrict = async (city_id) => {
-    await axios
-      .get(`${apiDistrict}/${city_id}/?depth=2`)
-      .then((res) => {
-        const data = res.data;
-        setDataDistrict(data.districts);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const fetchWard = async (district_id) => {
-    await axios
-      .get(`${apiWard}/${district_id}/?depth=2`)
-      .then((res) => {
-        const data = res.data;
-        setDataWard(data.wards);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const onClickTrade = () => {
-    setIsTrade(!isTrade);
+  const onClickTrade = (e) => {
+    const { checked } = e.target;
     let is_trade = "is_trade";
     setPostInfor((prevState) => ({
       ...prevState,
-      [is_trade]: isTrade ? 1 : 0,
+      [is_trade]: checked ? 1 : 0,
     }));
+    setIsTrade(checked);
+    console.log(checked);
   };
 
-  const onClickFree = () => {
-    setIsFree(!isFree);
-    let price = "preice";
-    if (isFree)
+  const onClickFree = (e) => {
+    const { checked } = e.target;
+    setIsFree(checked);
+    let price = "price";
+    if (checked)
       setPostInfor((prevState) => ({
         ...prevState,
         [price]: 0,
-      }));
-    else
-      setPostInfor((prevState) => ({
-        ...prevState,
-        [price]: null,
       }));
   };
 
   const onSubmitForm = (event) => {
     event.preventDefault();
-    setPreload(true);
+    // setPreload(true);
     scrollToTop();
     setvalidatePost({
-      name: validateNullFormPost(postInfor.name),
-      brand:
-        Number(postInfor.category) !== 3
-          ? validateNullFormPost(postInfor.brand)
-          : "",
-      status: validateNullFormPost(postInfor.status),
-      color:
-        Number(postInfor.category) !== 3
-          ? validateNullFormPost(postInfor.color)
-          : "",
-      price: !isFree ? validatePrice(postInfor.price) : "",
-      address: validateNullFormPost(address),
-      title: validateNullFormPost(postInfor.title),
-      description: validateNullFormPost(postInfor.description),
-      image:
-        file.length <= 0 && imageUrlEdit.length <= 0
-          ? "Bạn cần đăng ít nhất 1 hình ảnh"
-          : "",
+      name: "",
+      brand: "",
+      status: "",
+      color: "",
+      address: "",
+      price: "",
+      title: "",
+      description: "",
+      image: "",
+      video: "",
+
+      nameTrade: "",
+      titleTrade: "",
+      descriptionTrade: "",
+      guaranteeTrade: "",
     });
-    let validate = true;
-    if (
-      validateNullFormPost(postInfor.name) !== "" &&
-      validateNullFormPost(postInfor.status) !== "" &&
-      validateNullFormPost(address) !== "" &&
-      validateNullFormPost(postInfor.title) !== "" &&
-      validateNullFormPost(postInfor.description) !== ""
-    )
-      validate = false;
-    if (file.length <= 0 && imageUrlEdit.length <= 0) validate = false;
-    if (!isFree && validatePrice(postInfor.price) !== "") validate = false;
-    if (
-      Number(postInfor.category) !== 3 &&
-      validateNullFormPost(postInfor.brand) !== "" &&
-      validateNullFormPost(postInfor.color) !== ""
-    )
-      validate = false;
-    if (validate) {
-      updatePost();
-      if (isTrade) updatePostTrade();
-    } else setPreload(false);
-    // uploadVideo();
+    updatePost();
   };
 
   useEffect(() => {
@@ -535,19 +315,31 @@ export default function EditPost() {
       }
   };
 
-  const uploadVideo = async () => {
-    const videoData = new FormData();
-    videoData.append("file", videoFile, "product");
-    console.log(videoData);
-    // await axios
-    //   .post(apiUploadVideo, videoData, { headers: headerFiles })
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
-  };
+  // const uploadVideo = async () => {
+  //   const videoData = new FormData();
+  //   videoData.append("file", videoFile, "product");
+  //   console.log("update video");
+  //   await axios
+  //     .post(apiUploadVideo, videoData, { headers: headerFiles })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       let data = res.data;
+  //       if (data.status) {
+  //         //thanh cong
+  //         let video_url = "video_url";
+  //         setPostInfor((prevState) => ({
+  //           ...prevState,
+  //           [video_url]: data.data,
+  //         }));
+  //         updatePost();
+  //       } else {
+  //         //that bai
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
   //tao post
   const updatePost = async () => {
     var mergePostData = null;
@@ -572,6 +364,7 @@ export default function EditPost() {
       brand_id: Number(postInfor.brand),
       display_size: Number(postInfor.display_size),
       fileVideo: videoFile,
+      video_url: postInfor.video_url,
       is_delete_video: isDeleteVideo,
       is_delete_image: deleteImageId,
     };
@@ -588,56 +381,40 @@ export default function EditPost() {
       mergePostData = { ...postData };
     }
 
-    console.log("post", mergePostData, isTrade);
-    await axios
-      .put(`${apiPost}/${params.id}`, mergePostData, { headers: headers })
-      .then((res) => {
-        const p = res.data.data;
-        console.log("post success", p, res);
-        if (res.data.status == 1) saveImages(fileObject, params.id);
-        else {
+    console.log("post", mergePostData);
+    let image = "image";
+    if (!((file && file.length) || imageUrlEdit.length)) {
+      setvalidatePost((prevState) => ({
+        ...prevState,
+        [image]: "Bạn cần đăng ít nhất 1 hình ảnh",
+      }));
+    } else
+      await axios
+        .put(`${apiPost}/${params.id}`, mergePostData, { headers: headers })
+        .then((res) => {
+          const p = res.data.data;
+          console.log("post success", p, res);
+          if (res.data.status == 1) saveImages(fileObject, params.id);
+          else {
+            handleValidate(res.data);
+          }
+          setPreload(false);
+        })
+        .catch((error) => {
+          console.error(error);
           setPreload(false);
           toast.error("Cập nhật bài viết không thành công");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        setPreload(false);
-        toast.error("Cập nhật bài viết không thành công");
-      });
+        });
   };
 
-  const updatePostTrade = async (type) => {
-    const dataPostTrade = {
-      category: Number(postTradeInfor.category),
-      name: postTradeInfor.name,
-      guarantee: Number(postTradeInfor.guarantee),
-      title: postTradeInfor.title,
-      description: postTradeInfor.description,
-    };
-    console.log("post trade update", dataPostTrade);
-    if (type == "update")
-      await axios
-        .put(`${apiPostTrade}/${params.id}`, dataPostTrade, {
-          headers: headers,
-        })
-        .then((res) => {
-          console.log("post trade", res);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    if (type == "create")
-      await axios
-        .post(`${apiPostTrade}`, dataPostTrade, {
-          headers: headers,
-        })
-        .then((res) => {
-          console.log("create post trade", res);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+  const handleValidate = (validateData) => {
+    Object.keys(validateData).forEach(function (key) {
+      console.log(key, validateData[key]);
+      setvalidatePost((prevState) => ({
+        ...prevState,
+        [key]: validateData[key][0],
+      }));
+    });
   };
 
   const [postDetail, setPostDetail] = useState({});
@@ -653,6 +430,7 @@ export default function EditPost() {
           console.log("post", post);
           setPreload(false);
           setPostDetail(post);
+          if (post.price == 0) setIsFree(true);
           const name = "category";
           const value = post.category_id;
           setPostInfor((prevState) => ({
@@ -718,87 +496,6 @@ export default function EditPost() {
         title={"Chỉnh sửa bài viết"}
         description={"Đăng bán, trao đổi, tắng sản phẩm"}
       />
-      {/* modal address */}
-      <Modal show={show} onHide={() => handleClose()} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Chọn địa chỉ</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form>
-            <div className="form-outline mb-3">
-              <label className="form-label" htmlFor="post-city">
-                <b>Tỉnh, thành phố*</b>
-              </label>
-              <select
-                className="form-select"
-                aria-label="Disabled select example"
-                name="city"
-                id="post-city"
-                onChange={(e) => handleOnChangeAddress(e)}
-                required
-              >
-                <option value="0">Tỉnh, thành phố</option>
-                {dataCity.map((data, index) => (
-                  <option key={index} value={data.code}>
-                    {data.name}
-                  </option>
-                ))}
-              </select>
-              <p className="validate-form-address">{validatePost.city}</p>
-            </div>
-            <div className="form-outline mb-3">
-              <label className="form-label" htmlFor="post-district">
-                <b>Quận, huyện, thị xã*</b>
-              </label>
-              <select
-                className="form-select"
-                aria-label="Disabled select example"
-                name="district"
-                id="post-district"
-                onChange={(e) => handleOnChangeAddress(e)}
-                required
-              >
-                <option value="0">Quận, huyện, thị xã</option>
-                {dataDistrict.map((data, index) => (
-                  <option key={index} value={data.code}>
-                    {data.name}
-                  </option>
-                ))}
-              </select>
-              <p className="validate-form-address">{validatePost.district}</p>
-            </div>
-            <div className="form-outline mb-3">
-              <label className="form-label" htmlFor="post-ward">
-                <b>Phường, xã, thị trấn*</b>
-              </label>
-              <select
-                className="form-select"
-                aria-label="Disabled select example"
-                name="wards"
-                id="post-ward"
-                onChange={(e) => handleOnChangeAddress(e)}
-                required
-              >
-                <option value="0">Phường, xã, thị trấn</option>
-                {dataWard.map((data, index) => (
-                  <option key={index} value={data.code}>
-                    {data.name}
-                  </option>
-                ))}
-              </select>
-              <p className="validate-form-address">{validatePost.wards}</p>
-            </div>
-          </form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => handleClose()}>
-            Hủy
-          </Button>
-          <Button variant="primary" onClick={() => handleOkAddress()}>
-            Xong
-          </Button>
-        </Modal.Footer>
-      </Modal>
       {isCreatePost && <Preloading />}
       {preload ? (
         <Preloading />
@@ -842,7 +539,7 @@ export default function EditPost() {
                       </div>
                     );
                   })}
-                {file.length > 0 &&
+                {file &&
                   file.map((item, index) => {
                     return (
                       <div
@@ -855,7 +552,7 @@ export default function EditPost() {
                             className="fas fa-times-circle fa delete-image"
                             onClick={() => deleteFile(index)}
                           ></i>
-                          {index === 0 ? (
+                          {index === 0 && imageUrlEdit.length === 0 ? (
                             <div className="title-cover-image">
                               <p>Ảnh bìa</p>
                             </div>
@@ -929,14 +626,11 @@ export default function EditPost() {
                 onChange={(e) => handleOnChange(e)}
                 placeholder="Loại sản phẩm"
                 disabled={true}
+                value={postDetail.category_id}
               >
                 {categoryData &&
                   categoryData.map((data, index) => (
-                    <option
-                      key={index}
-                      value={data.id}
-                      selected={postDetail.category_id == data.id}
-                    >
+                    <option key={index} value={data.id}>
                       {data.value}
                     </option>
                   ))}
@@ -988,15 +682,12 @@ export default function EditPost() {
                         name="brand"
                         id="post-brand"
                         onChange={(e) => handleOnChange(e)}
+                        value={postDetail.brand_id}
                       >
                         <option>Hãng sản xuất</option>
                         {brandCategory &&
                           brandCategory.map((data, index) => (
-                            <option
-                              key={index}
-                              value={data.id}
-                              selected={postDetail.brand_id == data.id}
-                            >
+                            <option key={index} value={data.id}>
                               {data.name}
                             </option>
                           ))}
@@ -1007,8 +698,7 @@ export default function EditPost() {
                   <div className="col">
                     <div className="form-outline">
                       <label className="form-label" htmlFor="post-color">
-                        Màu sắc&nbsp;
-                        <span style={{ color: "red" }}>*</span>
+                        Màu sắc
                       </label>
                       <input
                         type="text"
@@ -1044,14 +734,11 @@ export default function EditPost() {
                       name="status"
                       id="post-status"
                       onChange={(e) => handleOnChange(e)}
+                      value={postDetail.status}
                     >
                       <option value="0">Tình trạng</option>
                       {statusData.map((data, index) => (
-                        <option
-                          key={index}
-                          value={data.id}
-                          selected={postDetail.status == data.id}
-                        >
+                        <option key={index} value={data.id}>
                           {data.value}
                         </option>
                       ))}
@@ -1079,7 +766,6 @@ export default function EditPost() {
                   </div>
                 )}
               </div>
-              {console.log("cate", Number(postInfor.category))}
               {Number(postInfor.category) > 1 && (
                 <div className="row mb-3">
                   <div className="col">
@@ -1171,14 +857,11 @@ export default function EditPost() {
                         name="storage"
                         id="post-storage"
                         onChange={(e) => handleOnChange(e)}
+                        value={postDetail.storage}
                       >
                         <option value="0">Dung lượng bộ nhớ</option>
                         {storageData.map((data, index) => (
-                          <option
-                            key={index}
-                            value={data.value}
-                            selected={postDetail.storage == data.value}
-                          >
+                          <option key={index} value={data.value}>
                             {`${data.value}GB`}
                           </option>
                         ))}
@@ -1203,14 +886,11 @@ export default function EditPost() {
                         name="storage_type"
                         id="post-storage-type"
                         onChange={(e) => handleOnChange(e)}
+                        value={postDetail.storage_type}
                       >
                         <option>Loại ổ cứng</option>
                         {storageTypeData.map((data, index) => (
-                          <option
-                            key={index}
-                            value={data.id}
-                            selected={postDetail.storage_type == data.id}
-                          >
+                          <option key={index} value={data.id}>
                             {data.value}
                           </option>
                         ))}
@@ -1231,14 +911,11 @@ export default function EditPost() {
                         name="storage"
                         id="post-storage"
                         onChange={(e) => handleOnChange(e)}
+                        value={postDetail.storage}
                       >
                         <option value="0">Dung lượng ổ cứng cứng</option>
                         {storageData.map((data, index) => (
-                          <option
-                            key={index}
-                            value={data.value}
-                            selected={postDetail.storage == data.value}
-                          >
+                          <option key={index} value={data.value}>
                             {`${data.value}GB`}
                           </option>
                         ))}
@@ -1254,7 +931,12 @@ export default function EditPost() {
                 <label className="form-label" htmlFor="post-address">
                   Địa chỉ&nbsp;<span style={{ color: "red" }}>*</span>
                 </label>
-                <input
+                <AddressSelect
+                  address={address}
+                  setAddress={setAddress}
+                  validateAddress={validatePost.address}
+                />
+                {/* <input
                   type="text"
                   id="post-address"
                   className={
@@ -1266,7 +948,7 @@ export default function EditPost() {
                   value={address == "" ? postDetail.address : address}
                   readOnly
                   onClick={() => handleShow()}
-                />
+                /> */}
                 <p className="validate-form-text">{validatePost.address}</p>
               </div>
               <div className="mb-3 form-check">
@@ -1274,9 +956,8 @@ export default function EditPost() {
                   type="checkbox"
                   className="form-check-input"
                   id="freeCheckbox"
-                  checked={isFree}
-                  defaultChecked={postDetail.price == 0}
-                  onClick={() => onClickFree()}
+                  defaultChecked={isFree}
+                  onChange={(e) => onClickFree(e)}
                 />
                 <label className="form-check-label" htmlFor="freeCheckbox">
                   Tặng miễn phí
@@ -1360,9 +1041,10 @@ export default function EditPost() {
                   id="post-public"
                   onChange={(e) => handleOnChange(e)}
                   placeholder="Chế độ bài viết"
+                  value={postDetail.public_status}
                 >
-                  <option value="0">Công khai</option>
-                  <option value="1">Riêng tư</option>
+                  <option value={1}>Công khai</option>
+                  <option value={0}>Riêng tư</option>
                 </select>
                 <p className="validate-form-text">
                   {validatePost.public_status}
@@ -1379,7 +1061,7 @@ export default function EditPost() {
                 className="form-check-input"
                 id="tradeCheckbox"
                 defaultChecked={isTrade}
-                onClick={() => onClickTrade()}
+                onChange={(e) => onClickTrade(e)}
               />
               <label className="form-check-label" htmlFor="tradeCheckbox">
                 Đổi sản phẩm
@@ -1402,19 +1084,18 @@ export default function EditPost() {
                     name="category"
                     onChange={(e) => handleOnChangeTrade(e)}
                     placeholder="Loại sản phẩm"
+                    value={postTradeInfor.category_id}
                   >
                     {categoryData &&
                       categoryData.map((data, index) => (
-                        <option
-                          key={index}
-                          value={data.id}
-                          selected={postTradeInfor.category_id == data.id}
-                        >
+                        <option key={index} value={data.id}>
                           {data.value}
                         </option>
                       ))}
                   </select>
-                  <p className="validate-form-text">{validatePost.category}</p>
+                  <p className="validate-form-text">
+                    {validatePost.category_idTrade}
+                  </p>
                 </div>
                 <form
                   className="form-product"
@@ -1432,7 +1113,7 @@ export default function EditPost() {
                       type="text"
                       id="post-trade-name"
                       className={
-                        validatePost.name
+                        validatePost.nameTrade
                           ? "form-control is-invalid"
                           : "form-control"
                       }
@@ -1441,7 +1122,9 @@ export default function EditPost() {
                       defaultValue={postTradeInfor.name}
                       onChange={(e) => handleOnChangeTrade(e)}
                     />
-                    <p className="validate-form-text">{validatePost.name}</p>
+                    <p className="validate-form-text">
+                      {validatePost.nameTrade}
+                    </p>
                   </div>
                   <div className="mb-3 mt-4">
                     <h4>Tiêu đề và mô tả</h4>
@@ -1454,7 +1137,7 @@ export default function EditPost() {
                       type="text"
                       id="post-trade-title"
                       className={
-                        validatePost.title
+                        validatePost.titleTrade
                           ? "form-control is-invalid"
                           : "form-control"
                       }
@@ -1463,7 +1146,9 @@ export default function EditPost() {
                       defaultValue={postTradeInfor.title}
                       onChange={(e) => handleOnChangeTrade(e)}
                     />
-                    <p className="validate-form-text">{validatePost.title}</p>
+                    <p className="validate-form-text">
+                      {validatePost.titleTrade}
+                    </p>
                   </div>
                   <div className="form-outline  mb-3">
                     <label
@@ -1493,7 +1178,7 @@ export default function EditPost() {
                     </label>
                     <textarea
                       className={
-                        validatePost.description
+                        validatePost.descriptionTrade
                           ? "form-control is-invalid"
                           : "form-control"
                       }
@@ -1508,7 +1193,7 @@ export default function EditPost() {
                       onChange={(e) => handleOnChangeTrade(e)}
                     ></textarea>
                     <p className="validate-form-text">
-                      {validatePost.description}
+                      {validatePost.descriptionTrade}
                     </p>
                   </div>
                 </form>

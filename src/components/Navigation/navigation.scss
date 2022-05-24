@@ -196,6 +196,10 @@ a {
   display: block;
 }
 
+.PrivateTabIndicator-colorSecondary-5 {
+  background-color: $base-color-2 !important;
+}
+
 .bottomNav {
   display: flex;
   background: $nav-top-color;
@@ -216,7 +220,7 @@ a {
     .up-btn {
       cursor: pointer;
       height: 45px;
-      width: 140px;
+      min-width: 140px;
       float: left;
       margin-left: 10px;
       @include makeCenter();

@@ -13,7 +13,9 @@ import banner3 from "../../assets/image/banner3.jpg";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllPost } from "./../../redux/actions/postActions";
-import { headers } from "../../constants";
+import { apiPost, apiPostRecently, headers } from "../../constants";
+import { setLinkDirect } from "../../utils/common";
+import { apiPostHasTrade } from "./../../constants/index";
 
 const dataSlides = [
   {
@@ -38,55 +40,33 @@ const dataSlides = [
 
 export default function Home() {
   const [preload, setPreload] = useState(false);
-
-  //get data post
-  const dispatch = useDispatch();
-  const get_all_post = useSelector((state) => state.post.all_post);
-  const getAllPost = () => {
-    dispatch(fetchAllPost());
-  };
+  const [allPost, setAllPost] = useState([]);
+  const [postRecently, setPostRecently] = useState([]);
+  const [postHasTrade, setPostHasTrade] = useState([]);
 
   useEffect(() => {
-    getAllPost();
-    setTimeout(() => {
-      setPreload(true);
-    }, 1000);
+    setLinkDirect();
+    fetchAllPostWithFeild();
     return () => {
       setPreload(false);
     };
   }, []);
 
-  useEffect(() => {
-    if (get_all_post) setPreload(true);
-  }, [get_all_post]);
+  const fetchAllPostWithFeild = () => {
+    let URL1 = apiPost;
+    let URL2 = apiPostRecently;
+    let URL3 = apiPostHasTrade;
 
-  const [fileSelected, setFileSelected] = useState("");
-  // const upload = async () => {
-  //   const formData = new FormData();
-  //   formData.append("file", fileSelected);
-  //   formData.append("upload_preset", "weedzflm");
-  //   await axios
-  //     .post("https://api.cloudinary.com/v1_1/trhung/image/upload", formData)
-  //     .then((res) => {
-  //       console.log(res);
-  //     });
-  // };
+    const promise1 = axios.get(URL1);
+    const promise2 = axios.get(URL2);
+    const promise3 = axios.get(URL3);
 
-  const upload = async () => {
-    const formData = {
-      file: fileSelected,
-    };
-    console.log(fileSelected);
-    // await axios
-    //   .post("http://127.0.0.1:8000/api/upload", formData, {
-    //     headers: headers,
-    //   })
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
+    Promise.all([promise1, promise2, promise3]).then(function (res) {
+      setAllPost(res[0].data.data);
+      setPostRecently(res[1].data.data);
+      setPostHasTrade(res[2].data.data);
+      setPreload(true);
+    });
   };
 
   return (
@@ -99,23 +79,14 @@ export default function Home() {
         <Preloading />
       ) : (
         <div className="home-posts">
-          {/* <div>
-            <input
-              type="file"
-              onChange={(event) => {
-                setFileSelected(event.target.files[0]);
-              }}
-            />
-            <button onClick={() => upload()}>upload</button>
-          </div> */}
           <SlideShow dataSlides={dataSlides} />
           <Categories />
           <h3>Tin mới đăng</h3>
-          <ListItem dataList={get_all_post} />
+          <ListItem dataList={allPost} />
           <h3>Bài viết nổi bật</h3>
-          <ListItem dataList={get_all_post} />
+          <ListItem dataList={postRecently} />
           <h3>Bài viết đổi sản phẩm</h3>
-          <ListItem dataList={get_all_post} />
+          <ListItem dataList={postHasTrade} />
         </div>
       )}
     </div>

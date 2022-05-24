@@ -21,6 +21,16 @@ export default function NotPost({ type }) {
           </div>
         </>
       )}
+      {type == "user-post" && (
+        <>
+          <div className="col-12 not-post-img">
+            <img alt="" src={notFound} className="not-post-image" />
+          </div>
+          <div className="col-12 not-post-content">
+            <p>Người dùng này chưa có bài viết nào</p>
+          </div>
+        </>
+      )}
       {type == "my-favorite" && (
         <>
           <div className="col-12 not-post-img">

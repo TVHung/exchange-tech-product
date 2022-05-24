@@ -155,14 +155,16 @@ export default function ListPost() {
           </div>
         </div>
         {myPostFilter.length > 0 ? (
-          <Grid container spacing={1} alignItems="stretch">
-            {myPostFilter &&
-              myPostFilter.map((item) => (
-                <Grid key={item.id} item xs={6}>
-                  <MyPostItem data={item} handleShow={handleShow} />
-                </Grid>
-              ))}
-          </Grid>
+          <div>
+            <Grid container spacing={1} alignItems="stretch">
+              {myPostFilter &&
+                myPostFilter.map((item) => (
+                  <Grid key={item.id} item xs={6}>
+                    <MyPostItem data={item} handleShow={handleShow} />
+                  </Grid>
+                ))}
+            </Grid>
+          </div>
         ) : (
           <NotPost type={"my-post"} />
         )}

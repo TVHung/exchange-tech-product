@@ -3,6 +3,7 @@ import "./error.scss";
 import pagenotfound from "../../assets/image/error-404.png";
 import MetaTag from "../../components/MetaTag";
 import Preloading from "../../components/Loading";
+import { setLinkDirect } from "../../utils/common";
 
 export default function Error() {
   const [preload, setPreload] = useState(false);
