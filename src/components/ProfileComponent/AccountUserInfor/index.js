@@ -3,9 +3,12 @@ import "./_accountUserInfor.scss";
 import { Grid, Button } from "@material-ui/core";
 import axios from "axios";
 import {
+  apiChangeAvatar,
   apiChangePass,
   apiUserProfile,
+  headerFiles,
   headers,
+  maxSizeImage,
   sexData,
 } from "../../../constants";
 import { toast } from "react-toastify";
@@ -155,11 +158,6 @@ export default function AccountUserInfor() {
     });
   };
 
-  const uploadFile = (e) => {
-    if (e.target.files.length !== 0)
-      setAvatar(URL.createObjectURL(e.target.files[0]));
-  };
-
   //get data profile
   const dispatch = useDispatch();
   useEffect(() => {
@@ -187,6 +185,47 @@ export default function AccountUserInfor() {
     else return "";
   };
 
+  const [fileImage, setfileImage] = useState();
+  const [fileImageUrl, setfileImageUrl] = useState("");
+  const [validate, setValidate] = useState("");
+
+  const setUploadFile = (e) => {
+    let fileImage = e.target.files[0];
+    if (fileImage.size <= maxSizeImage) {
+      setfileImage(fileImage);
+      changeAvatar(fileImage);
+      setValidate("");
+    } else setValidate("Bạn chỉ được đăng ảnh kích thước tối đa 2mb");
+  };
+
+  useEffect(() => {
+    return () => {
+      setfileImage();
+      setfileImageUrl();
+      setValidate();
+    };
+  }, []);
+
+  const changeAvatar = async (fileImage) => {
+    const formData = new FormData();
+    formData.append("file", fileImage);
+    console.log("call api");
+    await axios
+      .post(apiChangeAvatar, formData, {
+        headers: headerFiles,
+      })
+      .then((res) => {
+        console.log("post image", res.data);
+        if (res.data.status == 1) {
+          setfileImageUrl(res.data.data);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <div className="account-container">
       <Modal show={show} onHide={() => handleClose()} centered>
@@ -195,38 +234,6 @@ export default function AccountUserInfor() {
         </Modal.Header>
         <Modal.Body>
           <form className="form-edit-profile">
-            <div className="form-outline mb-3 avatar-container">
-              <div
-                className="account-avatar-profile"
-                style={{
-                  backgroundImage: `url(${avatar || user_profile.avatar_url})`,
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "cover",
-                }}
-                // onMouseLeave={(e) => {
-                //   setStyle({ display: "none" });
-                // }}
-              ></div>
-              <div className="change-avatar" style={style}>
-                <input
-                  type="file"
-                  name="avatar-file"
-                  id="change-avatar"
-                  hidden
-                />
-                <label htmlFor="avatar-upload" className="custom-file-upload">
-                  <i className="fas fa-pen"></i>
-                </label>
-                <input
-                  type="file"
-                  className="custom-file-input"
-                  id="avatar-upload"
-                  hidden
-                  onChange={(e) => uploadFile(e)}
-                />
-              </div>
-            </div>
             <div className="form-outline mb-3">
               <label className="form-label" htmlFor="profile-name">
                 Tên người dùng&nbsp;<span style={{ color: "red" }}>*</span>
@@ -236,15 +243,15 @@ export default function AccountUserInfor() {
                 id="profile-name"
                 placeholder="Tên"
                 name="name"
-                defaultValue={user_profile.name}
+                defaultValue={user_profile?.name}
                 className={
-                  validateProfile.name
+                  validateProfile?.name
                     ? "form-control is-invalid"
                     : "form-control"
                 }
                 onChange={(e) => handleOnChangeProfile(e)}
               />
-              <p className="validate-form-text">{validateProfile.name}</p>
+              <p className="validate-form-text">{validateProfile?.name}</p>
             </div>
             <div className="form-outline mb-3">
               <label className="form-label" htmlFor="profile-sex">
@@ -255,7 +262,7 @@ export default function AccountUserInfor() {
                 name="sex"
                 id="profile-sex"
                 onChange={(e) => handleOnChangeProfile(e)}
-                value={user_profile.sex}
+                value={profile?.sex}
               >
                 <option>Chọn giới tính</option>
                 {sexData.map((data, index) => (
@@ -264,7 +271,7 @@ export default function AccountUserInfor() {
                   </option>
                 ))}
               </select>
-              <p className="validate-form-text">{validateProfile.sex}</p>
+              <p className="validate-form-text">{validateProfile?.sex}</p>
             </div>
             <div className="form-outline mb-3">
               <label className="form-label" htmlFor="profile-address">
@@ -274,18 +281,18 @@ export default function AccountUserInfor() {
                 type="text"
                 id="profile-address"
                 className={
-                  validateProfile.address
+                  validateProfile?.address
                     ? "form-control is-invalid"
                     : "form-control"
                 }
                 placeholder="Địa chỉ"
                 name="address"
-                defaultValue={user_profile.address}
+                defaultValue={user_profile?.address}
                 onChange={(e) => handleOnChangeProfile(e)}
               />
-              <p className="validate-form-text">{validateProfile.address}</p>
+              <p className="validate-form-text">{validateProfile?.address}</p>
             </div>
-            {user_profile.facebook_url && (
+            {user_profile?.facebook_url && (
               <div className="form-outline mb-3">
                 <label className="form-label" htmlFor="profile-facebook">
                   Đường dẫn tài khoản facebook
@@ -294,17 +301,17 @@ export default function AccountUserInfor() {
                   type="text"
                   id="profile-facebook"
                   className={
-                    validateProfile.facebook_url
+                    validateProfile?.facebook_url
                       ? "form-control is-invalid"
                       : "form-control"
                   }
                   placeholder="Đường dẫn tài khoản facebook"
                   name="facebook_url"
-                  defaultValue={user_profile.facebook_url}
+                  defaultValue={user_profile?.facebook_url}
                   onChange={(e) => handleOnChangeProfile(e)}
                 />
                 <p className="validate-form-text">
-                  {validateProfile.facebook_url}
+                  {validateProfile?.facebook_url}
                 </p>
               </div>
             )}
@@ -316,16 +323,16 @@ export default function AccountUserInfor() {
                 type="text"
                 id="profile-phone"
                 className={
-                  validateProfile.phone
+                  validateProfile?.phone
                     ? "form-control is-invalid"
                     : "form-control"
                 }
                 placeholder="Số điện thoại"
                 name="phone"
-                defaultValue={user_profile.phone}
+                defaultValue={user_profile?.phone}
                 onChange={(e) => handleOnChangeProfile(e)}
               />
-              <p className="validate-form-text">{validateProfile.phone}</p>
+              <p className="validate-form-text">{validateProfile?.phone}</p>
             </div>
           </form>
         </Modal.Body>
@@ -358,14 +365,46 @@ export default function AccountUserInfor() {
             >
               <Grid container>
                 <Grid item xs={4}>
-                  <img
-                    src={user_profile.avatar_url}
-                    alt="avt"
-                    className="account-avatar"
-                  />
+                  <div className="form-outline mb-3 avatar-container">
+                    <div
+                      className="account-avatar-profile"
+                      style={{
+                        backgroundImage: `url(${
+                          fileImageUrl ? fileImageUrl : user_profile?.avatar_url
+                        })`,
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "cover",
+                      }}
+                    ></div>
+                    <div className="change-avatar" style={style}>
+                      <label
+                        htmlFor="avatar-upload"
+                        className="custom-file-upload"
+                      >
+                        <i className="fas fa-pen"></i>
+                      </label>
+                      <input
+                        type="file"
+                        className="custom-file-input"
+                        id="avatar-upload"
+                        hidden
+                        onChange={(e) => setUploadFile(e)}
+                      />
+                    </div>
+                  </div>
+                  <p
+                    style={{
+                      color: "red",
+                      marginBottom: 0,
+                      textAlign: "center",
+                    }}
+                  >
+                    {validate}
+                  </p>
                 </Grid>
                 <Grid item xs={8}>
-                  <h4 style={{ marginTop: 0 }}>{user_profile.name}</h4>
+                  <h4 style={{ marginTop: 0 }}>{user_profile?.name}</h4>
                   <Button
                     className="account-edit-button"
                     onClick={() => handleOpen()}
@@ -386,29 +425,31 @@ export default function AccountUserInfor() {
                   <li>
                     <i className="fas fa-phone"></i>
                     <b>Số điện thoại: </b>
-                    <span className="infor-detail">{user_profile.phone}</span>
+                    <span className="infor-detail">{user_profile?.phone}</span>
                   </li>
                   <li>
-                    {user_profile.sex === 0 && <i className="fas fa-male"></i>}
-                    {user_profile.sex === 1 && (
+                    {user_profile?.sex === 0 && <i className="fas fa-male"></i>}
+                    {user_profile?.sex === 1 && (
                       <i className="fas fa-female"></i>
                     )}
-                    {user_profile.sex === 2 && <i className="fas fa-user"></i>}
+                    {user_profile?.sex === 2 && <i className="fas fa-user"></i>}
                     <b>Giới tính: </b>
                     <span className="infor-detail">
-                      {getNameById(user_profile.sex)}
+                      {getNameById(user_profile?.sex)}
                     </span>
                   </li>
                   <li>
                     <i className="fas fa-address-book"></i>
                     <b>Địa chỉ: </b>
-                    <span className="infor-detail">{user_profile.address}</span>
+                    <span className="infor-detail">
+                      {user_profile?.address}
+                    </span>
                   </li>
                   <li>
                     <i className="fas fa-calendar-day"></i>
                     <b>Ngày tham gia: </b>
                     <span className="infor-detail">
-                      {converDate(user_profile.created_at)}
+                      {converDate(user_profile?.created_at)}
                     </span>
                   </li>
                   <li>
@@ -421,7 +462,7 @@ export default function AccountUserInfor() {
                     <b>Kết nối: </b>
                     <span className="infor-detail">
                       <a
-                        href={user_profile.facebook_url}
+                        href={user_profile?.facebook_url}
                         title="Facebook"
                         target="_blank"
                         rel="noreferrer"

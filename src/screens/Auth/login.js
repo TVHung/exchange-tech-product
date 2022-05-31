@@ -14,7 +14,6 @@ import "./auth.scss";
 import MetaTag from "../../components/MetaTag";
 import { apiLogin } from "../../constants";
 import { setCookie } from "./../../utils/cookie";
-import { validateEmail, validatePassword } from "../../validations";
 import Loading from "../../components/Loading";
 
 const UseFocus = () => {
@@ -29,18 +28,20 @@ export default function Login() {
     email: "",
     password: "",
   });
-  const [errorEmail, setErrorEmail] = useState("");
-  const [errorPassword, setErrorPassword] = useState("");
-  const [errorLogin, setErrorLogin] = useState("");
+
+  const [userValidate, setUserValidate] = useState({
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     return () => {
-      setUser({ email: "", password: "" });
-      setErrorEmail("");
-      setErrorPassword("");
-      setErrorLogin("");
+      setUser();
+      setUserValidate();
+      setShowPassword();
+      setIsLoading();
     };
   }, []);
 
@@ -54,34 +55,38 @@ export default function Login() {
   //check login
   const handleSubmitLogin = async (e) => {
     if (e) e.preventDefault();
-    // setIsLoading(true);
+    setUserValidate({
+      email: "",
+      password: "",
+    });
     let userLogin = {
-      email: user.email,
-      password: user.password,
+      email: user?.email,
+      password: user?.password,
     };
-    setErrorEmail(validateEmail(user.email));
-    setErrorPassword(validatePassword(user.password));
-    if (
-      validateEmail(user.email) == "" &&
-      validatePassword(user.password) == ""
-    )
-      await axios
-        .post(apiLogin, userLogin)
-        .then((res) => {
-          const data = res.data;
-          if (data.access_token) {
-            toast.success("Đăng nhập thành công");
-            setCookie("access_token", data.access_token, 3600);
-            setErrorLogin("");
-            window.location.href = localStorage.getItem("linkDirect");
-          }
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          setIsLoading(false);
+    await axios
+      .post(apiLogin, userLogin)
+      .then((res) => {
+        if (res.data.access_token) {
+          toast.success("Đăng nhập thành công");
+          setCookie("access_token", res.data.access_token, 3600);
+          window.location.href = localStorage.getItem("linkDirect");
+        } else {
+          handleValidate(res.data);
           toast.error("Đặng nhập không thành công");
-          setErrorLogin("Email hoặc mật khẩu không đúng");
-        });
+        }
+      })
+      .catch((error) => {
+        toast.error("Đặng nhập không thành công");
+      });
+  };
+
+  const handleValidate = (validateData) => {
+    Object.keys(validateData).forEach(function (key) {
+      setUserValidate((prevState) => ({
+        ...prevState,
+        [key]: validateData[key][0],
+      }));
+    });
   };
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -111,7 +116,7 @@ export default function Login() {
             <p className="titleLogin">Login</p>
             <form className="formLogin" noValidate>
               <TextField
-                error={errorEmail != "" ? true : false}
+                error={userValidate?.email != "" ? true : false}
                 variant="filled"
                 margin="normal"
                 required
@@ -125,10 +130,10 @@ export default function Login() {
                 className="inputLogin"
               />
               <p id="validateEmail" className="nofiLogin">
-                {errorEmail}
+                {userValidate?.email}
               </p>
               <TextField
-                error={errorPassword != "" ? true : false}
+                error={userValidate?.password != "" ? true : false}
                 variant="filled"
                 margin="normal"
                 required
@@ -155,10 +160,7 @@ export default function Login() {
                 }}
               />
               <p id="validateEmail" className="nofiLogin">
-                {errorPassword}
-              </p>
-              <p id="validateEmail" className="nofiLogin">
-                {errorLogin}
+                {userValidate?.password}
               </p>
               <div style={{ marginTop: 10 }}>
                 <Button

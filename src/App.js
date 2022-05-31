@@ -15,7 +15,6 @@ import PreviewPost from "./screens/CreatePost/PreviewPost";
 import Detail from "./screens/Detail";
 import Profile from "./screens/Profile";
 import { Fragment } from "react";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -28,6 +27,7 @@ import "./utils/loader";
 import PostManager from "./screens/PostManager";
 import AuthRoute from "./routes/auth/AuthRoute";
 import ProfileUser from "./screens/ProfileUser";
+import { toast } from "react-toastify";
 toast.configure();
 
 function App() {

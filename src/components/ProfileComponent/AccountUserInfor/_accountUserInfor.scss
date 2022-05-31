@@ -15,30 +15,6 @@
       @include borderContent();
       .account-infor-content-detail-left {
         height: 100%;
-        //   background-color: red;
-        .account-avatar {
-          border-radius: 50%;
-          width: 120px;
-          height: 120px;
-          transition: ease-in-out 0.4s;
-          margin-right: 10px;
-          &:hover {
-            cursor: pointer;
-            box-shadow: 0px 0px 10px 5px rgba($color: #000000, $alpha: 0.5);
-            transform: scale(1.05);
-          }
-        }
-
-        .account-followed {
-          font-size: 14px;
-          float: left;
-        }
-
-        .account-following {
-          font-size: 14px;
-          padding-left: 20px;
-        }
-
         .account-edit-button {
           background-color: $base-color-1;
           color: white;
@@ -134,12 +110,12 @@
 .avatar-container {
   position: relative;
   margin-bottom: 10px;
-  @include makeCenter();
+  @include makeLeft();
   .account-avatar-profile {
     border-radius: 50%;
     transition: ease-in-out 0.4s;
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -156,8 +132,8 @@
   .change-avatar {
     position: absolute;
     z-index: 10;
-    top: calc(50% - 8px);
-    left: calc(50% - 8px);
+    top: calc(50% - 15px);
+    left: calc(50% - 30px);
     transition: 0.1 ease-in-out;
     &:hover {
       cursor: pointer;
