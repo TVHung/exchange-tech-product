@@ -12,6 +12,11 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import NotPost from "../../NotPost";
 import UserPostItem from "./UserPostItem";
+import {
+  headerFiles,
+  maxSizeImage,
+  apiChangeAvatar,
+} from "./../../../constants";
 
 export default function AccountInfor() {
   const params = useParams();
@@ -78,17 +83,17 @@ export default function AccountInfor() {
               <Grid container>
                 <Grid item xs={4}>
                   <img
-                    src={userProfile.avatar_url}
+                    src={userProfile?.avatar_url}
                     alt="avt"
                     className="account-avatar"
                   />
                 </Grid>
                 <Grid item xs={8}>
-                  <h4 style={{ marginTop: 0 }}>{userProfile.name}</h4>
+                  <h4 style={{ marginTop: 0 }}>{userProfile?.name}</h4>
                   <div>
                     <span className="infor-detail">
                       <a
-                        href={userProfile.facebook_url}
+                        href={userProfile?.facebook_url}
                         title="Facebook"
                         target="_blank"
                         rel="noreferrer"
@@ -111,27 +116,29 @@ export default function AccountInfor() {
                   <li>
                     <i className="fas fa-phone"></i>
                     <b>Số điện thoại: </b>
-                    <span className="infor-detail">{userProfile.phone}</span>
+                    <span className="infor-detail">{userProfile?.phone}</span>
                   </li>
                   <li>
-                    {userProfile.sex === 0 && <i className="fas fa-male"></i>}
-                    {userProfile.sex === 1 && <i className="fas fa-female"></i>}
-                    {userProfile.sex === 2 && <i className="fas fa-user"></i>}
+                    {userProfile?.sex === 0 && <i className="fas fa-male"></i>}
+                    {userProfile?.sex === 1 && (
+                      <i className="fas fa-female"></i>
+                    )}
+                    {userProfile?.sex === 2 && <i className="fas fa-user"></i>}
                     <b>Giới tính: </b>
                     <span className="infor-detail">
-                      {getNameById(userProfile.sex)}
+                      {getNameById(userProfile?.sex)}
                     </span>
                   </li>
                   <li>
                     <i className="fas fa-address-book"></i>
                     <b>Địa chỉ: </b>
-                    <span className="infor-detail">{userProfile.address}</span>
+                    <span className="infor-detail">{userProfile?.address}</span>
                   </li>
                   <li>
                     <i className="fas fa-calendar-day"></i>
                     <b>Ngày tham gia: </b>
                     <span className="infor-detail">
-                      {converDate(userProfile.created_at)}
+                      {converDate(userProfile?.created_at)}
                     </span>
                   </li>
                   <li>

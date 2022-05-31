@@ -11,6 +11,7 @@ export const apiGetUser = `${api}/users`;
 export const apiChangePass = `${api}/auth/change-pass`;
 //profile
 export const apiProfile = `${api}/profiles`;
+export const apiChangeAvatar = `${api}/change-avatar`;
 
 //api post
 export const apiPost = `${api}/posts`;
