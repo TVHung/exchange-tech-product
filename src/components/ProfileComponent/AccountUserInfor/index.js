@@ -24,9 +24,12 @@ export default function AccountUserInfor() {
     new_password: "",
     new_password_confirmation: "",
   });
-  const [valOldPass, setvalOldPass] = useState("");
-  const [valNewPass, setvalNewPass] = useState("");
-  const [valNewPassConfirm, setvalNewPassConfirm] = useState("");
+  const [newPassValidate, setNewPassValidate] = useState({
+    old_password: "",
+    new_password: "",
+    new_password_confirmation: "",
+  });
+
   const [show, setShow] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [profile, setProfile] = useState({
@@ -55,54 +58,49 @@ export default function AccountUserInfor() {
   };
   const handleOnChangeProfile = (e) => {
     const { name, value } = e.target;
-    setProfile((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-  const validateFormNewPass = () => {
-    let valPass = true;
-    if (newPass.old_password.length === 0) {
-      setvalOldPass("*Trường này không được để trống!");
-      valPass = false;
+    if (name == "sex") {
+      let val = Number(value);
+      setProfile((prevState) => ({
+        ...prevState,
+        [name]: val,
+      }));
     } else {
-      setvalOldPass("");
+      setProfile((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
     }
-    if (newPass.new_password.length === 0) {
-      setvalNewPass("*Trường này không được để trống!");
-      valPass = false;
-    } else if (newPass.old_password === newPass.new_password) {
-      setvalNewPass("Mật khẩu cũ và mới giống nhau");
-      valPass = false;
-    } else setvalNewPass("");
-
-    if (newPass.new_password_confirmation.length === 0) {
-      setvalNewPassConfirm("*Trường này không được để trống!");
-      valPass = false;
-    } else if (newPass.new_password != newPass.new_password_confirmation) {
-      setvalNewPassConfirm(
-        "Mật khẩu mới và xác nhận lại mật khẩu không giống nhau"
-      );
-      valPass = false;
-    } else setvalNewPassConfirm("");
-    console.log(valPass);
-    return valPass;
   };
 
   const onSubmitNewPass = async (e) => {
-    // e.preventdefault();
-    if (validateFormNewPass())
-      await axios
-        .post(apiChangePass, newPass, { headers: headers })
-        .then((res) => {
-          console.log(res);
-          toast.success("Cập nhật mật khẩu thành công");
+    setNewPassValidate({
+      old_password: "",
+      new_password: "",
+      new_password_confirmation: "",
+    });
+    await axios
+      .post(apiChangePass, newPass, { headers: headers })
+      .then((res) => {
+        console.log(res);
+        if (res.data?.status == 1) {
           document.getElementById("form-update-password").reset();
-        })
-        .catch((error) => {
+          toast.success(res.data?.message);
+        } else if (res.data?.status == -1) {
+          toast.error(res.data?.message);
+          let name = "old_password";
+          setNewPassValidate((prevState) => ({
+            ...prevState,
+            [name]: res.data?.message,
+          }));
+        } else {
+          handleValidate(res.data, setNewPassValidate);
           toast.error("Cập nhật mật khẩu không thành công");
-          console.error(error);
-        });
+        }
+      })
+      .catch((error) => {
+        toast.error("Cập nhật mật khẩu không thành công");
+        console.error(error);
+      });
   };
 
   const handleSubmitProfile = () => {
@@ -111,7 +109,6 @@ export default function AccountUserInfor() {
   };
 
   const updateUserProfile = async (data) => {
-    console.log("update profile");
     try {
       await axios
         .put(apiUserProfile, data, {
@@ -124,7 +121,7 @@ export default function AccountUserInfor() {
             dispatch(fetchUserProfile());
             setShow(false);
           } else {
-            handleValidate(res.data);
+            handleValidate(res.data, setValidateProfile);
           }
         });
     } catch (error) {
@@ -134,10 +131,10 @@ export default function AccountUserInfor() {
     }
   };
 
-  const handleValidate = (validateData) => {
+  const handleValidate = (validateData, setState) => {
     Object.keys(validateData).forEach(function (key) {
       console.log(key, validateData[key]);
-      setValidateProfile((prevState) => ({
+      setState((prevState) => ({
         ...prevState,
         [key]: validateData[key][0],
       }));
@@ -163,6 +160,12 @@ export default function AccountUserInfor() {
   const dispatch = useDispatch();
   useEffect(() => {
     fetchUser();
+    return () => {
+      setProfile();
+      setValidateProfile();
+      setNewPass();
+      setNewPassValidate();
+    };
   }, []);
   const user_profile = useSelector((state) => state.user.userProfile);
   const fetchUser = () => {
@@ -297,29 +300,27 @@ export default function AccountUserInfor() {
               />
               <p className="validate-form-text">{validateProfile?.address}</p>
             </div>
-            {user_profile?.facebook_url && (
-              <div className="form-outline mb-3">
-                <label className="form-label" htmlFor="profile-facebook">
-                  Đường dẫn tài khoản facebook
-                </label>
-                <input
-                  type="text"
-                  id="profile-facebook"
-                  className={
-                    validateProfile?.facebook_url
-                      ? "form-control is-invalid"
-                      : "form-control"
-                  }
-                  placeholder="Đường dẫn tài khoản facebook"
-                  name="facebook_url"
-                  defaultValue={user_profile?.facebook_url}
-                  onChange={(e) => handleOnChangeProfile(e)}
-                />
-                <p className="validate-form-text">
-                  {validateProfile?.facebook_url}
-                </p>
-              </div>
-            )}
+            <div className="form-outline mb-3">
+              <label className="form-label" htmlFor="profile-facebook">
+                Đường dẫn tài khoản facebook
+              </label>
+              <input
+                type="text"
+                id="profile-facebook"
+                className={
+                  validateProfile?.facebook_url
+                    ? "form-control is-invalid"
+                    : "form-control"
+                }
+                placeholder="Đường dẫn tài khoản facebook"
+                name="facebook_url"
+                defaultValue={user_profile?.facebook_url}
+                onChange={(e) => handleOnChangeProfile(e)}
+              />
+              <p className="validate-form-text">
+                {validateProfile?.facebook_url}
+              </p>
+            </div>
             <div className="form-outline mb-3">
               <label className="form-label" htmlFor="profile-phone">
                 Số điện thoại
@@ -387,28 +388,28 @@ export default function AccountUserInfor() {
                             backgroundRepeat: "no-repeat",
                             backgroundSize: "cover",
                           }}
-                        ></div>
-                        <div className="change-avatar" style={style}>
-                          <label
-                            htmlFor="avatar-upload"
-                            className="custom-file-upload"
-                          >
-                            <i className="fas fa-pen"></i>
-                          </label>
-                          <input
-                            type="file"
-                            className="custom-file-input"
-                            id="avatar-upload"
-                            hidden
-                            onChange={(e) => setUploadFile(e)}
-                          />
+                        >
+                          <div className="change-avatar" style={style}>
+                            <label
+                              htmlFor="avatar-upload"
+                              className="custom-file-upload"
+                            >
+                              <i className="fas fa-pen"></i>
+                            </label>
+                            <input
+                              type="file"
+                              className="custom-file-input"
+                              id="avatar-upload"
+                              hidden
+                              onChange={(e) => setUploadFile(e)}
+                            />
+                          </div>
                         </div>
                       </div>
                       <p
                         style={{
                           color: "red",
                           marginBottom: 0,
-                          textAlign: "center",
                         }}
                       >
                         {validate}
@@ -515,7 +516,9 @@ export default function AccountUserInfor() {
                     name="old_password"
                     onChange={(e) => handleOnChangePass(e)}
                   />
-                  <p className="validate-form-text">{valOldPass}</p>
+                  <p className="validate-form-text">
+                    {newPassValidate?.old_password}
+                  </p>
                 </div>
                 <div className="row mb-3">
                   <div className="col">
@@ -532,7 +535,9 @@ export default function AccountUserInfor() {
                         name="new_password"
                         onChange={(e) => handleOnChangePass(e)}
                       />
-                      <p className="validate-form-text">{valNewPass}</p>
+                      <p className="validate-form-text">
+                        {newPassValidate?.new_password}
+                      </p>
                     </div>
                   </div>
                   <div className="col">
@@ -552,7 +557,9 @@ export default function AccountUserInfor() {
                         name="new_password_confirmation"
                         onChange={(e) => handleOnChangePass(e)}
                       />
-                      <p className="validate-form-text">{valNewPassConfirm}</p>
+                      <p className="validate-form-text">
+                        {newPassValidate?.new_password_confirmation}
+                      </p>
                     </div>
                   </div>
                 </div>
