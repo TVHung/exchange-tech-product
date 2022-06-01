@@ -157,3 +157,12 @@ export const scrollToTop = () => {
 export const setLinkDirect = () => {
   localStorage.setItem("linkDirect", window.location.pathname);
 };
+
+export const appendArrayToFormData = (object) => {
+  var formData = new FormData();
+  Object.keys(object).forEach(function (key) {
+    // console.log(key, object[key]);
+    formData.append(key, object[key]);
+  });
+  return formData;
+};

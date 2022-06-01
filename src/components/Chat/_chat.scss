@@ -160,6 +160,7 @@
     }
 }
 
+//message item
 .message-content {
     height: auto;
     .mess-sender,
@@ -187,5 +188,10 @@
         .mess {
             background-color: #fff;
         }
+    }
+    .mess-img {
+        height: 100px;
+        width: auto;
+        margin: 5px 0px;
     }
 }

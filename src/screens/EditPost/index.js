@@ -3,40 +3,32 @@ import "./_editPost.scss";
 import { Grid } from "@material-ui/core";
 import MetaTag from "../../components/MetaTag";
 import Preloading from "../../components/Loading";
-import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 import {
-  apiCity,
-  apiDistrict,
-  apiWard,
   headers,
   apiImages,
   storageData,
   statusData,
   apiPost,
   apiGetBrandByCategory,
-  apiUpload,
   apiFetchPostDetail,
   categoryData,
   storageTypeData,
-  apiPostTrade,
   maxSizeVideo,
   headerFiles,
-  apiUploadVideo,
   maxNumImage,
   maxSizeImage,
 } from "./../../constants";
 import { toast } from "react-toastify";
-import {
-  isNull,
-  validateNullFormPost,
-  validatePrice,
-} from "./../../validations";
 import Breadcrumb from "../../components/Breadcrumb";
 import { postBreadcrumb } from "../../constants/breadcrumData";
 import { getCookie } from "../../utils/cookie";
 import { useParams } from "react-router-dom";
-import { scrollToTop, setLinkDirect } from "../../utils/common";
+import {
+  appendArrayToFormData,
+  scrollToTop,
+  setLinkDirect,
+} from "../../utils/common";
 import AddressSelect from "../../components/AddressSelect";
 
 export default function EditPost() {
@@ -98,8 +90,8 @@ export default function EditPost() {
     price: "",
     title: "",
     description: "",
-    image: "",
-    video: "",
+    fileImages: "",
+    fileVideo: "",
 
     nameTrade: "",
     titleTrade: "",
@@ -138,7 +130,7 @@ export default function EditPost() {
   const [fileObject, setFileOject] = useState([]);
   const uploadSingleFile = (e) => {
     let fileImage = e.target.files[0];
-    let image = "image";
+    let fileImages = "fileImages";
     let mess = "";
     if (file.length + imageUrlEdit.length < maxNumImage && fileImage) {
       if (fileImage.size <= maxSizeImage) {
@@ -150,7 +142,7 @@ export default function EditPost() {
     }
     setvalidatePost((prevState) => ({
       ...prevState,
-      [image]: mess,
+      [fileImages]: mess,
     }));
   };
 
@@ -158,7 +150,7 @@ export default function EditPost() {
     //check size video < 30mb
     let fileVideo = e.target.files[0];
     if (fileVideo) {
-      let video = "video";
+      let video = "fileVideo";
       let mess = "";
       if (fileVideo.size > maxSizeVideo) {
         mess = "Bạn chỉ được có thể đăng video dưới 10mb";
@@ -285,8 +277,8 @@ export default function EditPost() {
       price: "",
       title: "",
       description: "",
-      image: "",
-      video: "",
+      fileImages: "",
+      fileVideo: "",
 
       nameTrade: "",
       titleTrade: "",
@@ -363,6 +355,7 @@ export default function EditPost() {
       storage_type: Number(postInfor.storage_type),
       brand_id: Number(postInfor.brand),
       display_size: Number(postInfor.display_size),
+      fileImages: fileObject,
       fileVideo: videoFile,
       video_url: postInfor.video_url,
       is_delete_video: isDeleteVideo,
@@ -382,15 +375,17 @@ export default function EditPost() {
     }
 
     console.log("post", mergePostData);
-    let image = "image";
+    let fileImages = "fileImages";
     if (!((file && file.length) || imageUrlEdit.length)) {
       setvalidatePost((prevState) => ({
         ...prevState,
-        [image]: "Bạn cần đăng ít nhất 1 hình ảnh",
+        [fileImages]: "Bạn cần đăng ít nhất 1 hình ảnh",
       }));
     } else
       await axios
-        .put(`${apiPost}/${params.id}`, mergePostData, { headers: headers })
+        .put(`${apiPost}/${params.id}`, appendArrayToFormData(mergePostData), {
+          headers: headerFiles,
+        })
         .then((res) => {
           const p = res.data.data;
           console.log("post success", p, res);
@@ -563,7 +558,7 @@ export default function EditPost() {
                   })}
               </div>
               <div className="image-validate">
-                <p>{validatePost.image}</p>
+                <p>{validatePost.fileImages}</p>
               </div>
             </div>
             <div className="video-post">
@@ -605,7 +600,7 @@ export default function EditPost() {
                 )}
               </div>
               <div className="image-validate">
-                <p>{validatePost.video}</p>
+                <p>{validatePost.fileVideo}</p>
               </div>
             </div>
           </Grid>

@@ -10,8 +10,12 @@ const messSuggest = [
   "Sản phẩm có lỗi không?",
 ];
 
-export default function MenuInput() {
+export default function MenuInput({ sendMessage }) {
   const [inputVal, setInputVal] = useState("");
+
+  const submitSendMessage = () => {
+    sendMessage(inputVal);
+  };
 
   return (
     <div className="chat-mess-input">
@@ -41,7 +45,10 @@ export default function MenuInput() {
           />
         </div>
         <div className="input-send">
-          <i class="fas fa-paper-plane fa-2x send-icon"></i>
+          <i
+            class="fas fa-paper-plane fa-2x send-icon"
+            onClick={() => submitSendMessage()}
+          ></i>
         </div>
       </div>
     </div>
