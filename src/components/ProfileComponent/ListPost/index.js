@@ -6,6 +6,7 @@ import { deleteMyPost, fetchMyPosts } from "../../../redux/actions/postActions";
 import { Modal, Button } from "react-bootstrap";
 import NotPost from "../../NotPost";
 import "./_listPost.scss";
+import Pagination from "react-js-pagination";
 
 export default function ListPost() {
   const [show, setShow] = useState(false);
@@ -22,7 +23,8 @@ export default function ListPost() {
     getAllMyPosts();
   }, []);
   useEffect(() => {
-    setMyPostFilter(my_posts);
+    console.log("my post", my_posts);
+    setMyPostFilter(my_posts?.data);
   }, [my_posts]);
 
   const handleClose = () => {
@@ -41,23 +43,23 @@ export default function ListPost() {
     const { name } = e.target;
     setFilter(name);
     if (name == "not-sold") {
-      var notSoldPost = my_posts.filter(function (el) {
+      let notSoldPost = my_posts?.data.filter(function (el) {
         return el.sold === 0;
       });
       setMyPostFilter(notSoldPost);
     } else if (name == "sold") {
-      var notSoldPost = my_posts.filter(function (el) {
+      let notSoldPost = my_posts?.data.filter(function (el) {
         return el.sold === 1;
       });
       setMyPostFilter(notSoldPost);
     } else if (name == "private") {
-      var privatePost = my_posts.filter(function (el) {
+      let privatePost = my_posts?.data.filter(function (el) {
         return el.public_status === 0;
       });
       console.log("private", privatePost);
       setMyPostFilter(privatePost);
     } else {
-      setMyPostFilter(my_posts);
+      setMyPostFilter(my_posts?.data);
     }
   };
 
@@ -154,7 +156,7 @@ export default function ListPost() {
             </div>
           </div>
         </div>
-        {myPostFilter.length > 0 ? (
+        {myPostFilter?.length > 0 ? (
           <div>
             <Grid container spacing={1} alignItems="stretch">
               {myPostFilter &&
@@ -164,6 +166,27 @@ export default function ListPost() {
                   </Grid>
                 ))}
             </Grid>
+            <div className="paginate mt-3">
+              <small className="fw-bold d-block">
+                Hiển thị <b>{myPostFilter?.length}</b> trên{" "}
+                <b>{my_posts?.meta?.total}</b> bài viết
+              </small>
+            </div>
+            <div className="mt-1 paginate">
+              <Pagination
+                activePage={my_posts?.meta?.current_page}
+                itemsCountPerPage={my_posts?.meta?.per_page}
+                totalItemsCount={my_posts?.meta?.total || 0}
+                onChange={(pageNumber) => {
+                  dispatch(fetchMyPosts(pageNumber));
+                }}
+                pageRangeDisplayed={5}
+                itemClass="page-item"
+                linkClass="page-link"
+                firstPageText="Trang đầu"
+                lastPageText="Trang cuối"
+              />
+            </div>
           </div>
         ) : (
           <NotPost type={"my-post"} />

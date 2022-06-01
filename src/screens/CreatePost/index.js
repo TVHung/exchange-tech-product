@@ -24,7 +24,11 @@ import Breadcrumb from "../../components/Breadcrumb";
 import { postBreadcrumb } from "../../constants/breadcrumData";
 import { getCookie } from "../../utils/cookie";
 import { maxSizeImage } from "./../../constants/index";
-import { scrollToTop, setLinkDirect } from "../../utils/common";
+import {
+  appendArrayToFormData,
+  scrollToTop,
+  setLinkDirect,
+} from "../../utils/common";
 import AddressSelect from "../../components/AddressSelect";
 
 export default function CreatePost() {
@@ -73,8 +77,8 @@ export default function CreatePost() {
     price: "",
     title: "",
     description: "",
-    image: "",
-    video: "",
+    fileImages: "",
+    fileVideo: "",
 
     nameTrade: "",
     titleTrade: "",
@@ -110,8 +114,8 @@ export default function CreatePost() {
         address: "",
         title: "",
         description: "",
-        image: "",
-        video: "",
+        fileImages: "",
+        fileVideo: "",
 
         nameTrade: "",
         titleTrade: "",
@@ -154,7 +158,7 @@ export default function CreatePost() {
   const [fileObject, setFileOject] = useState([]);
   const uploadSingleFile = (e) => {
     let fileImage = e.target.files[0];
-    let image = "image";
+    let fileImages = "fileImages";
     let mess = "";
     if (file && file.length < maxNumImage && fileImage) {
       if (fileImage.size <= maxSizeImage) {
@@ -166,13 +170,13 @@ export default function CreatePost() {
     }
     setvalidatePost((prevState) => ({
       ...prevState,
-      [image]: mess,
+      [fileImages]: mess,
     }));
   };
   const uploadSingleVideo = (e) => {
     let fileVideo = e.target.files[0];
     if (fileVideo) {
-      let video = "video";
+      let video = "fileVideo";
       let mess = "";
       if (fileVideo.size > maxSizeVideo) {
         mess = "Bạn chỉ được có thể đăng video dưới 10mb";
@@ -261,8 +265,8 @@ export default function CreatePost() {
       price: "",
       title: "",
       description: "",
-      image: "",
-      video: "",
+      fileImages: "",
+      fileVideo: "",
 
       nameTrade: "",
       titleTrade: "",
@@ -302,7 +306,6 @@ export default function CreatePost() {
       ram: Number(postInfor.ram) == 0 ? null : Number(postInfor.ram),
       storage:
         Number(postInfor.storage) == 0 ? null : Number(postInfor.storage),
-      video_url: videoFile,
       status: postInfor.status,
       price: postInfor.price,
       address: address,
@@ -318,7 +321,9 @@ export default function CreatePost() {
         Number(postInfor.display_size) == 0
           ? null
           : Number(postInfor.display_size),
-      file: fileObject,
+      fileVideo: videoFile,
+      fileImages: fileObject,
+      fileImageLength: fileObject.length,
     };
 
     if (isTrade) {
@@ -333,31 +338,25 @@ export default function CreatePost() {
     } else {
       mergePostData = { ...postData };
     }
-
-    console.log("post", mergePostData);
-    let image = "image";
-    if (!(file && file.length)) {
-      setvalidatePost((prevState) => ({
-        ...prevState,
-        [image]: "Bạn cần đăng ít nhất 1 hình ảnh",
-      }));
-    } else
-      await axios
-        .post(apiPost, mergePostData, { headers: headers })
-        .then((res) => {
-          const p = res.data.data;
-          console.log("post success", p, res);
-          if (res.data.status == 1) saveImages(fileObject, p.id);
-          else {
-            handleValidate(res.data);
-          }
-          setPreload(false);
-        })
-        .catch((error) => {
-          console.error(error);
-          setPreload(false);
-          toast.error("Tạo bài viết không thành công");
-        });
+    console.log("post", mergePostData, appendArrayToFormData(postData));
+    await axios
+      .post(apiPost, appendArrayToFormData(mergePostData), {
+        headers: headerFiles,
+      })
+      .then((res) => {
+        const p = res.data.data;
+        console.log("post success", p, res);
+        if (res.data.status == 1) saveImages(fileObject, p.id);
+        else {
+          handleValidate(res.data);
+        }
+        setPreload(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setPreload(false);
+        toast.error("Tạo bài viết không thành công");
+      });
   };
 
   const handleValidate = (validateData) => {
@@ -402,9 +401,26 @@ export default function CreatePost() {
       });
   };
 
+  // const testUpload = async () => {
+  //   const formData = new FormData();
+  //   formData.append("file", videoFile);
+  //   formData.append("name", "hung");
+  //   formData.append("address", "bac ninh");
+  //   await axios
+  //     .post("http://127.0.0.1:8000/api/test-form-data", formData, {
+  //       headers: headerFiles,
+  //     })
+  //     .then((res) => {
+  //       console.log("Test file", res);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
+
   return (
     <div className="createPostContainer container">
-      {/* <button onClick={() => testUpload(fileObject)}>upload</button> */}
+      {/* <button onClick={() => testUpload()}>upload</button> */}
       <Breadcrumb arrLink={postBreadcrumb} />
       <MetaTag
         title={"Tạo bài viết"}
@@ -455,7 +471,7 @@ export default function CreatePost() {
                   })}
               </div>
               <div className="image-validate">
-                <p>{validatePost.image}</p>
+                <p>{validatePost.fileImages}</p>
               </div>
             </div>
             <div className="video-post">
@@ -486,7 +502,7 @@ export default function CreatePost() {
                 )}
               </div>
               <div className="image-validate">
-                <p>{validatePost.video}</p>
+                <p>{validatePost.fileVideo}</p>
               </div>
             </div>
           </Grid>

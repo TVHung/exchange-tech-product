@@ -27,22 +27,24 @@ export const fetchAllPost = () => async (dispatch) => {
   }
 };
 
-export const fetchMyPosts = () => async (dispatch) => {
-  try {
-    await axios
-      .get(apiFetchMyPosts, {
-        headers: headers,
-      })
-      .then((res) => {
-        const myPosts = res.data.data;
-        console.log(res.data);
-        dispatch({ type: MY_POSTS, payload: myPosts });
-      });
-  } catch (error) {
-    dispatch({ type: MY_POSTS, payload: [] });
-    return { statusCode: 500, body: error.toString() };
-  }
-};
+export const fetchMyPosts =
+  (pageNumber = 1) =>
+  async (dispatch) => {
+    try {
+      await axios
+        .get(`${apiFetchMyPosts}/?page=${pageNumber}`, {
+          headers: headers,
+        })
+        .then((res) => {
+          const myPosts = res.data;
+          console.log(res.data);
+          dispatch({ type: MY_POSTS, payload: myPosts });
+        });
+    } catch (error) {
+      dispatch({ type: MY_POSTS, payload: [] });
+      return { statusCode: 500, body: error.toString() };
+    }
+  };
 
 export const deleteMyPost = (id) => async (dispatch) => {
   try {
@@ -78,16 +80,20 @@ export const searchPostByName = (option) => async (dispatch) => {
   }
 };
 
-export const fetchWishList = () => async (dispatch) => {
-  try {
-    await axios.get(apiWishList, { headers: headers }).then((res) => {
-      const wishLists = res.data.data;
-      dispatch({ type: WISH_LIST, payload: wishLists });
-    });
-  } catch (error) {
-    return { statusCode: 500, body: error.toString() };
-  }
-};
+export const fetchWishList =
+  (pageNumber = 1) =>
+  async (dispatch) => {
+    try {
+      await axios
+        .get(`${apiWishList}/?page=${pageNumber}`, { headers: headers })
+        .then((res) => {
+          const wishLists = res.data.data;
+          dispatch({ type: WISH_LIST, payload: wishLists });
+        });
+    } catch (error) {
+      return { statusCode: 500, body: error.toString() };
+    }
+  };
 
 export const deleteWishList = (id) => async (dispatch) => {
   try {

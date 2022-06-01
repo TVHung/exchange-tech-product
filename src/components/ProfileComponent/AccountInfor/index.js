@@ -12,16 +12,13 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import NotPost from "../../NotPost";
 import UserPostItem from "./UserPostItem";
-import {
-  headerFiles,
-  maxSizeImage,
-  apiChangeAvatar,
-} from "./../../../constants";
+import Pagination from "react-js-pagination";
 
 export default function AccountInfor() {
   const params = useParams();
   const [userProfile, setUserProfile] = useState({});
   const [userPosts, setUserPosts] = useState([]);
+  const [paginateData, setPaginateData] = useState({});
 
   //get data profile
   useEffect(() => {
@@ -39,22 +36,22 @@ export default function AccountInfor() {
         .then((res) => {
           const userProfile = res.data;
           setUserProfile(userProfile);
-          console.log(userProfile);
         });
     } catch (error) {
       return { statusCode: 500, body: error.toString() };
     }
   };
 
-  const fetchUserPosts = async (user_id) => {
+  const fetchUserPosts = async (user_id, pageNumber = 1) => {
     try {
       await axios
-        .get(`${apiFetchUserPosts}/${user_id}`, {
+        .get(`${apiFetchUserPosts}/${user_id}/?page=${pageNumber}`, {
           headers: headers,
         })
         .then((res) => {
           const myPosts = res.data.data;
-          console.log(myPosts);
+          setPaginateData(res?.data?.meta);
+          console.log(res);
           setUserPosts(myPosts);
         });
     } catch (error) {
@@ -156,7 +153,7 @@ export default function AccountInfor() {
         <h3>Các bài viết người dùng này đã đăng</h3>
         <div className="account-post-list">
           <div className="num-post">
-            <p>Các tin đã đăng: {userPosts.length} tin</p>
+            <p>Các tin đã đăng: {paginateData?.total} tin</p>
           </div>
           {userPosts.length > 0 ? (
             <div>
@@ -168,6 +165,27 @@ export default function AccountInfor() {
                     </Grid>
                   ))}
               </Grid>
+              <div className="mt-3 paginate">
+                <Pagination
+                  activePage={paginateData?.current_page}
+                  itemsCountPerPage={paginateData?.per_page}
+                  totalItemsCount={paginateData?.total || 0}
+                  onChange={(pageNumber) => {
+                    fetchUserPosts(params.id, pageNumber);
+                  }}
+                  pageRangeDisplayed={5}
+                  itemClass="page-item"
+                  linkClass="page-link"
+                  firstPageText="Trang đầu"
+                  lastPageText="Trang cuối"
+                />
+              </div>
+              <div className="paginate">
+                <small className="fw-bold d-block">
+                  Hiển thị <b>{userPosts?.length}</b> trên{" "}
+                  <b>{paginateData?.total}</b> bài viết
+                </small>
+              </div>
             </div>
           ) : (
             <NotPost type={"user-post"} />
