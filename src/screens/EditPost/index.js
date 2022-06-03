@@ -383,7 +383,7 @@ export default function EditPost() {
       }));
     } else
       await axios
-        .put(`${apiPost}/${params.id}`, appendArrayToFormData(mergePostData), {
+        .post(`${apiPost}/${params.id}`, appendArrayToFormData(mergePostData), {
           headers: headerFiles,
         })
         .then((res) => {
