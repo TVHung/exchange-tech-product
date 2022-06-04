@@ -8,7 +8,7 @@ import NotPost from "../../NotPost";
 import "./_listPost.scss";
 import Pagination from "react-js-pagination";
 
-export default function ListPost() {
+export default function ListPost({ setPreload }) {
   const [show, setShow] = useState(false);
   const [postIdDelete, setPostIdDelete] = useState(null);
   const [filter, setFilter] = useState("all"); //1 tat ca , 2 chua ban, 3 da ban

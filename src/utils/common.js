@@ -147,6 +147,17 @@ export const getValueListFilter = (marks, value) => {
   return val;
 };
 
+export const getValuePercentFilter = (marks, value) => {
+  let val;
+  for (let i = 0; i < marks.length; i++) {
+    if (marks[i].label == value) {
+      val = marks[i].value;
+      break;
+    }
+  }
+  return val;
+};
+
 export const scrollToTop = () => {
   window.scrollTo({
     top: 0,

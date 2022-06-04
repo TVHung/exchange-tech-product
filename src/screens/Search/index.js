@@ -14,6 +14,8 @@ import {
   formatPrice,
   getValueListFilter,
   setLinkDirect,
+  getParam,
+  getValuePercentFilter,
 } from "../../utils/common";
 import { searchPostByName } from "../../redux/actions/postActions";
 import { useHistory } from "react-router-dom";
@@ -35,12 +37,12 @@ import {
   storageTypeData,
 } from "../../constants";
 import { Box, Slider } from "@material-ui/core";
+import AddressSelectSearch from "./../../components/AddressSelectSearch";
 
 function valuetext(value) {
   return `${value}vnđ`;
 }
 export default function Search() {
-  const [open, setOpen] = useState(false);
   const [openPrice, setOpenPrice] = useState(false);
   const [openCategory, setOpenCategory] = useState(false);
   const [openVideo, setOpenVideo] = useState(false);
@@ -53,9 +55,9 @@ export default function Search() {
   const [openCard, setOpenCard] = useState(false);
   const [openBrand, setOpenBrand] = useState(false);
   const [openAddress, setOpenAddress] = useState(false);
-  const [searchValue, setsearchValue] = useState("");
 
   //value filter
+  const [searchValue, setsearchValue] = useState("");
   const [categoryValue, setCategoryValue] = useState("");
   const [storageTypeValue, setStorageTypeValue] = useState("");
   const [videoValue, setVideoValue] = useState("");
@@ -64,6 +66,7 @@ export default function Search() {
   const [statusValue, setStatusValue] = useState("");
   const [brandCategoryValue, setBrandCategoryValue] = useState([]);
   const [brandValue, setBrandValue] = useState([]);
+  const [addressValue, setAddressValue] = useState("");
 
   //useRef
   const categoryRef = useRef(null);
@@ -120,10 +123,103 @@ export default function Search() {
         break;
     }
   };
+  //get value param and set to ui
+  const setValueWhenReload = () => {
+    let categoryVal = getParam("category");
+    let priceVal = getParam("price");
+    let guaranteeVal = getParam("guarantee");
+    let storageVal = getParam("storage");
+    let videoVal = getParam("video");
+    let ramVal = getParam("ram");
+    let statusVal = getParam("status");
+    let cardVal = getParam("card");
+    let brandVal = getParam("brand");
+    let storageTypeVal = getParam("storage_type");
+    let displaySizeVal = getParam("display");
+    let addressVal = getParam("address");
+
+    if (addressVal) {
+      setAddressValue(addressVal);
+      setOpenAddress(true);
+    }
+    if (categoryVal) {
+      setCategoryValue(categoryVal);
+      setOpenCategory(true);
+    }
+    if (priceVal) {
+      let newValue = priceVal.split("_").map(function (item) {
+        return parseInt(item, 10);
+      });
+      setValueStart(newValue[0]);
+      setValueEnd(newValue[1]);
+      setValue(
+        newValue.map(function (item) {
+          return (item / priceStep).toFixed();
+        })
+      );
+      setOpenPrice(true);
+    }
+    if (guaranteeVal) {
+      let newValue = guaranteeVal.split("_").map(function (item) {
+        return parseInt(item, 10);
+      });
+      setValueGuarantee(
+        newValue.map(function (item) {
+          return (item / guaranteeStep).toFixed();
+        })
+      );
+      setOpenGuarantee(true);
+    }
+    if (storageVal) {
+      let newValue = storageVal.split("_").map(function (item) {
+        return parseInt(item, 10);
+      });
+      setValueStorage(
+        newValue.map(function (item) {
+          return getValuePercentFilter(marksStorageData, item);
+        })
+      );
+      setValueStorageStart(`${newValue[0]}GB`);
+      setValueStorageEnd(`${newValue[1]}GB`);
+      setOpenStorage(true);
+    }
+    if (videoVal) {
+      setVideoValue(videoVal);
+      setOpenVideo(true);
+    }
+    if (ramVal) {
+      let newValue = ramVal.split("_");
+      setValueRam(
+        newValue.map(function (item) {
+          return getValuePercentFilter(marksRam, item);
+        })
+      );
+      setOpenRam(true);
+    }
+    if (statusVal) {
+      setStatusValue(statusVal);
+      setOpenStatus(true);
+    }
+    if (brandVal && categoryVal !== "3") {
+      setBrandValue(brandVal);
+      setOpenBrand(true);
+    }
+    if (cardVal && categoryVal !== "1") {
+      setCardValue(cardVal);
+      setOpenCard(true);
+    }
+    if (storageTypeVal && categoryVal !== "1") {
+      setStorageTypeValue(storageTypeVal);
+      setOpenStorageType(true);
+    }
+    if (displaySizeVal && categoryVal !== "1") {
+      setDisplaySizeValue(displaySizeVal);
+      setOpenDisplaySize(true);
+    }
+  };
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    setsearchValue(params.get("search"));
+    setsearchValue(getParam("search"));
   }, [searchValue]);
 
   const get_post_search = useSelector((state) => state.post.search_result);
@@ -149,13 +245,14 @@ export default function Search() {
   };
   const onChangeCheckVideo = (e) => {
     const { value } = e.target;
-    if (value == "0") deleteParam("video");
+    if (value == "-1") deleteParam("video");
     else insertParams("video", value);
     setVideoValue(value);
   };
   const onChangeCheckCard = (e) => {
     const { value } = e.target;
-    if (value == "0") deleteParam("card");
+    console.log(value);
+    if (value == "-1") deleteParam("card");
     else insertParams("card", value);
     setCardValue(value);
   };
@@ -189,18 +286,42 @@ export default function Search() {
     if (paramVal != null) {
       insertParams("brand", paramVal);
     }
+    console.log(paramVal);
     setBrandValue(paramVal);
   };
-  const onChangeAddress = (e) => {};
+  const onChangeAddress = (address) => {
+    if (address === "") {
+      deleteParam("address");
+    } else {
+      insertParams("address", address);
+    }
+    setAddressValue(address);
+  };
+
   const dispatch = useDispatch();
-  useEffect(() => {
+
+  const ApplySearch = () => {
     dispatch(searchPostByName(window.location.search));
-  }, [window.location.search]);
+  };
 
   //brand by category
   // const get_brand_category = useSelector((state) => state.brand.brand_category);
   useEffect(() => {
     getBrandByCategory(categoryValue);
+    if (categoryValue == "1") {
+      deleteParam("storage_type");
+      deleteParam("display");
+      deleteParam("card");
+    } else if (categoryValue == "2") {
+    } else if (categoryValue == "3") {
+      deleteParam("brand");
+      deleteParam("display");
+    } else if (categoryValue == "0") {
+      deleteParam("storage_type");
+      deleteParam("display");
+      deleteParam("card");
+      deleteParam("brand");
+    }
     return () => {};
   }, [categoryValue]);
 
@@ -209,7 +330,6 @@ export default function Search() {
       try {
         await axios.get(`${apiGetBrandByCategory}/${id}`).then((res) => {
           const brands = res.data.data;
-          console.log("brands by category", res.data.data);
           setBrandCategoryValue(brands);
         });
       } catch (error) {
@@ -225,6 +345,7 @@ export default function Search() {
     setValueStart(newValue[0] * priceStep);
     setValueEnd(newValue[1] * priceStep);
     setValue(newValue);
+    console.log("new value", newValue);
     insertParams(
       "price",
       `${newValue[0] * priceStep}_${newValue[1] * priceStep}`
@@ -261,6 +382,7 @@ export default function Search() {
   const [valueStorageStart, setValueStorageStart] = useState(0);
   const [valueStorageEnd, setValueStorageEnd] = useState(0);
   const handleChangeStorage = (event, newValue) => {
+    console.log(newValue);
     setValueStorage(newValue);
     setValueStorageStart(
       `${getValueListFilter(marksStorageData, newValue[0])}GB`
@@ -279,7 +401,9 @@ export default function Search() {
   };
 
   useEffect(() => {
+    setValueWhenReload();
     setLinkDirect();
+    dispatch(searchPostByName(window.location.search));
     return () => {
       //clear data
       setsearchValue("");
@@ -360,9 +484,21 @@ export default function Search() {
           <div className="d-sm-flex">
             <div className="me-sm-2">
               <div id="filter" className="p-2">
-                <div className="border-bottom-custom h5 pb-2 text-uppercase box-label">
+                <div className="border-bottom-custom h5 pb-2 text-uppercase box-label position-relative">
                   <i className="fas fa-sort"></i>
                   {` Bộ lọc`}
+                  <div
+                    className="position-absolute"
+                    style={{ right: 0, top: 0 }}
+                  >
+                    <button
+                      className="btn btn-success p-1"
+                      style={{ backgroundColor: "#0abfd2", boder: "none" }}
+                      onClick={() => ApplySearch()}
+                    >
+                      Áp Dụng
+                    </button>
+                  </div>
                 </div>
                 <div className="box border-bottom-custom">
                   <div className="box-label text-uppercase d-flex align-items-center">
@@ -393,6 +529,7 @@ export default function Search() {
                         required
                         id="post-category"
                         name="category"
+                        value={Number(categoryValue)}
                         onChange={(e) => onChangeCheckCategory(e)}
                         placeholder="Loại sản phẩm"
                       >
@@ -487,6 +624,33 @@ export default function Search() {
                 </div>
                 <div className="box border-bottom-custom">
                   <div className="box-label text-uppercase d-flex align-items-center">
+                    Địa chỉ{" "}
+                    <button
+                      className="btn ms-auto  collapse-filter"
+                      name="address"
+                      onClick={() => showHideCollapse("address")}
+                      aria-controls="collpase-address-filter"
+                      aria-expanded={openAddress}
+                    >
+                      {" "}
+                      {openAddress ? (
+                        <i className="fas fa-minus"></i>
+                      ) : (
+                        <i className="fas fa-plus"></i>
+                      )}{" "}
+                    </button>
+                  </div>
+                  <Collapse in={openAddress}>
+                    <div id="collpase-address-filter">
+                      <AddressSelectSearch
+                        addressValue={addressValue}
+                        setAddress={onChangeAddress}
+                      />
+                    </div>
+                  </Collapse>
+                </div>
+                <div className="box border-bottom-custom">
+                  <div className="box-label text-uppercase d-flex align-items-center">
                     Video{" "}
                     <button
                       className="btn ms-auto  collapse-filter"
@@ -512,9 +676,10 @@ export default function Search() {
                         required
                         id="rangeVideo"
                         name="video"
+                        value={Number(videoValue)}
                         onChange={(e) => onChangeCheckVideo(e)}
                       >
-                        <option value="0">Tất cả</option>
+                        <option value="-1">Tất cả</option>
                         {videoData.map((data, index) => (
                           <option key={index} value={data.id}>
                             {data.value}
@@ -559,86 +724,6 @@ export default function Search() {
                     </div>
                   </Collapse>
                 </div>
-                {categoryValue == "2" || categoryValue == "3" ? (
-                  <div className="box border-bottom-custom">
-                    <div className="box-label text-uppercase d-flex align-items-center">
-                      Loại ổ cứng{" "}
-                      <button
-                        className="btn ms-auto  collapse-filter"
-                        name="storage-type"
-                        onClick={() => showHideCollapse("storage_type")}
-                        aria-controls="collpase-storage-type-filter"
-                        aria-expanded={openStorageType}
-                      >
-                        {" "}
-                        {openStorageType ? (
-                          <i className="fas fa-minus"></i>
-                        ) : (
-                          <i className="fas fa-plus"></i>
-                        )}{" "}
-                      </button>
-                    </div>
-                    <Collapse in={openStorageType}>
-                      <div id="collpase-storage-type-filter">
-                        {storageTypeData &&
-                          storageTypeData.map((data, index) => (
-                            <div className="my-1" key={index}>
-                              {" "}
-                              <label className="tick">
-                                {data.value}
-                                <input
-                                  type="checkbox"
-                                  value={data.type}
-                                  onChange={(e) => onChangeCheckStorageType(e)}
-                                />{" "}
-                                <span className="check"></span>{" "}
-                              </label>{" "}
-                            </div>
-                          ))}
-                      </div>
-                    </Collapse>
-                  </div>
-                ) : null}
-                {categoryValue == "1" || categoryValue == "2" ? (
-                  <div className="box border-bottom-custom">
-                    <div className="box-label text-uppercase d-flex align-items-center">
-                      Hãng{" "}
-                      <button
-                        className="btn ms-auto collapse-filter"
-                        name="brand"
-                        onClick={() => showHideCollapse("brand")}
-                        aria-controls="collpase-brand-filter"
-                        aria-expanded={openBrand}
-                      >
-                        {" "}
-                        {openBrand ? (
-                          <i className="fas fa-minus"></i>
-                        ) : (
-                          <i className="fas fa-plus"></i>
-                        )}{" "}
-                      </button>
-                    </div>
-                    <Collapse in={openBrand}>
-                      <div id="collpase-brand-filter">
-                        {brandCategoryValue &&
-                          brandCategoryValue.map((data, index) => (
-                            <div className="my-1" key={index}>
-                              {" "}
-                              <label className="tick">
-                                {data.name}{" "}
-                                <input
-                                  type="checkbox"
-                                  value={data.id}
-                                  onChange={onChangeBrand}
-                                />{" "}
-                                <span className="check"></span>{" "}
-                              </label>{" "}
-                            </div>
-                          ))}
-                      </div>
-                    </Collapse>
-                  </div>
-                ) : null}
                 <div className="box border-bottom-custom">
                   <div className="box-label text-uppercase d-flex align-items-center">
                     Bộ nhớ{" "}
@@ -720,6 +805,16 @@ export default function Search() {
                                 type="checkbox"
                                 value={data.id}
                                 onChange={onChangeStatus}
+                                checked={
+                                  (statusValue?.length &&
+                                    statusValue
+                                      .split(".")
+                                      .map(function (item) {
+                                        return parseInt(item, 10);
+                                      })
+                                      .includes(data.id)) ||
+                                  false
+                                }
                               />{" "}
                               <span className="check"></span>{" "}
                             </label>{" "}
@@ -766,45 +861,155 @@ export default function Search() {
                     </div>
                   </Collapse>
                 </div>
-                {/* {categoryValue == "2" || categoryValue == "3" ? ( */}
-                <div className="box border-bottom-custom">
-                  <div className="box-label text-uppercase d-flex align-items-center">
-                    Kích thước màn hình{" "}
-                    <button
-                      className="btn ms-auto collapse-filter"
-                      name="display-size"
-                      onClick={() => showHideCollapse("display_size")}
-                      aria-controls="collpase-display-size-filter"
-                      aria-expanded={openDisplaySize}
-                    >
-                      {" "}
-                      {openDisplaySize ? (
-                        <i className="fas fa-minus"></i>
-                      ) : (
-                        <i className="fas fa-plus"></i>
-                      )}{" "}
-                    </button>
-                  </div>
-                  <Collapse in={openDisplaySize}>
-                    <div id="collpase-display-size-filter">
-                      {displaySizeData.map((data, index) => (
-                        <div className="my-1" key={index}>
-                          {" "}
-                          <label className="tick">
-                            {data.value}
-                            <input
-                              type="checkbox"
-                              value={data.id}
-                              onChange={onChangeDisplaySize}
-                            />{" "}
-                            <span className="check"></span>{" "}
-                          </label>{" "}
-                        </div>
-                      ))}
+                {categoryValue == "2" || categoryValue == "3" ? (
+                  <div className="box border-bottom-custom">
+                    <div className="box-label text-uppercase d-flex align-items-center">
+                      Loại ổ cứng{" "}
+                      <button
+                        className="btn ms-auto  collapse-filter"
+                        name="storage-type"
+                        onClick={() => showHideCollapse("storage_type")}
+                        aria-controls="collpase-storage-type-filter"
+                        aria-expanded={openStorageType}
+                      >
+                        {" "}
+                        {openStorageType ? (
+                          <i className="fas fa-minus"></i>
+                        ) : (
+                          <i className="fas fa-plus"></i>
+                        )}{" "}
+                      </button>
                     </div>
-                  </Collapse>
-                </div>
-                {/* ) : null} */}
+                    <Collapse in={openStorageType}>
+                      <div id="collpase-storage-type-filter">
+                        {storageTypeData &&
+                          storageTypeData.map((data, index) => (
+                            <div className="my-1" key={index}>
+                              {" "}
+                              <label className="tick">
+                                {data.value}
+                                <input
+                                  type="checkbox"
+                                  value={data.type}
+                                  checked={
+                                    (storageTypeValue?.length &&
+                                      storageTypeValue
+                                        .split(".")
+                                        .map(function (item) {
+                                          return parseInt(item, 10);
+                                        })
+                                        .includes(data.id)) ||
+                                    false
+                                  }
+                                  onChange={(e) => onChangeCheckStorageType(e)}
+                                />{" "}
+                                <span className="check"></span>{" "}
+                              </label>{" "}
+                            </div>
+                          ))}
+                      </div>
+                    </Collapse>
+                  </div>
+                ) : null}
+                {categoryValue == "1" || categoryValue == "2" ? (
+                  <div className="box border-bottom-custom">
+                    <div className="box-label text-uppercase d-flex align-items-center">
+                      Hãng{" "}
+                      <button
+                        className="btn ms-auto collapse-filter"
+                        name="brand"
+                        onClick={() => showHideCollapse("brand")}
+                        aria-controls="collpase-brand-filter"
+                        aria-expanded={openBrand}
+                      >
+                        {" "}
+                        {openBrand ? (
+                          <i className="fas fa-minus"></i>
+                        ) : (
+                          <i className="fas fa-plus"></i>
+                        )}{" "}
+                      </button>
+                    </div>
+                    <Collapse in={openBrand}>
+                      <div id="collpase-brand-filter">
+                        {brandCategoryValue &&
+                          brandCategoryValue.map((data, index) => (
+                            <div className="my-1" key={index}>
+                              {" "}
+                              <label className="tick">
+                                {data.name}{" "}
+                                <input
+                                  type="checkbox"
+                                  value={data.id}
+                                  checked={
+                                    (brandValue?.length &&
+                                      brandValue
+                                        .split(".")
+                                        .map(function (item) {
+                                          return parseInt(item, 10);
+                                        })
+                                        .includes(data.id)) ||
+                                    false
+                                  }
+                                  onChange={onChangeBrand}
+                                />{" "}
+                                <span className="check"></span>{" "}
+                              </label>{" "}
+                            </div>
+                          ))}
+                      </div>
+                    </Collapse>
+                  </div>
+                ) : null}
+                {categoryValue == "2" ? (
+                  <div className="box border-bottom-custom">
+                    <div className="box-label text-uppercase d-flex align-items-center">
+                      Kích thước màn hình{" "}
+                      <button
+                        className="btn ms-auto collapse-filter"
+                        name="display-size"
+                        onClick={() => showHideCollapse("display_size")}
+                        aria-controls="collpase-display-size-filter"
+                        aria-expanded={openDisplaySize}
+                      >
+                        {" "}
+                        {openDisplaySize ? (
+                          <i className="fas fa-minus"></i>
+                        ) : (
+                          <i className="fas fa-plus"></i>
+                        )}{" "}
+                      </button>
+                    </div>
+                    <Collapse in={openDisplaySize}>
+                      <div id="collpase-display-size-filter">
+                        {displaySizeData.map((data, index) => (
+                          <div className="my-1" key={index}>
+                            {" "}
+                            <label className="tick">
+                              {data.value}
+                              <input
+                                type="checkbox"
+                                value={data.id}
+                                checked={
+                                  (displaySizeValue?.length &&
+                                    displaySizeValue
+                                      .split(".")
+                                      .map(function (item) {
+                                        return parseInt(item, 10);
+                                      })
+                                      .includes(data.id)) ||
+                                  false
+                                }
+                                onChange={onChangeDisplaySize}
+                              />{" "}
+                              <span className="check"></span>{" "}
+                            </label>{" "}
+                          </div>
+                        ))}
+                      </div>
+                    </Collapse>
+                  </div>
+                ) : null}
                 {categoryValue == "2" || categoryValue == "3" ? (
                   <div className="box border-bottom-custom">
                     <div className="box-label text-uppercase d-flex align-items-center">
@@ -833,9 +1038,10 @@ export default function Search() {
                           required
                           id="range-card"
                           name="card"
+                          value={cardValue}
                           onChange={(e) => onChangeCheckCard(e)}
                         >
-                          <option value="0">Tất cả</option>
+                          <option value="-1">Tất cả</option>
                           {cardData.map((data, index) => (
                             <option key={index} value={data.id}>
                               {data.value}

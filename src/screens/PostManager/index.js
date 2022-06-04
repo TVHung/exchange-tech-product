@@ -31,11 +31,11 @@ export default function PostManager() {
 
   useEffect(() => {
     setLinkDirect();
-    if (getParam("tab")) setValue(getParam("tab"));
-    else insertParams("tab", "profile");
     setTimeout(() => {
       setPreload(true);
     }, 1000);
+    if (getParam("tab")) setValue(getParam("tab"));
+    else insertParams("tab", "profile");
     return () => {};
   }, []);
 
@@ -70,10 +70,10 @@ export default function PostManager() {
                 </TabList>
               </Box>
               <TabPanel value="profile">
-                <ListPost />
+                <ListPost setPreload={setPreload} />
               </TabPanel>
               <TabPanel value="post-favorite">
-                <Favorite />
+                <Favorite setPreload={setPreload} />
               </TabPanel>
             </TabContext>
           </Box>

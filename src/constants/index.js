@@ -59,6 +59,7 @@ export const headerFiles = {
 };
 
 export const maxNumImage = 6;
+export const maxNumImageChat = 2;
 export const maxSizeImage = 2097152; //2mb
 export const maxSizeVideo = 10485760; //10mb
 

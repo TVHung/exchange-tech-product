@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Grid } from "@material-ui/core";
-import Item from "./../../ListItem/Item/index";
+import Item from "./Item";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWishList } from "../../../redux/actions/postActions";
 import "./_favorite.scss";
 import NotPost from "../../NotPost";
 import Pagination from "react-js-pagination";
 
-export default function Favorite() {
+export default function Favorite({ setPreload }) {
   //get data post
   const dispatch = useDispatch();
   const get_wish_list = useSelector((state) => state.post.wish_list);
@@ -18,6 +18,8 @@ export default function Favorite() {
   useEffect(() => {
     getWishList();
   }, []);
+
+  console.log(get_wish_list);
 
   return (
     <div className="my-favorite-post">

@@ -1,9 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import SearchIcon from "@material-ui/icons/Search";
 import "./search.scss";
 import { useDispatch } from "react-redux";
 import { searchPostByName } from "./../../../redux/actions/postActions";
-import { insertParam } from "../../../utils/common";
+import { getParam, insertParam } from "../../../utils/common";
 import { useHistory } from "react-router-dom";
 
 export default function Search() {
@@ -39,8 +39,22 @@ export default function Search() {
     setInputVal(val);
   };
 
+  useEffect(() => {
+    setValueWhenReload();
+    return () => {};
+  }, []);
+
+  //get value param and set to ui
+  const setValueWhenReload = () => {
+    let searchVal = getParam("search");
+    let pathName = window.location.pathname;
+    if (searchVal && pathName === "/search") {
+      setInputVal(searchVal);
+    }
+  };
+
   return (
-    <div id="boxSearch" ref={formRef}>
+    <form id="boxSearch" ref={formRef}>
       <input
         type="text"
         id="header-search"
@@ -49,9 +63,14 @@ export default function Search() {
         value={inputVal}
         onChange={(e) => onChangeSearch(e)}
       />
-      <button type="submit" id="button" onClick={() => onSearch()}>
+      <button
+        type="submit"
+        id="button"
+        onClick={() => onSearch()}
+        onSubmit={() => onSearch()}
+      >
         <SearchIcon id="iconSearch" />
       </button>
-    </div>
+    </form>
   );
 }

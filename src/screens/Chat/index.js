@@ -124,7 +124,9 @@ export default function Chat() {
               ref={listInnerRef}
             >
               {messages &&
-                messages.map((mess, index) => <Message message={mess} />)}
+                messages.map((mess, index) => (
+                  <Message key={index} message={mess} />
+                ))}
             </div>
             <MenuInput sendMessage={sendMessage} />
           </div>
