@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./_addressSelect.scss";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
@@ -33,6 +33,15 @@ export default function AddressSelect({
     districtName: "",
     wardName: "",
   });
+
+  useEffect(() => {
+    return () => {
+      setShow();
+      setDataCity([]);
+      setDataDistrict([]);
+      setAddressDetail({});
+    };
+  }, []);
 
   const handleOnChangeAddress = (e) => {
     const { name, value } = e.target;
@@ -130,6 +139,8 @@ export default function AddressSelect({
   };
   const handleClose = () => {
     setShow(false);
+    setAddressDetail({ city: "", district: "" });
+    setAddressValidate({});
   };
   const handleShow = () => {
     fetchCity();
@@ -194,7 +205,7 @@ export default function AddressSelect({
                   required
                 >
                   <option value="0">Tỉnh, thành phố</option>
-                  {dataCity.map((data, index) => (
+                  {dataCity?.map((data, index) => (
                     <option key={index} value={data.code}>
                       {data.name}
                     </option>
@@ -215,7 +226,7 @@ export default function AddressSelect({
                   required
                 >
                   <option value="0">Quận, huyện, thị xã</option>
-                  {dataDistrict.map((data, index) => (
+                  {dataDistrict?.map((data, index) => (
                     <option key={index} value={data.code}>
                       {data.name}
                     </option>
@@ -238,7 +249,7 @@ export default function AddressSelect({
                   required
                 >
                   <option value="0">Phường, xã, thị trấn</option>
-                  {dataWard.map((data, index) => (
+                  {dataWard?.map((data, index) => (
                     <option key={index} value={data.code}>
                       {data.name}
                     </option>

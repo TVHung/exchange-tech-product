@@ -96,11 +96,33 @@
 //input mess
 .chat-mess-input {
     height: auto;
+    .preview-image-send {
+        .image-preview {
+            height: 100px;
+            .image-selected {
+                border: 1px solid $base-color-2;
+                height: 100%;
+                text-align: center;
+                position: relative;
+                img {
+                    height: 100%;
+                    width: auto;
+                }
+                .delete-image {
+                    position: absolute;
+                    top: -5px;
+                    right: -5px;
+                }
+            }
+        }
+    }
+
     .chat-mess-suggest {
         padding-top: 5px;
-        height: 35px;
+        height: 42px;
         width: 100%;
-        @include scroll-custom();
+        white-space: nowrap;
+        @include scroll-custom-x();
         .mess-suggest {
             cursor: pointer;
             border: 2px $base-color-2 solid;
@@ -120,6 +142,7 @@
             width: 10%;
             @include makeCenter();
             .icon-btn-chat {
+                color: $base-color-2;
                 float: left;
                 &:hover {
                     cursor: pointer;
