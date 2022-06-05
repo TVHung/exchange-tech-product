@@ -15,6 +15,7 @@ export default function MenuInput({ sendMessage }) {
   const [inputVal, setInputVal] = useState("");
   const submitSendMessage = () => {
     sendMessage(inputVal);
+    setInputVal("");
   };
 
   const [file, setFile] = useState([]);
@@ -49,10 +50,7 @@ export default function MenuInput({ sendMessage }) {
         {file &&
           file.map((item, index) => {
             return (
-              <div
-                key={index}
-                className="col-lg-6 col-md-4 col-sm-6 image-preview mb-2 "
-              >
+              <div key={index} className="col-4 image-preview mb-2 ">
                 <div className="image-selected">
                   <img src={item} alt="" width="100%" />
                   <i
@@ -66,7 +64,11 @@ export default function MenuInput({ sendMessage }) {
       </div>
       <div className="chat-mess-suggest">
         {messSuggest.map((item, index) => (
-          <div key={index} className="d-inline-block mess-suggest">
+          <div
+            key={index}
+            className="d-inline-block mess-suggest"
+            onClick={() => setInputVal(item)}
+          >
             <span>{item}</span>
           </div>
         ))}
@@ -96,14 +98,13 @@ export default function MenuInput({ sendMessage }) {
             name="chat"
             value={inputVal}
             onChange={(e) => {
-              const val = e.target.value;
-              setInputVal(val);
+              setInputVal(e.target.value);
             }}
           />
         </div>
         <div className="input-send">
           <i
-            class="fas fa-paper-plane fa-2x send-icon"
+            className="fas fa-paper-plane fa-2x send-icon"
             onClick={() => submitSendMessage()}
           ></i>
         </div>

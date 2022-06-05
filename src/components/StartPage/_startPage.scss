@@ -1,0 +1,25 @@
+@import "../../assets/css/valiables";
+@import "../../assets/css/common";
+
+.start-page-container {
+    padding-top: 50px;
+    .start-page-content,
+    .start-page-img {
+        width: 100%;
+        @include makeCenter();
+        padding: 0px 30px;
+    }
+    .start-page-img {
+        img {
+            width: 150px;
+            height: 150px;
+        }
+    }
+    .start-page-content {
+        p {
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+        }
+    }
+}

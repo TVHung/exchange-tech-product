@@ -7,7 +7,7 @@
   padding-bottom: 20px;
   min-height: 400px !important;
 }
-@media (max-width: 960px) {
+@media only screen and (max-width: 768px) {
   .chat-left {
     display: none;
   }
@@ -16,6 +16,10 @@
 .chat-left {
   width: 100%;
   height: calc(100vh - 230px);
+  border: #f4f4f4 solid 2px;
+  border-radius: 5px;
+  padding-right: 1px !important;
+  padding-left: 0px !important;
   @include scroll-custom();
 }
 
