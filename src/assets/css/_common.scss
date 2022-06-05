@@ -11,6 +11,11 @@
   align-items: center;
   justify-content: left;
 }
+.make-left {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+}
 
 @mixin makeRight {
   display: flex;
@@ -155,4 +160,7 @@
     width: 6px;
     height: 7px;
   }
+}
+.mr-5 {
+  margin-right: 5px;
 }

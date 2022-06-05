@@ -28,11 +28,11 @@ export const fetchAllPost = () => async (dispatch) => {
 };
 
 export const fetchMyPosts =
-  (pageNumber = 1) =>
+  (pageNumber = 1, type = "all") =>
   async (dispatch) => {
     try {
       await axios
-        .get(`${apiFetchMyPosts}/?page=${pageNumber}`, {
+        .get(`${apiFetchMyPosts}/?page=${pageNumber}&type=${type}`, {
           headers: headers,
         })
         .then((res) => {
@@ -63,22 +63,26 @@ export const deleteMyPost = (id) => async (dispatch) => {
   }
 };
 
-export const searchPostByName = (option) => async (dispatch) => {
-  const data = {
-    key: option,
+export const searchPostByName =
+  (option, pageNumber = 1) =>
+  async (dispatch) => {
+    const data = {
+      key: option,
+    };
+    try {
+      await axios
+        .post(`${apiSearch}?page=${pageNumber}&${option}`, data, {
+          headers: headers,
+        })
+        .then((res) => {
+          const namePosts = res.data;
+          console.log(res.data);
+          dispatch({ type: SEARCH_POST_RESULT, payload: namePosts });
+        });
+    } catch (error) {
+      return { statusCode: 500, body: error.toString() };
+    }
   };
-  try {
-    await axios
-      .post(`${apiSearch}?${option}`, data, { headers: headers })
-      .then((res) => {
-        const namePosts = res.data.data;
-        console.log(res.data.data);
-        dispatch({ type: SEARCH_POST_RESULT, payload: namePosts });
-      });
-  } catch (error) {
-    return { statusCode: 500, body: error.toString() };
-  }
-};
 
 export const fetchWishList =
   (pageNumber = 1) =>
