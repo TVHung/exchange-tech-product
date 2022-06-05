@@ -42,25 +42,7 @@ export default function ListPost({ setPreload }) {
   const onChangeCheckStatus = (e) => {
     const { name } = e.target;
     setFilter(name);
-    if (name == "not-sold") {
-      let notSoldPost = my_posts?.data.filter(function (el) {
-        return el.sold === 0;
-      });
-      setMyPostFilter(notSoldPost);
-    } else if (name == "sold") {
-      let notSoldPost = my_posts?.data.filter(function (el) {
-        return el.sold === 1;
-      });
-      setMyPostFilter(notSoldPost);
-    } else if (name == "private") {
-      let privatePost = my_posts?.data.filter(function (el) {
-        return el.public_status === 0;
-      });
-      console.log("private", privatePost);
-      setMyPostFilter(privatePost);
-    } else {
-      setMyPostFilter(my_posts?.data);
-    }
+    dispatch(fetchMyPosts(1, name));
   };
 
   return (
@@ -119,10 +101,10 @@ export default function ListPost({ setPreload }) {
               <input
                 className="form-check-input"
                 type="radio"
-                name="not-sold"
+                name="not_sold"
                 id="my-post-not-sold"
                 onChange={(e) => onChangeCheckStatus(e)}
-                checked={filter === "not-sold"}
+                checked={filter === "not_sold"}
               />
               <label className="form-check-label" htmlFor="my-post-not-sold">
                 Chưa bán

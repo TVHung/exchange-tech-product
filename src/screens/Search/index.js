@@ -16,6 +16,7 @@ import {
   setLinkDirect,
   getParam,
   getValuePercentFilter,
+  scrollToTop,
 } from "../../utils/common";
 import { searchPostByName } from "../../redux/actions/postActions";
 import { useHistory } from "react-router-dom";
@@ -35,9 +36,11 @@ import {
   marksStorage,
   marksStorageData,
   storageTypeData,
+  timeData,
 } from "../../constants";
 import { Box, Slider } from "@material-ui/core";
 import AddressSelectSearch from "./../../components/AddressSelectSearch";
+import Pagination from "react-js-pagination";
 
 function valuetext(value) {
   return `${value}vnđ`;
@@ -67,6 +70,7 @@ export default function Search() {
   const [brandCategoryValue, setBrandCategoryValue] = useState([]);
   const [brandValue, setBrandValue] = useState([]);
   const [addressValue, setAddressValue] = useState("");
+  const [sortTimeValue, setSortTimeValue] = useState("");
 
   //useRef
   const categoryRef = useRef(null);
@@ -137,6 +141,7 @@ export default function Search() {
     let storageTypeVal = getParam("storage_type");
     let displaySizeVal = getParam("display");
     let addressVal = getParam("address");
+    let sortTimeVal = getParam("create_at");
 
     if (addressVal) {
       setAddressValue(addressVal);
@@ -216,6 +221,9 @@ export default function Search() {
       setDisplaySizeValue(displaySizeVal);
       setOpenDisplaySize(true);
     }
+    if (sortTimeVal) {
+      setSortTimeValue(sortTimeVal);
+    }
   };
 
   useEffect(() => {
@@ -232,10 +240,17 @@ export default function Search() {
     if (id == "hight-low") {
       insertParams("sort", "desc");
     }
-    if (id == "sort-new") {
-      insertParams("create_at", "desc");
+  };
+  const onChangeCheckSortTime = (e) => {
+    const { value } = e.target;
+    setSortTimeValue(value);
+    if (value == "0") {
+      deleteParam("create_at");
+    } else {
+      insertParams("create_at", timeData[parseInt(value)].type);
     }
   };
+
   const onChangeCheckCategory = (e) => {
     const { value } = e.target;
     if (value == "0") deleteParam("category");
@@ -437,48 +452,52 @@ export default function Search() {
                 {` Sắp xếp theo`}
               </span>
             </div>
-            <div className="form-check filter-header-sort">
+            <div className="form-check filter-header-sort make-left">
               <input
-                className="form-check-input"
+                className="form-check-input mr-5 mt-0"
                 type="radio"
                 name="sort"
                 id="low-hight"
                 onChange={(e) => onChangeCheckSort(e)}
               />
-              <label className="form-check-label" htmlFor="flexRadioDefault1">
+              <label className="form-check-label" htmlFor="low-hight">
                 <i className="fas fa-sort-amount-down-alt"></i>
                 {` Giá thấp `}
                 <i className="fas fa-long-arrow-alt-right"></i>
                 {` cao`}
               </label>
             </div>
-            <div className="form-check filter-header-sort">
+            <div className="form-check filter-header-sort make-left">
               <input
-                className="form-check-input"
+                className="form-check-input mr-5 mt-0"
                 type="radio"
                 name="sort"
                 id="hight-low"
                 onChange={(e) => onChangeCheckSort(e)}
               />
-              <label className="form-check-label" htmlFor="flexRadioDefault2">
+              <label className="form-check-label" htmlFor="hight-low">
                 <i className="fas fa-sort-amount-up-alt"></i>
                 {` Giá cao `}
                 <i className="fas fa-long-arrow-alt-right"></i>
                 {` thấp`}
               </label>
             </div>
-            <div className="form-check filter-header-sort">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="sort-new"
-                id="sort-new"
-                onChange={(e) => onChangeCheckSort(e)}
-              />
-              <label className="form-check-label" htmlFor="flexRadioDefault2">
-                <i className="fas fa-sort-amount-up-alt"></i>
-                {` Tin mới nhất `}
-              </label>
+            <div className="">
+              <select
+                className="form-select"
+                aria-label="Disabled select example"
+                id="sort-time"
+                name="sort-time"
+                onChange={(e) => onChangeCheckSortTime(e)}
+                placeholder="Thời gian"
+                value={sortTimeValue}
+              >
+                {timeData.map((data, index) => (
+                  <option key={index} value={data.id}>
+                    {data.value}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="d-sm-flex">
@@ -501,7 +520,10 @@ export default function Search() {
                   </div>
                 </div>
                 <div className="box border-bottom-custom">
-                  <div className="box-label text-uppercase d-flex align-items-center">
+                  <div
+                    className="box-label text-uppercase d-flex align-items-center"
+                    onClick={() => showHideCollapse("category")}
+                  >
                     Loại sản phẩm{" "}
                     <button
                       className="btn ms-auto collapse-filter"
@@ -543,31 +565,6 @@ export default function Search() {
                     </div>
                   </Collapse>
                 </div>
-                {/* <div className="box border-bottom-custom">
-                  <div
-                    className="box-label text-uppercase d-flex align-items-center"
-                    onClick={() => showHideCollapse("address")}
-                  >
-                    Địa chỉ{" "}
-                    <button
-                      className="btn ms-auto collapse-filter"
-                      name="address"
-                      onClick={() => showHideCollapse("address")}
-                      aria-controls="collpase-address-filter"
-                      aria-expanded={openAddress}
-                    >
-                      {" "}
-                      {openAddress ? (
-                        <i className="fas fa-minus"></i>
-                      ) : (
-                        <i className="fas fa-plus"></i>
-                      )}{" "}
-                    </button>
-                  </div>
-                  <Collapse in={openAddress}>
-                    <div id="collpase-address-filter"></div>
-                  </Collapse>
-                </div> */}
                 <div className="box border-bottom-custom">
                   <div
                     className="box-label text-uppercase d-flex align-items-center"
@@ -623,7 +620,10 @@ export default function Search() {
                   </Collapse>
                 </div>
                 <div className="box border-bottom-custom">
-                  <div className="box-label text-uppercase d-flex align-items-center">
+                  <div
+                    className="box-label text-uppercase d-flex align-items-center"
+                    onClick={() => showHideCollapse("address")}
+                  >
                     Địa chỉ{" "}
                     <button
                       className="btn ms-auto  collapse-filter"
@@ -650,7 +650,10 @@ export default function Search() {
                   </Collapse>
                 </div>
                 <div className="box border-bottom-custom">
-                  <div className="box-label text-uppercase d-flex align-items-center">
+                  <div
+                    className="box-label text-uppercase d-flex align-items-center"
+                    onClick={() => showHideCollapse("video")}
+                  >
                     Video{" "}
                     <button
                       className="btn ms-auto  collapse-filter"
@@ -690,7 +693,10 @@ export default function Search() {
                   </Collapse>
                 </div>
                 <div className="box border-bottom-custom">
-                  <div className="box-label text-uppercase d-flex align-items-center">
+                  <div
+                    className="box-label text-uppercase d-flex align-items-center"
+                    onClick={() => showHideCollapse("guarantee")}
+                  >
                     Bảo hành{" "}
                     <button
                       className="btn ms-auto collapse-filter"
@@ -725,7 +731,10 @@ export default function Search() {
                   </Collapse>
                 </div>
                 <div className="box border-bottom-custom">
-                  <div className="box-label text-uppercase d-flex align-items-center">
+                  <div
+                    className="box-label text-uppercase d-flex align-items-center"
+                    onClick={() => showHideCollapse("storage")}
+                  >
                     Bộ nhớ{" "}
                     <button
                       className="btn ms-auto collapse-filter"
@@ -776,7 +785,10 @@ export default function Search() {
                   </Collapse>
                 </div>
                 <div className="box border-bottom-custom">
-                  <div className="box-label text-uppercase d-flex align-items-center">
+                  <div
+                    className="box-label text-uppercase d-flex align-items-center"
+                    onClick={() => showHideCollapse("status")}
+                  >
                     Tình trạng{" "}
                     <button
                       className="btn ms-auto  collapse-filter"
@@ -824,7 +836,10 @@ export default function Search() {
                   </Collapse>
                 </div>
                 <div className="box border-bottom-custom">
-                  <div className="box-label text-uppercase d-flex align-items-center">
+                  <div
+                    className="box-label text-uppercase d-flex align-items-center"
+                    onClick={() => showHideCollapse("ram")}
+                  >
                     Ram{" "}
                     <button
                       className="btn ms-auto collapse-filter"
@@ -863,7 +878,10 @@ export default function Search() {
                 </div>
                 {categoryValue == "2" || categoryValue == "3" ? (
                   <div className="box border-bottom-custom">
-                    <div className="box-label text-uppercase d-flex align-items-center">
+                    <div
+                      className="box-label text-uppercase d-flex align-items-center"
+                      onClick={() => showHideCollapse("storage_type")}
+                    >
                       Loại ổ cứng{" "}
                       <button
                         className="btn ms-auto  collapse-filter"
@@ -913,7 +931,10 @@ export default function Search() {
                 ) : null}
                 {categoryValue == "1" || categoryValue == "2" ? (
                   <div className="box border-bottom-custom">
-                    <div className="box-label text-uppercase d-flex align-items-center">
+                    <div
+                      className="box-label text-uppercase d-flex align-items-center"
+                      onClick={() => showHideCollapse("brand")}
+                    >
                       Hãng{" "}
                       <button
                         className="btn ms-auto collapse-filter"
@@ -1012,7 +1033,10 @@ export default function Search() {
                 ) : null}
                 {categoryValue == "2" || categoryValue == "3" ? (
                   <div className="box border-bottom-custom">
-                    <div className="box-label text-uppercase d-flex align-items-center">
+                    <div
+                      className="box-label text-uppercase d-flex align-items-center"
+                      onClick={() => showHideCollapse("card")}
+                    >
                       Card màn hình{" "}
                       <button
                         className="btn ms-auto collapse-filter"
@@ -1054,33 +1078,63 @@ export default function Search() {
                 ) : null}
               </div>
             </div>
-            <div className="bg-white p-2" id="search-result">
-              <div className="search-result-status">
-                <div className="search-result-count">
-                  {get_post_search.length > 0 ? (
-                    <p>
-                      Có <b>{get_post_search.length}</b> sản phẩm phù hợp với
-                      tiêu chí của bản
-                    </p>
+            <div className="row">
+              <div className="bg-white p-2 col-12" id="search-result">
+                <div className="search-result-status">
+                  <div className="search-result-count">
+                    {get_post_search?.meta?.total > 0 ? (
+                      <p>
+                        Có <b>{get_post_search?.meta?.total}</b> sản phẩm phù
+                        hợp với tiêu chí của bạn
+                      </p>
+                    ) : (
+                      <p>Không tìm thấy kết quả phù hợp</p>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  {get_post_search?.meta?.total > 0 ? (
+                    <>
+                      {get_post_search?.data &&
+                        get_post_search?.data.map((data, index) => (
+                          <div key={index}>
+                            <ItemSearch data={data} />
+                          </div>
+                        ))}
+                    </>
                   ) : (
-                    <p>Không tìm thấy kết quả phù hợp</p>
+                    <NotFound />
                   )}
                 </div>
               </div>
-              <div>
-                {get_post_search.length > 0 ? (
-                  <>
-                    {get_post_search &&
-                      get_post_search.map((data, index) => (
-                        <div key={index}>
-                          <ItemSearch data={data} />
-                        </div>
-                      ))}
-                  </>
-                ) : (
-                  <NotFound />
-                )}
-              </div>
+              {get_post_search?.data?.length && (
+                <div className="col-12">
+                  <div className="paginate mt-3">
+                    <small className="fw-bold d-block">
+                      Hiển thị <b>{get_post_search?.data?.length}</b> trên{" "}
+                      <b>{get_post_search?.meta?.total}</b> bài viết
+                    </small>
+                  </div>
+                  <div className="mt-1 paginate">
+                    <Pagination
+                      activePage={get_post_search?.meta?.current_page}
+                      itemsCountPerPage={get_post_search?.meta?.per_page}
+                      totalItemsCount={get_post_search?.meta?.total || 0}
+                      onChange={(pageNumber) => {
+                        scrollToTop();
+                        dispatch(
+                          searchPostByName(window.location.search, pageNumber)
+                        );
+                      }}
+                      pageRangeDisplayed={5}
+                      itemClass="page-item"
+                      linkClass="page-link"
+                      firstPageText="Trang đầu"
+                      lastPageText="Trang cuối"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -98,6 +98,12 @@ export const videoData = [
   { id: 1, value: "Có video" },
   { id: 0, value: "Không có video" },
 ];
+export const timeData = [
+  { id: 0, value: "Mọi thời điểm", type: 0 },
+  { id: 1, value: "Hôm nay", type: 1 },
+  { id: 2, value: "1 tuần qua", type: 2 },
+  { id: 3, value: "1 tháng qua", type: 3 },
+];
 //filter
 export const priceStep = 200000;
 export const marksPrice = [

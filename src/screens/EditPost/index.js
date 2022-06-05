@@ -49,7 +49,7 @@ export default function EditPost() {
   const [postInfor, setPostInfor] = useState({
     category: 1, //1:phone, 2: laptop, 3: pc
     name: "",
-    brand: null,
+    brand_id: null,
     status: null,
     guarantee: null,
     cpu: null,
@@ -70,7 +70,7 @@ export default function EditPost() {
   const [postTradeInfor, setPostTradeInfor] = useState({
     category: 1, //1:phone, 2: laptop, 3: pc
     name: "",
-    brand: "",
+    brand_id: "",
     status: "",
     guarantee: null,
     cpu: "",
@@ -83,7 +83,7 @@ export default function EditPost() {
   });
   const [validatePost, setvalidatePost] = useState({
     name: "",
-    brand: "",
+    brand_id: "",
     status: "",
     color: "",
     address: "",
@@ -270,7 +270,7 @@ export default function EditPost() {
     scrollToTop();
     setvalidatePost({
       name: "",
-      brand: "",
+      brand_id: "",
       status: "",
       color: "",
       address: "",
@@ -336,28 +336,28 @@ export default function EditPost() {
   const updatePost = async () => {
     var mergePostData = null;
     const postData = {
-      is_trade: postInfor.is_trade,
-      title: postInfor.title,
-      category_id: Number(postInfor.category),
-      name: postInfor.name,
-      description: postInfor.description,
-      ram: Number(postInfor.ram),
-      storage: Number(postInfor.storage),
-      status: Number(postInfor.status),
-      price: Number(postInfor.price),
+      is_trade: postInfor?.is_trade,
+      title: postInfor?.title,
+      category_id: Number(postInfor?.category),
+      name: postInfor?.name,
+      description: postInfor?.description,
+      ram: Number(postInfor?.ram),
+      storage: Number(postInfor?.storage),
+      status: Number(postInfor?.status),
+      price: Number(postInfor?.price),
       address: address,
-      public_status: Number(postInfor.public_status),
-      guarantee: postInfor.guarantee,
-      sold: 0,
-      color: postInfor.color,
-      cpu: postInfor.cpu,
-      gpu: postInfor.gpu,
-      storage_type: Number(postInfor.storage_type),
-      brand_id: Number(postInfor.brand),
-      display_size: Number(postInfor.display_size),
+      public_status: Number(postInfor?.public_status),
+      guarantee: postInfor?.guarantee,
+      sold: postInfor?.sold,
+      color: postInfor?.color,
+      cpu: postInfor?.cpu,
+      gpu: postInfor?.gpu,
+      storage_type: Number(postInfor?.storage_type),
+      brand_id: Number(postInfor?.brand_id),
+      display_size: Number(postInfor?.display_size),
       fileImages: fileObject,
       fileVideo: videoFile,
-      video_url: postInfor.video_url,
+      video_url: postInfor?.video_url,
       is_delete_video: isDeleteVideo,
       is_delete_image: deleteImageId,
     };
@@ -412,7 +412,6 @@ export default function EditPost() {
     });
   };
 
-  const [postDetail, setPostDetail] = useState({});
   const fetchAllData = async (postId) => {
     let apiPostDetail = `${apiFetchPostDetail}/${postId}`;
     const requestPost = axios.get(apiPostDetail);
@@ -424,7 +423,6 @@ export default function EditPost() {
           const post = responses[0].data.data;
           console.log("post", post);
           setPreload(false);
-          setPostDetail(post);
           if (post.price == 0) setIsFree(true);
           const name = "category";
           const value = post.category_id;
@@ -433,7 +431,6 @@ export default function EditPost() {
             [name]: value,
           }));
           setAddress(post.address);
-          setPostInforData(post);
           if (post.postTrade != null) {
             setPostTradeInforData(post.postTrade);
             setIsTrade(true);
@@ -451,7 +448,7 @@ export default function EditPost() {
     setPostInfor({
       category: data.category_id,
       name: data.name,
-      brand: data.brand_id,
+      brand_id: data.brand_id,
       status: data.status,
       guarantee: data.guarantee,
       cpu: data.cpu,
@@ -468,6 +465,7 @@ export default function EditPost() {
       is_trade: data.is_trade,
       color: data.color,
       video_url: data.video_url,
+      sold: data.sold,
     });
   };
 
@@ -576,10 +574,10 @@ export default function EditPost() {
                 />
               </div>
               <div className="mt-3 view-preview row">
-                {postInfor.video_url && !videoFile && (
+                {postInfor?.video_url && !videoFile && (
                   <>
                     <video width="400" controls>
-                      <source src={postInfor.video_url} />
+                      <source src={postInfor?.video_url} />
                     </video>
                     <i
                       className="fas fa-times-circle fa-2x fa delete-video-icon"
@@ -621,7 +619,7 @@ export default function EditPost() {
                 onChange={(e) => handleOnChange(e)}
                 placeholder="Loại sản phẩm"
                 disabled={true}
-                value={postDetail.category_id}
+                value={postInfor?.category_id}
               >
                 {categoryData &&
                   categoryData.map((data, index) => (
@@ -654,12 +652,12 @@ export default function EditPost() {
                   }
                   placeholder="Tên sản phẩm"
                   name="name"
-                  defaultValue={postDetail.name}
+                  defaultValue={postInfor?.name}
                   onChange={(e) => handleOnChange(e)}
                 />
                 <p className="validate-form-text">{validatePost.name}</p>
               </div>
-              {Number(postInfor.category) < 3 && (
+              {Number(postInfor?.category) < 3 && (
                 <div className="row mb-3">
                   <div className="col">
                     <div className="form-outline">
@@ -669,16 +667,17 @@ export default function EditPost() {
                       </label>
                       <select
                         className={
-                          validatePost.brand
+                          validatePost.brand_id
                             ? "form-select is-invalid"
                             : "form-select"
                         }
                         aria-label="Disabled select example"
-                        name="brand"
+                        name="brand_id"
                         id="post-brand"
                         onChange={(e) => handleOnChange(e)}
-                        value={postDetail.brand_id}
+                        value={postInfor?.brand_id}
                       >
+                        {console.log(postInfor?.brand_id)}
                         <option>Hãng sản xuất</option>
                         {brandCategory &&
                           brandCategory.map((data, index) => (
@@ -687,7 +686,9 @@ export default function EditPost() {
                             </option>
                           ))}
                       </select>
-                      <p className="validate-form-text">{validatePost.brand}</p>
+                      <p className="validate-form-text">
+                        {validatePost.brand_id}
+                      </p>
                     </div>
                   </div>
                   <div className="col">
@@ -705,7 +706,7 @@ export default function EditPost() {
                         }
                         placeholder="Màu sắc"
                         name="color"
-                        defaultValue={postDetail.color}
+                        defaultValue={postInfor?.color}
                         onChange={(e) => handleOnChange(e)}
                       />
                       <p className="validate-form-text">{validatePost.color}</p>
@@ -729,9 +730,9 @@ export default function EditPost() {
                       name="status"
                       id="post-status"
                       onChange={(e) => handleOnChange(e)}
-                      value={postDetail.status}
+                      value={postInfor?.status}
                     >
-                      <option value="0">Tình trạng</option>
+                      <option value="-1">Tình trạng</option>
                       {statusData.map((data, index) => (
                         <option key={index} value={data.id}>
                           {data.value}
@@ -741,7 +742,7 @@ export default function EditPost() {
                     <p className="validate-form-text">{validatePost.status}</p>
                   </div>
                 </div>
-                {Number(postInfor.category) < 3 && (
+                {Number(postInfor?.category) < 3 && (
                   <div className="col">
                     <div className="form-outline">
                       <label className="form-label" htmlFor="post-guarantee">
@@ -753,7 +754,7 @@ export default function EditPost() {
                         className="form-control"
                         placeholder="Thời gian bảo hành"
                         min={0}
-                        defaultValue={postDetail.guarantee}
+                        defaultValue={postInfor?.guarantee}
                         name="guarantee"
                         onChange={(e) => handleOnChange(e)}
                       />
@@ -761,7 +762,7 @@ export default function EditPost() {
                   </div>
                 )}
               </div>
-              {Number(postInfor.category) > 1 && (
+              {Number(postInfor?.category) > 1 && (
                 <div className="row mb-3">
                   <div className="col">
                     <div className="form-outline">
@@ -774,7 +775,7 @@ export default function EditPost() {
                         className="form-control"
                         placeholder="Bộ vi xử lý"
                         name="cpu"
-                        defaultValue={postDetail.cpu}
+                        defaultValue={postInfor?.cpu}
                         onChange={(e) => handleOnChange(e)}
                       />
                       <p className="validate-form-text">{validatePost.cpu}</p>
@@ -791,7 +792,7 @@ export default function EditPost() {
                         className="form-control"
                         placeholder="Card đồ họa dời"
                         name="gpu"
-                        defaultValue={postDetail.gpu}
+                        defaultValue={postInfor?.gpu}
                         onChange={(e) => handleOnChange(e)}
                       />
                       <p className="validate-form-text">{validatePost.gpu}</p>
@@ -811,14 +812,14 @@ export default function EditPost() {
                       className="form-control"
                       placeholder="Ram"
                       min={0}
-                      defaultValue={postDetail.ram}
+                      defaultValue={postInfor?.ram}
                       name="ram"
                       onChange={(e) => handleOnChange(e)}
                     />
                     <p className="validate-form-text">{validatePost.ram}</p>
                   </div>
                 </div>
-                {Number(postInfor.category) == 2 && (
+                {Number(postInfor?.category) == 2 && (
                   <div className="col">
                     <div className="form-outline">
                       <label className="form-label" htmlFor="post-display-size">
@@ -830,7 +831,7 @@ export default function EditPost() {
                         className="form-control"
                         placeholder="Kích thước màn hính"
                         min={0}
-                        defaultValue={postDetail.display_size}
+                        defaultValue={postInfor?.display_size}
                         name="display_size"
                         onChange={(e) => handleOnChange(e)}
                       />
@@ -840,7 +841,7 @@ export default function EditPost() {
                     </div>
                   </div>
                 )}
-                {Number(postInfor.category) == 1 && (
+                {Number(postInfor?.category) == 1 && (
                   <div className="col">
                     <div className="form-outline">
                       <label className="form-label" htmlFor="post-storage">
@@ -852,7 +853,7 @@ export default function EditPost() {
                         name="storage"
                         id="post-storage"
                         onChange={(e) => handleOnChange(e)}
-                        value={postDetail.storage}
+                        value={postInfor?.storage}
                       >
                         <option value="0">Dung lượng bộ nhớ</option>
                         {storageData.map((data, index) => (
@@ -868,7 +869,7 @@ export default function EditPost() {
                   </div>
                 )}
               </div>
-              {Number(postInfor.category) > 1 && (
+              {Number(postInfor?.category) > 1 && (
                 <div className="row mb-3">
                   <div className="col">
                     <div className="form-outline">
@@ -881,7 +882,7 @@ export default function EditPost() {
                         name="storage_type"
                         id="post-storage-type"
                         onChange={(e) => handleOnChange(e)}
-                        value={postDetail.storage_type}
+                        value={postInfor?.storage_type}
                       >
                         <option>Loại ổ cứng</option>
                         {storageTypeData.map((data, index) => (
@@ -906,7 +907,7 @@ export default function EditPost() {
                         name="storage"
                         id="post-storage"
                         onChange={(e) => handleOnChange(e)}
-                        value={postDetail.storage}
+                        value={postInfor?.storage}
                       >
                         <option value="0">Dung lượng ổ cứng cứng</option>
                         {storageData.map((data, index) => (
@@ -931,19 +932,6 @@ export default function EditPost() {
                   setAddress={setAddress}
                   validateAddress={validatePost.address}
                 />
-                {/* <input
-                  type="text"
-                  id="post-address"
-                  className={
-                    validatePost.address
-                      ? "form-control is-invalid"
-                      : "form-control"
-                  }
-                  placeholder="Chọn địa chỉ"
-                  value={address == "" ? postDetail.address : address}
-                  readOnly
-                  onClick={() => handleShow()}
-                /> */}
                 <p className="validate-form-text">{validatePost.address}</p>
               </div>
               <div className="mb-3 form-check">
@@ -974,7 +962,7 @@ export default function EditPost() {
                     }
                     placeholder="Giá bán"
                     name="price"
-                    defaultValue={postDetail.price}
+                    defaultValue={postInfor?.price}
                     onChange={(e) => handleOnChange(e)}
                   />
                   <p className="validate-form-text">{validatePost.price}</p>
@@ -997,7 +985,7 @@ export default function EditPost() {
                   }
                   name="title"
                   placeholder="Tiêu đề"
-                  defaultValue={postDetail.title}
+                  defaultValue={postInfor?.title}
                   onChange={(e) => handleOnChange(e)}
                 />
                 <p className="validate-form-text">{validatePost.title}</p>
@@ -1019,31 +1007,52 @@ export default function EditPost() {
                   - Trải nghiệm ra sao
                   - Có vấn đề nào khi sử dụng hay không"
                   name="description"
-                  defaultValue={postDetail.description}
+                  defaultValue={postInfor?.description}
                   onChange={(e) => handleOnChange(e)}
                 ></textarea>
                 <p className="validate-form-text">{validatePost.description}</p>
               </div>
-              <div className="form-outline mb-3">
-                <label className="form-label" htmlFor="post-public">
-                  Chế độ bài viết
-                </label>
-                <select
-                  className="form-select"
-                  aria-label="Disabled select example"
-                  required
-                  name="category"
-                  id="post-public"
-                  onChange={(e) => handleOnChange(e)}
-                  placeholder="Chế độ bài viết"
-                  value={postDetail.public_status}
-                >
-                  <option value={1}>Công khai</option>
-                  <option value={0}>Riêng tư</option>
-                </select>
-                <p className="validate-form-text">
-                  {validatePost.public_status}
-                </p>
+              <div className="row">
+                <div className="form-outline mb-3 col-sm-6 col-xs-12">
+                  <label className="form-label" htmlFor="post-public">
+                    Chế độ bài viết
+                  </label>
+                  <select
+                    className="form-select"
+                    aria-label="Disabled select example"
+                    required
+                    name="public_status"
+                    id="post-public"
+                    onChange={(e) => handleOnChange(e)}
+                    placeholder="Chế độ bài viết"
+                    value={postInfor?.public_status}
+                  >
+                    {console.log("public", postInfor?.public_status)}
+                    <option value={1}>Công khai</option>
+                    <option value={0}>Riêng tư</option>
+                  </select>
+                  <p className="validate-form-text">
+                    {validatePost.public_status}
+                  </p>
+                </div>
+                <div className="form-outline mb-3 col-sm-6 col-xs-12">
+                  <label className="form-label" htmlFor="is-sold-product">
+                    Tình trạng sản phẩm
+                  </label>
+                  <select
+                    className="form-select"
+                    aria-label="Disabled select example"
+                    required
+                    name="sold"
+                    id="is-sold-product"
+                    onChange={(e) => handleOnChange(e)}
+                    placeholder="Tình trạng sản phẩm"
+                    value={postInfor?.sold}
+                  >
+                    <option value={1}>Đã bán</option>
+                    <option value={0}>Chưa bán</option>
+                  </select>
+                </div>
               </div>
             </form>
             {/* ----------------------------------------------------------------------- */}
@@ -1055,7 +1064,7 @@ export default function EditPost() {
                 type="checkbox"
                 className="form-check-input"
                 id="tradeCheckbox"
-                defaultChecked={isTrade}
+                checked={isTrade}
                 onChange={(e) => onClickTrade(e)}
               />
               <label className="form-check-label" htmlFor="tradeCheckbox">
