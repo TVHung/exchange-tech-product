@@ -15,18 +15,20 @@ export default function ItemChat({ item }) {
       }}
       onClick={() => onClickChat()}
     >
-      <Grid container>
+      <Grid container style={{ flexWrap: "nowrap" }}>
         <Grid item>
           <img src={avt} alt="avt" className="chat-account-avatar" />
         </Grid>
         <Grid item>
           <div className="chat-item-infor">
             <span className="chat-item-name">Trương Hùng</span>
-            <span className="chat-item-online"> - online 5 ngày trước</span>
+            <span className="chat-item-online">online 5 ngày trước</span>
           </div>
           <div style={{ fontWeight: item.readed ? "none" : "bold" }}>
             <span>
-              <span className="chat-account-mess">Sản phẩm này còn không?</span>
+              <span className="chat-account-mess">
+                Sản phẩm này còn không tôi muốn mua nó, bạn bán cho tôi nhé?
+              </span>
             </span>
           </div>
         </Grid>

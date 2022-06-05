@@ -177,3 +177,9 @@ export const appendArrayToFormData = (object) => {
   });
   return formData;
 };
+
+//scroll to top and bottom off div component
+export const scrollInViewDiv = (ref, type = "top") => {
+  if (type === "top") ref.current.scrollTop = 0;
+  else ref.current.scrollTop = ref.current.scrollHeight;
+};

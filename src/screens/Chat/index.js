@@ -5,11 +5,12 @@ import MetaTag from "../../components/MetaTag";
 import Preloading from "../../components/Loading";
 import Breadcrumb from "./../../components/Breadcrumb";
 import { chatBreadcrumb } from "../../constants/breadcrumData";
-import { setLinkDirect } from "../../utils/common";
+import { scrollInViewDiv, setLinkDirect } from "../../utils/common";
 import ItemChat from "../../components/Chat/ItemChat";
 import MenuInput from "../../components/Chat/MenuInput";
 import Header from "../../components/Chat/Header";
 import Message from "../../components/Chat/Message";
+import StartPage from "../../components/StartPage";
 
 const data = [
   { id: 1, readed: false },
@@ -27,6 +28,7 @@ const data = [
 
 export default function Chat() {
   const [preload, setPreload] = useState(false);
+  const [isStart, setIsStart] = useState(false);
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -69,37 +71,40 @@ export default function Chat() {
         "https://res.cloudinary.com/trhung/image/upload/v1652085553/lgmh5kxhjcyh5alymomd.png",
     },
   ]);
-  const [messData, setMessData] = useState({
-    id: 1,
-    message: "Đây là tin nhắn dùng để test giao diện",
-    isSend: 1,
-    imageUrl:
-      "https://res.cloudinary.com/trhung/image/upload/v1652088754/ai2f9w7r9ov1onsuan7b.png",
-  });
-
+  //scroll when add chat
+  const listInnerRef = useRef();
+  const onScroll = () => {
+    scrollInViewDiv(listInnerRef, "bottom");
+  };
   const sendMessage = (messageContent = "", imageUrl = "") => {
-    setMessages((oldMess) => [...oldMess, messData]);
+    if (messageContent != "") {
+      const newMess = {
+        id: 1,
+        message: messageContent,
+        isSend: 1,
+        imageUrl:
+          "https://res.cloudinary.com/trhung/image/upload/v1652088754/ai2f9w7r9ov1onsuan7b.png",
+      };
+      setMessages((oldMess) => [...oldMess, newMess]);
+    } else {
+      alert("Bạn chưa nhập nội dung tin nhắn");
+    }
+    setTimeout(() => {
+      onScroll();
+    }, 100);
   };
 
   useEffect(() => {
     setLinkDirect();
     setTimeout(() => {
       setPreload(true);
+      onScroll();
     }, 500);
-    return () => {};
+    return () => {
+      setPreload();
+      setMessages([]);
+    };
   }, []);
-
-  //scroll when add chat
-  const listInnerRef = useRef();
-
-  // const onScroll = () => {
-  //   if (listInnerRef.current) {
-  //     const { scrollTop, scrollHeight, clientHeight } = listInnerRef.current;
-  //     if (scrollTop + clientHeight === scrollHeight) {
-  //       console.log("reached bottom");
-  //     }
-  //   }
-  // };
 
   return (
     <div className="chat-container container">
@@ -117,18 +122,22 @@ export default function Chat() {
             ))}
           </div>
           <div className="chat-right col-md-8 col-sm-12">
-            <Header />
-            <div
-              className="chat-mess-content"
-              // onScroll={onScroll}
-              ref={listInnerRef}
-            >
-              {messages &&
-                messages.map((mess, index) => (
-                  <Message key={index} message={mess} />
-                ))}
-            </div>
-            <MenuInput sendMessage={sendMessage} />
+            {isStart ? (
+              <div ref={listInnerRef}>
+                <StartPage />
+              </div>
+            ) : (
+              <>
+                <Header />
+                <div className="chat-mess-content" ref={listInnerRef}>
+                  {messages &&
+                    messages.map((mess, index) => (
+                      <Message key={index} message={mess} />
+                    ))}
+                </div>
+                <MenuInput sendMessage={sendMessage} />
+              </>
+            )}
           </div>
         </div>
       )}

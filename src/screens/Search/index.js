@@ -16,6 +16,7 @@ import {
   setLinkDirect,
   getParam,
   getValuePercentFilter,
+  scrollInViewDiv,
   scrollToTop,
 } from "../../utils/common";
 import { searchPostByName } from "../../redux/actions/postActions";
@@ -71,6 +72,7 @@ export default function Search() {
   const [brandValue, setBrandValue] = useState([]);
   const [addressValue, setAddressValue] = useState("");
   const [sortTimeValue, setSortTimeValue] = useState("");
+  const [sortPriceValue, setSortPriceValue] = useState("");
 
   //useRef
   const categoryRef = useRef(null);
@@ -142,6 +144,7 @@ export default function Search() {
     let displaySizeVal = getParam("display");
     let addressVal = getParam("address");
     let sortTimeVal = getParam("create_at");
+    let sortPriceVal = getParam("sort");
 
     if (addressVal) {
       setAddressValue(addressVal);
@@ -224,6 +227,9 @@ export default function Search() {
     if (sortTimeVal) {
       setSortTimeValue(sortTimeVal);
     }
+    if (sortPriceVal) {
+      setSortPriceValue(sortPriceVal);
+    }
   };
 
   useEffect(() => {
@@ -234,11 +240,13 @@ export default function Search() {
 
   const onChangeCheckSort = (e) => {
     const { id } = e.target;
-    if (id == "low-hight") {
+    if (id === "low-hight") {
       insertParams("sort", "asc");
+      setSortPriceValue("asc");
     }
-    if (id == "hight-low") {
+    if (id === "hight-low") {
       insertParams("sort", "desc");
+      setSortPriceValue("desc");
     }
   };
   const onChangeCheckSortTime = (e) => {
@@ -250,7 +258,6 @@ export default function Search() {
       insertParams("create_at", timeData[parseInt(value)].type);
     }
   };
-
   const onChangeCheckCategory = (e) => {
     const { value } = e.target;
     if (value == "0") deleteParam("category");
@@ -311,6 +318,12 @@ export default function Search() {
       insertParams("address", address);
     }
     setAddressValue(address);
+  };
+
+  const scrollRef = useRef(null);
+  const scrollInView = () => {
+    scrollInViewDiv(scrollRef);
+    scrollToTop();
   };
 
   const dispatch = useDispatch();
@@ -445,7 +458,7 @@ export default function Search() {
         <div id="content">
           <Breadcrumb arrLink={searchBreadcrumb} />
           {/* <button onClick={() => deletePara()}>delete</button> */}
-          <div className="d-flex justify-content-end ms-auto py-sm-3 filter-header">
+          <div className="d-flex justify-content-end ms-auto pt-0 pb-1 filter-header make-left">
             <div className="form-check filter-header-sort">
               <span>
                 <i className="fas fa-funnel-dollar"></i>
@@ -456,8 +469,9 @@ export default function Search() {
               <input
                 className="form-check-input mr-5 mt-0"
                 type="radio"
-                name="sort"
+                name="sort-low-hight"
                 id="low-hight"
+                checked={sortPriceValue === "asc"}
                 onChange={(e) => onChangeCheckSort(e)}
               />
               <label className="form-check-label" htmlFor="low-hight">
@@ -471,8 +485,9 @@ export default function Search() {
               <input
                 className="form-check-input mr-5 mt-0"
                 type="radio"
-                name="sort"
+                name="sort-hight-low"
                 id="hight-low"
+                checked={sortPriceValue === "desc"}
                 onChange={(e) => onChangeCheckSort(e)}
               />
               <label className="form-check-label" htmlFor="hight-low">
@@ -1079,7 +1094,11 @@ export default function Search() {
               </div>
             </div>
             <div className="row">
-              <div className="bg-white p-2 col-12" id="search-result">
+              <div
+                className="bg-white p-2 col-12"
+                id="search-result"
+                ref={scrollRef}
+              >
                 <div className="search-result-status">
                   <div className="search-result-count">
                     {get_post_search?.meta?.total > 0 ? (
@@ -1121,7 +1140,7 @@ export default function Search() {
                       itemsCountPerPage={get_post_search?.meta?.per_page}
                       totalItemsCount={get_post_search?.meta?.total || 0}
                       onChange={(pageNumber) => {
-                        scrollToTop();
+                        scrollInView();
                         dispatch(
                           searchPostByName(window.location.search, pageNumber)
                         );
