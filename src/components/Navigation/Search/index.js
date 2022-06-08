@@ -56,12 +56,12 @@ export default function Search() {
   return (
     <form id="boxSearch" ref={formRef}>
       <input
+        onChange={(e) => onChangeSearch(e)}
         type="text"
         id="header-search"
         placeholder="Tìm kiếm sản phẩm"
         name="search"
-        value={inputVal}
-        onChange={(e) => onChangeSearch(e)}
+        value={inputVal || ""}
       />
       <button
         type="submit"

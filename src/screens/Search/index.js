@@ -526,7 +526,7 @@ export default function Search() {
                     style={{ right: 0, top: 0 }}
                   >
                     <button
-                      className="btn btn-success p-1"
+                      className="btn btn-success p-1 w-100px"
                       style={{ backgroundColor: "#0abfd2", boder: "none" }}
                       onClick={() => ApplySearch()}
                     >
@@ -620,15 +620,15 @@ export default function Search() {
                         <input
                           type="text"
                           className="form-control"
-                          value={formatPrice(valueStart)}
-                          defaultValue="0"
+                          value={formatPrice(valueStart) || 0}
+                          readOnly
                         />{" "}
                         ~{" "}
                         <input
                           type="text"
                           className="form-control"
-                          value={formatPrice(valueEnd)}
-                          defaultValue="0"
+                          value={formatPrice(valueEnd) || 0}
+                          readOnly
                         />
                       </div>
                     </div>
@@ -785,15 +785,15 @@ export default function Search() {
                         <input
                           type="text"
                           className="form-control"
-                          value={valueStorageStart}
-                          defaultValue="0GB"
+                          value={valueStorageStart || "0GB"}
+                          readOnly
                         />{" "}
                         ~{" "}
                         <input
                           type="text"
                           className="form-control"
-                          value={valueStorageEnd}
-                          defaultValue="0GB"
+                          value={valueStorageEnd || "0GB"}
+                          readOnly
                         />
                       </div>
                     </div>
