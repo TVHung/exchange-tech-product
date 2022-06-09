@@ -227,7 +227,7 @@ export default function Login({ type }) {
                 Sign up
               </Button>
             </div>
-            <Grid container spacing={2}>
+            {/* <Grid container spacing={2}>
               <Grid item xs={12}>
                 <GoogleLogin
                   clientId={
@@ -264,7 +264,7 @@ export default function Login({ type }) {
                   )}
                 ></GoogleLogin>
               </Grid>
-            </Grid>
+            </Grid> */}
             <hr style={{ marginTop: 20, opacity: 0.5 }} />
             <Grid container>
               <a href="/login" className="textLogin">

@@ -94,7 +94,7 @@ export default function ResetPassword() {
           <CssBaseline />
           <div className="paperLogin">
             {show ? (
-              <div>
+              <div className="text-center">
                 <p>Bạn đã đổi mật khẩu thành công</p>
                 <p>Bạn vui lòng đăng nhập lại để truy cập vào hệ thống</p>
                 <Link to="/login">

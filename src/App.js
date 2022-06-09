@@ -30,6 +30,7 @@ import ProfileUser from "./screens/ProfileUser";
 import { toast } from "react-toastify";
 import ResetPassword from "./screens/Auth/ResetPassword";
 import FormResetPassword from "./screens/Auth/FormResetPassword";
+import LoginGoogle from "./screens/Auth/LoginGoogle";
 toast.configure();
 
 function App() {
@@ -64,6 +65,11 @@ function App() {
             exact
             path="/request-reset-password"
             render={(props) => <FormResetPassword />}
+          />
+          <Route
+            exact
+            path="/login-google"
+            render={(props) => <LoginGoogle />}
           />
           <PrivateRoute path="/chat" exact component={Chat} isAuth={isAuth} />
           <PrivateRoute

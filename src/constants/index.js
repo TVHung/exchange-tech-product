@@ -9,6 +9,7 @@ export const apiGetAccountProfile = `${api}/auth/profile-user`;
 export const apiUserProfile = `${api}/profile-user`;
 export const apiGetUser = `${api}/users`;
 export const apiChangePass = `${api}/auth/change-pass`;
+
 //forgot password
 export const apiResetPass = `${api}/reset-password`;
 
@@ -50,6 +51,7 @@ export const apiSearch = `${api}/search`;
 
 //google
 export const apiGetGoogleUrl = `${api}/get-google-sign-in-url`;
+export const apiLoginGoogleCallback = `${api}/callback`;
 
 export const headers = {
   "Content-type": "application/json",
