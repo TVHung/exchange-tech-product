@@ -15,6 +15,7 @@ import MetaTag from "../../components/MetaTag";
 import { apiLogin } from "../../constants";
 import { setCookie } from "./../../utils/cookie";
 import Loading from "../../components/Loading";
+import { apiGetGoogleUrl } from "./../../constants/index";
 
 const UseFocus = () => {
   const htmlElRef = useRef(null);
@@ -92,13 +93,22 @@ export default function Login() {
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
-  const loginSuccess = (response) => {
-    console.log(response);
-    toast.success("Đăng nhập thành công");
-  };
-  const loginFailure = (response) => {
-    // console.log(response);
-    toast.error("Đặng nhập không thành công");
+  const handleLoginGoogle = async (e) => {
+    if (e) e.preventDefault();
+    setIsLoading(true);
+    await axios
+      .post(apiGetGoogleUrl, {})
+      .then((res) => {
+        console.log(res.data);
+        if (res.data?.url) {
+          window.location.href = res.data?.url;
+        }
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -178,8 +188,6 @@ export default function Login() {
                     clientId={
                       "217349199407-r0efehl3tjiavtkk5b8c035bqj5aer2q.apps.googleusercontent.com"
                     }
-                    // onSuccess={(res) => loginSuccess(res)}
-                    // onFailure={(res) => loginFailure(res)}
                     isSignedIn={true}
                     cookiePolicy={"single_host_origin"}
                     render={(renderProps) => (
@@ -201,9 +209,8 @@ export default function Login() {
                             height="20px"
                           />
                         }
-                        onClick={renderProps.onClick}
                         disabled={renderProps.disabled}
-                        // disabled={true}
+                        onClick={(e) => handleLoginGoogle(e)}
                       >
                         Tiếp tục với Google
                       </Button>

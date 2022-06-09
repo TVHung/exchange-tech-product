@@ -66,7 +66,7 @@ export default function FormResetPassword() {
           <CssBaseline />
           <div className="paperLogin">
             {show ? (
-              <div>
+              <div className="text-center">
                 <p>Email đã gửi đến bạn thành công</p>
                 <p>Bạn vui lòng kiểm tra hòm thư email của mình</p>
                 <Link to="/login">
