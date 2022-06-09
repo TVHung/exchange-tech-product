@@ -9,6 +9,9 @@ export const apiGetAccountProfile = `${api}/auth/profile-user`;
 export const apiUserProfile = `${api}/profile-user`;
 export const apiGetUser = `${api}/users`;
 export const apiChangePass = `${api}/auth/change-pass`;
+//forgot password
+export const apiResetPass = `${api}/reset-password`;
+
 //profile
 export const apiProfile = `${api}/profiles`;
 export const apiChangeAvatar = `${api}/change-avatar`;

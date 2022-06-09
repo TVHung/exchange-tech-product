@@ -28,6 +28,8 @@ import PostManager from "./screens/PostManager";
 import AuthRoute from "./routes/auth/AuthRoute";
 import ProfileUser from "./screens/ProfileUser";
 import { toast } from "react-toastify";
+import ResetPassword from "./screens/Auth/ResetPassword";
+import FormResetPassword from "./screens/Auth/FormResetPassword";
 toast.configure();
 
 function App() {
@@ -53,6 +55,16 @@ function App() {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/search" render={(props) => <Search />} />
+          <Route
+            exact
+            path="/reset-password"
+            render={(props) => <ResetPassword />}
+          />
+          <Route
+            exact
+            path="/request-reset-password"
+            render={(props) => <FormResetPassword />}
+          />
           <PrivateRoute path="/chat" exact component={Chat} isAuth={isAuth} />
           <PrivateRoute
             path="/post-manager"
