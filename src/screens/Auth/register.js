@@ -125,7 +125,6 @@ export default function Login({ type }) {
           <form className="formLogin" noValidate>
             <TextField
               error={userValidate?.name != "" ? true : false}
-              variant="filled"
               margin="normal"
               required
               fullWidth
@@ -141,7 +140,6 @@ export default function Login({ type }) {
             </p>
             <TextField
               error={userValidate?.email != "" ? true : false}
-              variant="filled"
               margin="normal"
               required
               fullWidth
@@ -161,7 +159,6 @@ export default function Login({ type }) {
             </p>
             <TextField
               error={userValidate?.password != "" ? true : false}
-              variant="filled"
               margin="normal"
               required
               fullWidth
@@ -191,7 +188,6 @@ export default function Login({ type }) {
             </p>
             <TextField
               error={userValidate?.password_confirmation != "" ? true : false}
-              variant="filled"
               margin="normal"
               required
               fullWidth

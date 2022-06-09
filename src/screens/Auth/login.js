@@ -117,7 +117,6 @@ export default function Login() {
             <form className="formLogin" noValidate>
               <TextField
                 error={userValidate?.email != "" ? true : false}
-                variant="filled"
                 margin="normal"
                 required
                 fullWidth
@@ -134,7 +133,6 @@ export default function Login() {
               </p>
               <TextField
                 error={userValidate?.password != "" ? true : false}
-                variant="filled"
                 margin="normal"
                 required
                 fullWidth
@@ -216,8 +214,8 @@ export default function Login() {
               <hr style={{ marginTop: 20, opacity: 0.5 }} />
               <Grid container>
                 <Grid item xs={6}>
-                  <a href="/register" className="textLogin">
-                    Không thể đăng nhập?
+                  <a href="/request-reset-password" className="textLogin">
+                    Bạn quên mật khẩu?
                   </a>
                 </Grid>
                 <Grid item xs={6}>
