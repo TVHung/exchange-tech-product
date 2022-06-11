@@ -2,6 +2,7 @@ import React from "react";
 import { formatPrice } from "../../../../utils/common";
 import "./_myPostItem.scss";
 import imgDefault from "../../../../assets/image/product-default.png";
+import imgBlock from "../../../../assets/image/block.png";
 
 export default function MyPostItem({ data, handleShow }) {
   const toDetail = () => {
@@ -28,26 +29,26 @@ export default function MyPostItem({ data, handleShow }) {
           <div className="col-lg-5 my-post-image">
             {" "}
             <img
-              src={getBanner(data.images) || imgDefault}
+              src={getBanner(data?.images) || imgDefault}
               alt=""
               className="post-result-img"
             />{" "}
           </div>
           <div className="col-lg-7 my-post-content">
             <div className="d-md-flex align-items-md-center">
-              <div className="name">{data.name}</div>
+              <div className="name">{data?.name}</div>
               <div className="ms-auto code">
                 <i className="fas fa-map-marker-alt"></i>{" "}
-                {data.address && data.address.split(", ")[2]}
+                {data?.address && data?.address.split(", ")[2]}
               </div>
             </div>
             <div className="d-flex flex-column tags pt-1">
               <div className="search-item-price">
-                <i className="fas fa-dollar-sign"></i> {formatPrice(data.price)}
-                đ
+                <i className="fas fa-dollar-sign"></i>{" "}
+                {formatPrice(data?.price)}đ
               </div>
               <div>
-                <i className="fas fa-info-circle"></i> {data.description}
+                <i className="fas fa-info-circle"></i> {data?.description}
               </div>
             </div>
           </div>
@@ -56,10 +57,23 @@ export default function MyPostItem({ data, handleShow }) {
           <div className="btn btn-danger mx-1" onClick={(e) => handleDelete(e)}>
             <span>Xóa</span>
           </div>
-          <div className="btn enquiry mx-1" onClick={(e) => handleEdit(e)}>
-            <span>Chỉnh sửa</span>
-          </div>
+          {data?.is_block !== 1 && (
+            <div className="btn enquiry mx-1" onClick={(e) => handleEdit(e)}>
+              <span>Chỉnh sửa</span>
+            </div>
+          )}
         </div>
+        {data?.is_block == 1 && (
+          <div
+            className="post-block-status"
+            title="Bài viết vi phạm quy định hệ thống và đã bị khóa bởi quản viên"
+          >
+            <div className="text-center">
+              <img src={imgBlock} alt="" className="img-block" />
+              <p>Đã bị khóa</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

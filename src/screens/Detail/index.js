@@ -33,6 +33,7 @@ import axios from "axios";
 import Breadcrumb from "../../components/Breadcrumb";
 import { gameBreadcrumb } from "../../constants/breadcrumData";
 import { useParams } from "react-router-dom";
+import NotPost from "../../components/NotPost";
 
 export default function Detail() {
   const [preload, setPreload] = useState(false);
@@ -41,6 +42,7 @@ export default function Detail() {
   const [postDetail, setPostDetail] = useState({});
   const [recommendPost, setRecommendPost] = useState([]);
   const [postUser, setPostUser] = useState({});
+  const [getError, setGetError] = useState(false);
   const [breadcrumb, setBreadcrumb] = useState([]);
   const params = useParams();
 
@@ -74,17 +76,26 @@ export default function Detail() {
 
   const fetchAllData = async (postId) => {
     let apiPostDetail = `${apiFetchPostDetail}/${postId}`;
-    const requestPost = axios.get(apiPostDetail);
+    const requestPost = axios.get(apiPostDetail, { headers: headers });
 
     await axios
       .all([requestPost])
       .then(
         axios.spread((...responses) => {
-          const post = responses[0].data.data;
-          console.log("post", post);
-          setPostDetail(post);
-          setDataBreadcrumb(post.category_id);
-          fetchUserPost(post.user_id);
+          let status = responses[0].data?.status;
+          console.log("data", responses[0].data);
+          if (status === 1) {
+            const post = responses[0].data.data;
+            console.log("post", post);
+            setPostDetail(post);
+            setDataBreadcrumb(post?.category_id);
+            fetchUserPost(post?.user_id);
+            setGetError(false);
+          } else {
+            setPreload(true);
+            //show notify
+            setGetError(true);
+          }
         })
       )
       .catch((errors) => {
@@ -142,289 +153,297 @@ export default function Detail() {
         <Preloading />
       ) : (
         <>
-          <Breadcrumb arrLink={breadcrumb} />
-          <div className="row">
-            <div className="col-sm-12 col-lg-8">
-              <div className="detail-left">
-                <div className="detail-left-image">
-                  <SlideDetail
-                    dataSlides={postDetail.images}
-                    video_url={postDetail.video_url}
-                  />
-                  <div className="detail-time-create">
-                    <p>
-                      Bài đăng cách đây{" "}
-                      {handleCalculateTime(postDetail.created_at)}
-                    </p>
-                  </div>
-                </div>
-                <div className="detail-left-content">
-                  <h4>{postDetail.name}</h4>
-                  <p>Giá: {formatPrice(postDetail.price)}đ</p>
-                </div>
-                <div className="detail-left-description">
-                  <p>{postDetail.description}</p>
-                </div>
-                <div className="detail-properties">
-                  <div className="row">
-                    {/* common */}
-                    {postDetail.ram > 0 && (
-                      <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                        <i className="fas fa-memory"></i>
-                        <span>Ram: {postDetail.ram}GB</span>
+          {getError ? (
+            <NotPost type={"post-is-block"} />
+          ) : (
+            <>
+              <Breadcrumb arrLink={breadcrumb} />
+              <div className="row">
+                <div className="col-sm-12 col-lg-8">
+                  <div className="detail-left">
+                    <div className="detail-left-image">
+                      <SlideDetail
+                        dataSlides={postDetail?.images}
+                        video_url={postDetail?.video_url}
+                      />
+                      <div className="detail-time-create">
+                        <p>
+                          Bài đăng cách đây{" "}
+                          {handleCalculateTime(postDetail?.created_at)}
+                        </p>
                       </div>
-                    )}
-                    {postDetail.storage > 0 && (
-                      <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                        <i className="fas fa-tags"></i>
-                        <span>Dung lượng: {postDetail.storage}GB</span>
-                      </div>
-                    )}
-                    {postDetail.status != null && (
-                      <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                        <i className="fas fa-microchip"></i>
-                        <span>Tình trạng: {postDetail.status_value}</span>
-                      </div>
-                    )}
-                    <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                      <i className="fas fa-hdd"></i>
-                      {postDetail.guarantee > 0 ? (
-                        <span>Bảo hành: {postDetail.guarantee} Tháng</span>
-                      ) : (
-                        <span>Bảo hành: Không</span>
-                      )}
                     </div>
-                    {/* mobile */}
-                    {postDetail.category_id === 1 && (
-                      <>
-                        {postDetail.brand && (
+                    <div className="detail-left-content">
+                      <h4>{postDetail?.name}</h4>
+                      <p>Giá: {formatPrice(postDetail?.price)}đ</p>
+                    </div>
+                    <div className="detail-left-description">
+                      <p>{postDetail?.description}</p>
+                    </div>
+                    <div className="detail-properties">
+                      <div className="row">
+                        {/* common */}
+                        {postDetail?.ram > 0 && (
+                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                            <i className="fas fa-memory"></i>
+                            <span>Ram: {postDetail?.ram}GB</span>
+                          </div>
+                        )}
+                        {postDetail?.storage > 0 && (
                           <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                             <i className="fas fa-tags"></i>
-                            <span>Hãng: {postDetail.brand.name}</span>
+                            <span>Dung lượng: {postDetail?.storage}GB</span>
                           </div>
                         )}
-                        {postDetail.color && (
-                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                            <i className="fas fa-tags"></i>
-                            <span>Màu sắc: {postDetail.color}</span>
-                          </div>
-                        )}
-                      </>
-                    )}
-                    {/* laptop */}
-                    {postDetail.category_id === 2 && (
-                      <>
-                        {postDetail.brand && (
-                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                            <i className="fas fa-tags"></i>
-                            <span>Hãng: {postDetail.brand.name}</span>
-                          </div>
-                        )}
-                        {postDetail.color && (
-                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                            <i className="fas fa-tags"></i>
-                            <span>Màu sắc: {postDetail.color}</span>
-                          </div>
-                        )}
-                        {postDetail.cpu && (
+                        {postDetail?.status != null && (
                           <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                             <i className="fas fa-microchip"></i>
-                            <span>CPU: {postDetail.cpu}</span>
+                            <span>Tình trạng: {postDetail?.status_value}</span>
                           </div>
                         )}
-                        {postDetail.gpu && (
-                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                            <i className="fas fa-microchip"></i>
-                            <span>GPU: {postDetail.gpu}</span>
-                          </div>
-                        )}
-                        {postDetail.storage_type_value && (
-                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                            <i className="fas fa-hdd"></i>
-                            <span>
-                              Loại ổ cứng: {postDetail.storage_type_value}
-                            </span>
-                          </div>
-                        )}
-                        {postDetail.display_size && (
-                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                            <i className="fas fa-hdd"></i>
-                            <span>Màn hình: {postDetail.display_size}</span>
-                          </div>
-                        )}
-                      </>
-                    )}
-                    {/* pc */}
-                    {postDetail.category_id === 3 && (
-                      <>
-                        {postDetail.cpu && (
-                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                            <i className="fas fa-microchip"></i>
-                            <span>CPU: {postDetail.cpu}</span>
-                          </div>
-                        )}
-                        {postDetail.gpu && (
-                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                            <i className="fas fa-microchip"></i>
-                            <span>GPU: {postDetail.gpu}</span>
-                          </div>
-                        )}
-                        {postDetail.storage_type_value && (
-                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                            <i className="fas fa-hdd"></i>
-                            <span>
-                              Loại ổ cứng: {postDetail.storage_type_value}
-                            </span>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-              {postDetail.is_trade == 1 ? (
-                <div className="detail-left">
-                  <div className="detail-left-content">
-                    <h3>Sản phẩm mong muốn được đổi qua</h3>
-                    {postDetail.postTrade.name && (
-                      <h4>Tên: {postDetail.postTrade.name}</h4>
-                    )}
-                  </div>
-                  <div className="detail-left-description">
-                    <p>{postDetail.postTrade.description}</p>
-                  </div>
-                  <div className="detail-properties">
-                    <div className="row">
-                      {postDetail.postTrade.category && (
                         <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                          <i className="fas fa-tags"></i>
-                          <span>
-                            Loaị sản phẩm: {postDetail.postTrade.category}
-                          </span>
-                        </div>
-                      )}
-                      {postDetail.postTrade.guarantee && (
-                        <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                          <i className="fas fa-tags"></i>
-                          {postDetail.postTrade.guarantee > 0 ? (
-                            <span>
-                              Bảo hành: {postDetail.postTrade.guarantee}
-                            </span>
+                          <i className="fas fa-hdd"></i>
+                          {postDetail?.guarantee > 0 ? (
+                            <span>Bảo hành: {postDetail?.guarantee} Tháng</span>
                           ) : (
                             <span>Bảo hành: Không</span>
                           )}
                         </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-            </div>
-            <div className="col-sm-12 col-lg-4">
-              <div className="detail-right">
-                <div className="detail-user-profile">
-                  <img src={postUser.profile.avatar_url} alt="avt" />
-                  <p>{postUser.profile.name}</p>
-                  <div className="view-profile-seller">
-                    <button
-                      onClick={() => toProfile(postUser.id)}
-                      className="btn btn-outline"
-                    >
-                      Xem trang
-                    </button>
-                  </div>
-                </div>
-                <div className="detail-seller-reviews">
-                  <div className="row">
-                    <div className="col-6 detail-time-join">
-                      <p>Tham gia</p>
-                      <p>{handleCalculateTime(postUser.created_at)}</p>
-                    </div>
-                    <div className="col-6 detail-rating">
-                      <p>Đánh giá</p>
-                      <div className="detail-seller-rating">
-                        <StarRatings
-                          starRatedColor="#fcbb00"
-                          rating={4}
-                          changeRating={() => changeRating()}
-                          numberOfStars={5}
-                          name="rating"
-                          starDimension="20px"
-                          starSpacing="2px"
-                        />
+                        {/* mobile */}
+                        {postDetail?.category_id === 1 && (
+                          <>
+                            {postDetail?.brand && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-tags"></i>
+                                <span>Hãng: {postDetail?.brand.name}</span>
+                              </div>
+                            )}
+                            {postDetail?.color && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-tags"></i>
+                                <span>Màu sắc: {postDetail?.color}</span>
+                              </div>
+                            )}
+                          </>
+                        )}
+                        {/* laptop */}
+                        {postDetail?.category_id === 2 && (
+                          <>
+                            {postDetail?.brand && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-tags"></i>
+                                <span>Hãng: {postDetail?.brand.name}</span>
+                              </div>
+                            )}
+                            {postDetail?.color && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-tags"></i>
+                                <span>Màu sắc: {postDetail?.color}</span>
+                              </div>
+                            )}
+                            {postDetail?.cpu && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-microchip"></i>
+                                <span>CPU: {postDetail?.cpu}</span>
+                              </div>
+                            )}
+                            {postDetail?.gpu && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-microchip"></i>
+                                <span>GPU: {postDetail?.gpu}</span>
+                              </div>
+                            )}
+                            {postDetail?.storage_type_value && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-hdd"></i>
+                                <span>
+                                  Loại ổ cứng: {postDetail?.storage_type_value}
+                                </span>
+                              </div>
+                            )}
+                            {postDetail?.display_size && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-hdd"></i>
+                                <span>
+                                  Màn hình: {postDetail?.display_size}
+                                </span>
+                              </div>
+                            )}
+                          </>
+                        )}
+                        {/* pc */}
+                        {postDetail?.category_id === 3 && (
+                          <>
+                            {postDetail?.cpu && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-microchip"></i>
+                                <span>CPU: {postDetail?.cpu}</span>
+                              </div>
+                            )}
+                            {postDetail?.gpu && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-microchip"></i>
+                                <span>GPU: {postDetail?.gpu}</span>
+                              </div>
+                            )}
+                            {postDetail?.storage_type_value && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-hdd"></i>
+                                <span>
+                                  Loại ổ cứng: {postDetail?.storage_type_value}
+                                </span>
+                              </div>
+                            )}
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
+                  {postDetail?.is_trade == 1 ? (
+                    <div className="detail-left">
+                      <div className="detail-left-content">
+                        <h3>Sản phẩm mong muốn được đổi qua</h3>
+                        {postDetail?.postTrade.name && (
+                          <h4>Tên: {postDetail?.postTrade.name}</h4>
+                        )}
+                      </div>
+                      <div className="detail-left-description">
+                        <p>{postDetail?.postTrade.description}</p>
+                      </div>
+                      <div className="detail-properties">
+                        <div className="row">
+                          {postDetail?.postTrade.category && (
+                            <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                              <i className="fas fa-tags"></i>
+                              <span>
+                                Loaị sản phẩm: {postDetail?.postTrade.category}
+                              </span>
+                            </div>
+                          )}
+                          {postDetail?.postTrade.guarantee && (
+                            <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                              <i className="fas fa-tags"></i>
+                              {postDetail?.postTrade.guarantee > 0 ? (
+                                <span>
+                                  Bảo hành: {postDetail?.postTrade.guarantee}
+                                </span>
+                              ) : (
+                                <span>Bảo hành: Không</span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
-                <div className="detail-contact-seller">
-                  <p>Địa chỉ: {postDetail.address}</p>
-                  <p>Số điện thoại: {postUser.profile.phone}</p>
-                </div>
-                <div className="detail-chat-seller">
-                  <button className="btn" onClick={() => toChat()}>
-                    Chat với người bán
-                  </button>
-                </div>
-                <div className="detail-share">
-                  <p>Chia sẻ cho mọi người</p>
-                  <FacebookShareButton
-                    url={window.location.href}
-                    quote={document.title}
-                    hashtag="#texchange"
-                    className="socialMediaButton"
-                  >
-                    <FacebookIcon size={40} round={true} />
-                  </FacebookShareButton>
-                  <EmailShareButton
-                    url={window.location.href}
-                    quote={document.title}
-                    hashtag="#texchange"
-                    className="socialMediaButton"
-                  >
-                    <EmailIcon size={40} round={true} />
-                  </EmailShareButton>
-                  <FacebookMessengerShareButton
-                    url={window.location.href}
-                    quote={document.title}
-                    hashtag="#texchange"
-                    className="socialMediaButton"
-                  >
-                    <FacebookMessengerIcon size={40} round={true} />
-                  </FacebookMessengerShareButton>
-                  <TwitterShareButton
-                    url={window.location.href}
-                    quote={document.title}
-                    hashtag="#texchange"
-                    className="socialMediaButton"
-                  >
-                    <TwitterIcon size={40} round={true} />
-                  </TwitterShareButton>
-                  <TelegramShareButton
-                    url={window.location.href}
-                    quote={document.title}
-                    hashtag="#texchange"
-                    className="socialMediaButton"
-                  >
-                    <TelegramIcon size={40} round={true} />
-                  </TelegramShareButton>
-                  <button
-                    className="btn copy-link-btn"
-                    onClick={() => onClickCopyLink()}
-                  >
-                    <i className="fas fa-link"></i>
-                  </button>
+                <div className="col-sm-12 col-lg-4">
+                  <div className="detail-right">
+                    <div className="detail-user-profile">
+                      <img src={postUser?.profile?.avatar_url} alt="avt" />
+                      <p>{postUser?.profile?.name}</p>
+                      <div className="view-profile-seller">
+                        <button
+                          onClick={() => toProfile(postUser?.id)}
+                          className="btn btn-outline"
+                        >
+                          Xem trang
+                        </button>
+                      </div>
+                    </div>
+                    <div className="detail-seller-reviews">
+                      <div className="row">
+                        <div className="col-6 detail-time-join">
+                          <p>Tham gia</p>
+                          <p>{handleCalculateTime(postUser?.created_at)}</p>
+                        </div>
+                        <div className="col-6 detail-rating">
+                          <p>Đánh giá</p>
+                          <div className="detail-seller-rating">
+                            <StarRatings
+                              starRatedColor="#fcbb00"
+                              rating={4}
+                              changeRating={() => changeRating()}
+                              numberOfStars={5}
+                              name="rating"
+                              starDimension="20px"
+                              starSpacing="2px"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="detail-contact-seller">
+                      <p>Địa chỉ: {postDetail?.address}</p>
+                      <p>Số điện thoại: {postUser?.profile?.phone}</p>
+                    </div>
+                    <div className="detail-chat-seller">
+                      <button className="btn" onClick={() => toChat()}>
+                        Chat với người bán
+                      </button>
+                    </div>
+                    <div className="detail-share">
+                      <p>Chia sẻ cho mọi người</p>
+                      <FacebookShareButton
+                        url={window.location.href}
+                        quote={document.title}
+                        hashtag="#texchange"
+                        className="socialMediaButton"
+                      >
+                        <FacebookIcon size={40} round={true} />
+                      </FacebookShareButton>
+                      <EmailShareButton
+                        url={window.location.href}
+                        quote={document.title}
+                        hashtag="#texchange"
+                        className="socialMediaButton"
+                      >
+                        <EmailIcon size={40} round={true} />
+                      </EmailShareButton>
+                      <FacebookMessengerShareButton
+                        url={window.location.href}
+                        quote={document.title}
+                        hashtag="#texchange"
+                        className="socialMediaButton"
+                      >
+                        <FacebookMessengerIcon size={40} round={true} />
+                      </FacebookMessengerShareButton>
+                      <TwitterShareButton
+                        url={window.location.href}
+                        quote={document.title}
+                        hashtag="#texchange"
+                        className="socialMediaButton"
+                      >
+                        <TwitterIcon size={40} round={true} />
+                      </TwitterShareButton>
+                      <TelegramShareButton
+                        url={window.location.href}
+                        quote={document.title}
+                        hashtag="#texchange"
+                        className="socialMediaButton"
+                      >
+                        <TelegramIcon size={40} round={true} />
+                      </TelegramShareButton>
+                      <button
+                        className="btn copy-link-btn"
+                        onClick={() => onClickCopyLink()}
+                      >
+                        <i className="fas fa-link"></i>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <hr />
-          <div className="related-products">
-            <h3>Sản phẩm liên quan</h3>
-            <ListItemRecommend dataList={recommendPost} />
-          </div>
-          <div className="copy-check-mark">
-            <CheckMark stateCopy={stateCopy} setStateCopy={setStateCopy} />
-          </div>
+              <hr />
+              <div className="related-products">
+                <h3>Sản phẩm liên quan</h3>
+                <ListItemRecommend dataList={recommendPost} />
+              </div>
+              <div className="copy-check-mark">
+                <CheckMark stateCopy={stateCopy} setStateCopy={setStateCopy} />
+              </div>
+            </>
+          )}
         </>
       )}
     </div>

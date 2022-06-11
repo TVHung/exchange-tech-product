@@ -414,7 +414,7 @@ export default function EditPost() {
 
   const fetchAllData = async (postId) => {
     let apiPostDetail = `${apiFetchPostDetail}/${postId}`;
-    const requestPost = axios.get(apiPostDetail);
+    const requestPost = axios.get(apiPostDetail, { headers: headers });
     setPreload(true);
     await axios
       .all([requestPost])
@@ -619,8 +619,9 @@ export default function EditPost() {
                 onChange={(e) => handleOnChange(e)}
                 placeholder="Loại sản phẩm"
                 disabled={true}
-                value={postInfor?.category_id}
+                value={postInfor?.category || 0}
               >
+                <option value={0}>Chọn loại sản phẩm</option>
                 {categoryData &&
                   categoryData.map((data, index) => (
                     <option key={index} value={data.id}>
@@ -1088,7 +1089,7 @@ export default function EditPost() {
                     name="category"
                     onChange={(e) => handleOnChangeTrade(e)}
                     placeholder="Loại sản phẩm"
-                    value={postTradeInfor.category_id}
+                    value={postTradeInfor?.category_id}
                   >
                     {categoryData &&
                       categoryData.map((data, index) => (
@@ -1123,7 +1124,7 @@ export default function EditPost() {
                       }
                       placeholder="Tên sản phẩm"
                       name="name"
-                      defaultValue={postTradeInfor.name}
+                      defaultValue={postTradeInfor?.name}
                       onChange={(e) => handleOnChangeTrade(e)}
                     />
                     <p className="validate-form-text">
@@ -1141,13 +1142,13 @@ export default function EditPost() {
                       type="text"
                       id="post-trade-title"
                       className={
-                        validatePost.titleTrade
+                        validatePost?.titleTrade
                           ? "form-control is-invalid"
                           : "form-control"
                       }
                       name="title"
                       placeholder="Tiêu đề"
-                      defaultValue={postTradeInfor.title}
+                      defaultValue={postTradeInfor?.title}
                       onChange={(e) => handleOnChangeTrade(e)}
                     />
                     <p className="validate-form-text">
@@ -1167,7 +1168,7 @@ export default function EditPost() {
                       className="form-control"
                       placeholder="Thời gian bảo hành"
                       min={0}
-                      defaultValue={postTradeInfor.guarantee}
+                      defaultValue={postTradeInfor?.guarantee}
                       name="guarantee"
                       onChange={(e) => handleOnChangeTrade(e)}
                     />
@@ -1182,7 +1183,7 @@ export default function EditPost() {
                     </label>
                     <textarea
                       className={
-                        validatePost.descriptionTrade
+                        validatePost?.descriptionTrade
                           ? "form-control is-invalid"
                           : "form-control"
                       }
@@ -1193,11 +1194,11 @@ export default function EditPost() {
                   - Chất lượng ra sao
                   - Nhu cầu cụ thể như thế nào"
                       name="description"
-                      defaultValue={postTradeInfor.description}
+                      defaultValue={postTradeInfor?.description}
                       onChange={(e) => handleOnChangeTrade(e)}
                     ></textarea>
                     <p className="validate-form-text">
-                      {validatePost.descriptionTrade}
+                      {validatePost?.descriptionTrade}
                     </p>
                   </div>
                 </form>

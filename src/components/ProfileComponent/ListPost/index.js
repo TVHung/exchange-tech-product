@@ -7,6 +7,8 @@ import { Modal, Button } from "react-bootstrap";
 import NotPost from "../../NotPost";
 import "./_listPost.scss";
 import Pagination from "react-js-pagination";
+import { insertParam, getParam } from "../../../utils/common";
+import { useHistory } from "react-router-dom";
 
 export default function ListPost({ setPreload }) {
   const [show, setShow] = useState(false);
@@ -19,8 +21,19 @@ export default function ListPost({ setPreload }) {
   const getAllMyPosts = () => {
     dispatch(fetchMyPosts());
   };
+
+  const history = useHistory();
+  const insertParams = (key, value) => {
+    let params = insertParam(key, value);
+    history.push({
+      pathname: "/post-manager",
+      search: `?${params}`,
+    });
+  };
   useEffect(() => {
-    getAllMyPosts();
+    if (getParam("filter")) setFilter(getParam("filter"));
+    else insertParams("filter", "all");
+    dispatch(fetchMyPosts(1, getParam("filter")));
   }, []);
   useEffect(() => {
     console.log("my post", my_posts);
@@ -42,6 +55,7 @@ export default function ListPost({ setPreload }) {
   const onChangeCheckStatus = (e) => {
     const { name } = e.target;
     setFilter(name);
+    insertParams("filter", name);
     dispatch(fetchMyPosts(1, name));
   };
 
@@ -134,6 +148,19 @@ export default function ListPost({ setPreload }) {
               />
               <label className="form-check-label" htmlFor="my-post-private">
                 Đã ẩn
+              </label>
+            </div>
+            <div className="form-check filter-header-sort">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="block"
+                id="my-post-block"
+                onChange={(e) => onChangeCheckStatus(e)}
+                checked={filter === "block"}
+              />
+              <label className="form-check-label" htmlFor="my-post-block">
+                Bị khóa
               </label>
             </div>
           </div>

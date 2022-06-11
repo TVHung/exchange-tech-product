@@ -19,10 +19,11 @@ export default function Search() {
     });
   };
 
-  const onSearch = () => {
-    let link = `/search?name=${inputVal}`;
-    insertParams("name", inputVal);
-    if (window.location.pathname != "/search") {
+  const onSearch = (e) => {
+    e.preventDefault();
+    let link = `/search?search=${inputVal}`;
+    insertParams("search", inputVal);
+    if (window.location.pathname !== "/search") {
       window.location.href = link;
     }
     getPostSearch();
@@ -31,7 +32,7 @@ export default function Search() {
   //get data search
   const dispatch = useDispatch();
   const getPostSearch = () => {
-    dispatch(searchPostByName(`name=${inputVal}`));
+    dispatch(searchPostByName(`search=${inputVal}`));
   };
 
   const onChangeSearch = (e) => {
@@ -66,8 +67,8 @@ export default function Search() {
       <button
         type="submit"
         id="button"
-        onClick={() => onSearch()}
-        onSubmit={() => onSearch()}
+        onClick={(e) => onSearch(e)}
+        onSubmit={(e) => onSearch(e)}
       >
         <SearchIcon id="iconSearch" />
       </button>

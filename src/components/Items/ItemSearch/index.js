@@ -1,5 +1,5 @@
 import React from "react";
-import { formatPrice } from "../../../utils/common";
+import { formatPrice, handleCalculateTime } from "../../../utils/common";
 import "./_itemSearch.scss";
 
 export default function ItemSearch({ data }) {
@@ -28,12 +28,7 @@ export default function ItemSearch({ data }) {
               </div>
             </div>
             <div className="rating">
-              {" "}
-              <span className="fas fa-star"></span>{" "}
-              <span className="fas fa-star"></span>{" "}
-              <span className="fas fa-star"></span>{" "}
-              <span className="fas fa-star"></span>{" "}
-              <span className="far fa-star"></span>
+              Bài đăng cách đây {handleCalculateTime(data?.created_at)}
             </div>
             <div className="d-flex flex-column tags pt-1">
               <div className="search-item-price">
