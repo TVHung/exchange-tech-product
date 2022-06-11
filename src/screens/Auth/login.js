@@ -71,9 +71,10 @@ export default function Login() {
           toast.success("Đăng nhập thành công");
           setCookie("access_token", res.data.access_token, 3600);
           window.location.href = localStorage.getItem("linkDirect");
+        } else if (res.data?.message) {
+          toast.error(res.data.message);
         } else {
           handleValidate(res.data);
-          toast.error("Đặng nhập không thành công");
         }
       })
       .catch((error) => {

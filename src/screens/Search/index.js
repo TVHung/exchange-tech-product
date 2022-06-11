@@ -515,8 +515,8 @@ export default function Search() {
               </select>
             </div>
           </div>
-          <div className="d-sm-flex">
-            <div className="me-sm-2">
+          <div className="d-sm-flex row">
+            <div className="col-lg-3 col-md-5 col-sm-6 col-xs-12">
               <div id="filter" className="p-2">
                 <div className="border-bottom-custom h5 pb-2 text-uppercase box-label position-relative">
                   <i className="fas fa-sort"></i>
@@ -1093,7 +1093,7 @@ export default function Search() {
                 ) : null}
               </div>
             </div>
-            <div className="row">
+            <div className="row col-lg-9 col-md-7 col-sm-6 col-xs-12">
               <div
                 className="bg-white p-2 col-12"
                 id="search-result"
