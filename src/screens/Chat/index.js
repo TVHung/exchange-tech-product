@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./chat.scss";
-import { Grid } from "@material-ui/core";
 import MetaTag from "../../components/MetaTag";
 import Preloading from "../../components/Loading";
 import Breadcrumb from "./../../components/Breadcrumb";
@@ -11,7 +10,7 @@ import MenuInput from "../../components/Chat/MenuInput";
 import Header from "../../components/Chat/Header";
 import Message from "../../components/Chat/Message";
 import StartPage from "../../components/StartPage";
-
+import { Link, useParams } from "react-router-dom";
 const data = [
   { id: 1, readed: false },
   { id: 2, readed: true },
@@ -28,7 +27,8 @@ const data = [
 
 export default function Chat() {
   const [preload, setPreload] = useState(false);
-  const [isStart, setIsStart] = useState(false);
+  const [isStart, setIsStart] = useState(true);
+  const [userActive, setUserActive] = useState(null);
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -71,6 +71,7 @@ export default function Chat() {
         "https://res.cloudinary.com/trhung/image/upload/v1652085553/lgmh5kxhjcyh5alymomd.png",
     },
   ]);
+  const params = useParams();
   //scroll when add chat
   const listInnerRef = useRef();
   const onScroll = () => {
@@ -82,8 +83,7 @@ export default function Chat() {
         id: 1,
         message: messageContent,
         isSend: 1,
-        imageUrl:
-          "https://res.cloudinary.com/trhung/image/upload/v1652088754/ai2f9w7r9ov1onsuan7b.png",
+        imageUrl: null,
       };
       setMessages((oldMess) => [...oldMess, newMess]);
     } else {
@@ -106,6 +106,12 @@ export default function Chat() {
     };
   }, []);
 
+  useEffect(() => {
+    console.log(params.id);
+    setUserActive(params.id);
+    return () => {};
+  }, [params.id]);
+
   return (
     <div className="chat-container container">
       <Breadcrumb arrLink={chatBreadcrumb} />
@@ -117,7 +123,16 @@ export default function Chat() {
           <div className="chat-left col-md-4">
             {data.map((item) => (
               <div key={item.id}>
-                <ItemChat item={item} />
+                <Link
+                  to={`/chat/${item.id}`}
+                  style={{ textDecoration: "none", color: "#000" }}
+                >
+                  <ItemChat
+                    item={item}
+                    userActive={userActive}
+                    setIsStart={setIsStart}
+                  />
+                </Link>
               </div>
             ))}
           </div>

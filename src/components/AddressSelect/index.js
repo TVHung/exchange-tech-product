@@ -39,6 +39,7 @@ export default function AddressSelect({
       setShow();
       setDataCity([]);
       setDataDistrict([]);
+      setDataWard([]);
       setAddressDetail({});
     };
   }, []);
@@ -139,7 +140,7 @@ export default function AddressSelect({
   };
   const handleClose = () => {
     setShow(false);
-    setAddressDetail({ city: "", district: "" });
+    setAddressDetail({ city: "", district: "", wards: "" });
     setAddressValidate({});
   };
   const handleShow = () => {
@@ -201,6 +202,7 @@ export default function AddressSelect({
                   aria-label="Disabled select example"
                   name="city"
                   id="post-city"
+                  value={addressDetail?.city || "0"}
                   onChange={(e) => handleOnChangeAddress(e)}
                   required
                 >
@@ -222,6 +224,7 @@ export default function AddressSelect({
                   aria-label="Disabled select example"
                   name="district"
                   id="post-district"
+                  value={addressDetail?.district || "0"}
                   onChange={(e) => handleOnChangeAddress(e)}
                   required
                 >
@@ -245,6 +248,7 @@ export default function AddressSelect({
                   aria-label="Disabled select example"
                   name="wards"
                   id="post-ward"
+                  value={addressDetail?.wards || "0"}
                   onChange={(e) => handleOnChangeAddress(e)}
                   required
                 >
@@ -278,7 +282,7 @@ export default function AddressSelect({
           }
           placeholder="Chọn địa chỉ"
           readOnly
-          value={addressSelect == "" ? address : addressSelect}
+          value={addressSelect == "" ? address || "" : addressSelect || ""}
           onClick={() => handleShow()}
         />
       </div>

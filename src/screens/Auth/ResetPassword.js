@@ -106,7 +106,7 @@ export default function ResetPassword() {
                 <p className="titleLogin">Thay đổi mật khẩu mới</p>
                 <form className="formLogin" noValidate>
                   <TextField
-                    error={userValidate?.password != "" ? true : false}
+                    error={userValidate != "" ? true : false}
                     margin="normal"
                     required
                     fullWidth

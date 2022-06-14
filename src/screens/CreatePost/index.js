@@ -22,7 +22,6 @@ import {
 import { toast } from "react-toastify";
 import Breadcrumb from "../../components/Breadcrumb";
 import { postBreadcrumb } from "../../constants/breadcrumData";
-import { getCookie } from "../../utils/cookie";
 import { maxSizeImage } from "./../../constants/index";
 import {
   appendArrayToFormData,
@@ -45,7 +44,7 @@ export default function CreatePost() {
     name: "",
     brand: null,
     status: null,
-    guarantee: null,
+    guarantee: 0,
     cpu: null,
     gpu: null,
     ram: null,
@@ -58,13 +57,13 @@ export default function CreatePost() {
     display_size: null,
     public_status: 1,
     is_trade: 0,
-    color: "",
-    video_url: "",
+    color: null,
+    video_url: null,
   });
   const [postTradeInfor, setPostTradeInfor] = useState({
     category: 1, //1:phone, 2: laptop, 3: pc
     name: "",
-    guarantee: null,
+    guarantee: 0,
     title: "",
     description: "",
   });
@@ -129,7 +128,7 @@ export default function CreatePost() {
         name: "",
         brand: null,
         status: null,
-        guarantee: null,
+        guarantee: 0,
         cpu: null,
         gpu: null,
         ram: null,
@@ -142,8 +141,8 @@ export default function CreatePost() {
         display_size: null,
         public_status: 1,
         is_trade: 0,
-        color: "",
-        video_url: "",
+        color: null,
+        video_url: null,
       });
     }
   };
@@ -287,7 +286,6 @@ export default function CreatePost() {
       try {
         await axios.get(`${apiGetBrandByCategory}/${id}`).then((res) => {
           const brands = res.data.data;
-          console.log("brands by category", res.data.data);
           setbrandCategory(brands);
         });
       } catch (error) {
@@ -298,39 +296,39 @@ export default function CreatePost() {
   const createPost = async () => {
     var mergePostData;
     const postData = {
+      category_id: parseInt(postInfor.category),
       is_trade: isTrade ? 1 : 0,
-      title: postInfor.title,
-      category_id: Number(postInfor.category),
       name: postInfor.name,
+      title: postInfor.title,
       description: postInfor.description,
-      ram: Number(postInfor.ram) == 0 ? null : Number(postInfor.ram),
-      storage:
-        Number(postInfor.storage) == 0 ? null : Number(postInfor.storage),
-      status: postInfor.status,
-      price: postInfor.price,
       address: address,
-      public_status: Number(postInfor.public_status),
-      guarantee: Number(postInfor.guarantee),
+      price: parseInt(postInfor.price),
+      status: parseInt(postInfor.status),
       sold: 0,
+      fileImages: fileObject,
+      public_status: parseInt(postInfor.public_status),
+
+      ram: postInfor.ram ? parseInt(postInfor.ram) : null,
+      storage: postInfor.storage ? parseInt(postInfor.storage) : null,
+      guarantee: parseInt(postInfor.guarantee),
       color: postInfor.color,
       cpu: postInfor.cpu,
       gpu: postInfor.gpu,
-      storage_type: Number(postInfor.storage_type),
-      brand_id: Number(postInfor.brand) == 0 ? null : Number(postInfor.brand),
-      display_size:
-        Number(postInfor.display_size) == 0
-          ? null
-          : Number(postInfor.display_size),
+      storage_type: postInfor.storage_type
+        ? parseInt(postInfor.storage_type)
+        : null,
+      brand_id: postInfor.brand ? parseInt(postInfor.brand) : null,
+      display_size: postInfor.display_size
+        ? parseInt(postInfor.display_size)
+        : null,
       fileVideo: videoFile,
-      fileImages: fileObject,
-      fileImageLength: fileObject.length,
     };
 
     if (isTrade) {
       const dataPostTrade = {
-        category_idTrade: Number(postTradeInfor.category),
+        category_idTrade: parseInt(postTradeInfor.category),
         nameTrade: postTradeInfor.name,
-        guaranteeTrade: Number(postTradeInfor.guarantee),
+        guaranteeTrade: parseInt(postTradeInfor.guarantee),
         titleTrade: postTradeInfor.title,
         descriptionTrade: postTradeInfor.description,
       };
@@ -338,7 +336,7 @@ export default function CreatePost() {
     } else {
       mergePostData = { ...postData };
     }
-    console.log("post", mergePostData, appendArrayToFormData(postData));
+    console.log("post", mergePostData);
     await axios
       .post(apiPost, appendArrayToFormData(mergePostData), {
         headers: headerFiles,
@@ -346,7 +344,8 @@ export default function CreatePost() {
       .then((res) => {
         const p = res.data.data;
         console.log("post success", p, res);
-        if (res.data.status == 1) saveImages(fileObject, p.id);
+        if (res.data.status === 1) saveImages(fileObject, p.id);
+        if (res.data.status === -1) toast.error(res.data.message);
         else {
           handleValidate(res.data);
         }
@@ -702,7 +701,6 @@ export default function CreatePost() {
                       className="form-control"
                       placeholder="Ram"
                       min={0}
-                      defaultValue={0}
                       name="ram"
                       onChange={(e) => handleOnChange(e)}
                     />
@@ -1026,6 +1024,7 @@ export default function CreatePost() {
                       className="form-control"
                       placeholder="Thời gian bảo hành"
                       min={0}
+                      defaultValue={0}
                       name="guarantee"
                       onChange={(e) => handleOnChangeTrade(e)}
                     />
