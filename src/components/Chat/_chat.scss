@@ -91,6 +91,10 @@
         top: calc(50% - 6px);
     }
 }
+.activeChat {
+    background-color: $base-color-2;
+    opacity: 1 !important;
+}
 
 //input mess
 .chat-mess-input {

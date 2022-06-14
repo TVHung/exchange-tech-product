@@ -73,6 +73,12 @@ function App() {
           />
           <PrivateRoute path="/chat" exact component={Chat} isAuth={isAuth} />
           <PrivateRoute
+            path="/chat/:id"
+            exact
+            component={Chat}
+            isAuth={isAuth}
+          />
+          <PrivateRoute
             path="/post-manager"
             exact
             component={PostManager}

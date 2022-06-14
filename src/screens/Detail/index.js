@@ -175,7 +175,12 @@ export default function Detail() {
                     </div>
                     <div className="detail-left-content">
                       <h4>{postDetail?.name}</h4>
-                      <p>Giá: {formatPrice(postDetail?.price)}đ</p>
+                      <p>
+                        Giá:{" "}
+                        {postDetail?.price > 0
+                          ? `${formatPrice(postDetail?.price)}đ`
+                          : "Miễn phí"}
+                      </p>
                     </div>
                     <div className="detail-left-description">
                       <p>{postDetail?.description}</p>
@@ -375,7 +380,9 @@ export default function Detail() {
                     </div>
                     <div className="detail-contact-seller">
                       <p>Địa chỉ: {postDetail?.address}</p>
-                      <p>Số điện thoại: {postUser?.profile?.phone}</p>
+                      {postUser?.profile?.phone && (
+                        <p>Số điện thoại: {postUser?.profile?.phone}</p>
+                      )}
                     </div>
                     <div className="detail-chat-seller">
                       <button className="btn" onClick={() => toChat()}>

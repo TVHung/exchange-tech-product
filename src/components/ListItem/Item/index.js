@@ -58,7 +58,7 @@ export default function Item({ data, status }) {
       </div>
       <div>
         <div className="itemContent">
-          <h4>{data.name}</h4>
+          <h5>{data.name}</h5>
           {data.price != 0 ? (
             <p className="item-value">Giá: {formatPrice(data.price)}đ</p>
           ) : (

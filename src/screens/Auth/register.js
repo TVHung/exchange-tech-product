@@ -15,6 +15,7 @@ import MetaTag from "../../components/MetaTag";
 import { apiRegister } from "./../../constants";
 import { apiGetGoogleUrl } from "./../../constants/index";
 import Loading from "./../../components/Loading";
+import { setCookie } from "../../utils/cookie";
 
 const UseFocus = () => {
   const htmlElRef = useRef(null);
@@ -73,13 +74,22 @@ export default function Login({ type }) {
     await axios
       .post(apiRegister, userRegister)
       .then((res) => {
-        console.log(res);
-        if (res.data?.status == 1) {
-          toast.success(res.data?.message);
-          window.location.href = `/login`;
+        // console.log(res);
+        // if (res.data?.status == 1) {
+        //   toast.success(res.data?.message);
+        //   window.location.href = `/login`;
+        // } else {
+        //   handleValidate(res.data);
+        //   toast.error("Đăng ký không thành công");
+        // }
+        if (res.data.access_token) {
+          toast.success("Đăng ký thành công");
+          setCookie("access_token", res.data.access_token, 3600);
+          window.location.href = localStorage.getItem("linkDirect");
+        } else if (res.data?.message) {
+          toast.error(res.data.message);
         } else {
           handleValidate(res.data);
-          toast.error("Đăng ký không thành công");
         }
       })
       .catch((error) => {

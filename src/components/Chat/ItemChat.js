@@ -3,14 +3,19 @@ import { Grid } from "@material-ui/core";
 import avt from "../../assets/image/avt.jpg";
 import "./_chat.scss";
 
-export default function ItemChat({ item }) {
-  const onClickChat = () => {};
-
+export default function ItemChat({ item, userActive, setIsStart }) {
+  const onClickChat = () => {
+    setIsStart(false);
+  };
+  console.log(userActive == item.id);
   return (
     <div
-      className="chat-item-container"
+      className={
+        userActive == item.id
+          ? "chat-item-container activeChat"
+          : "chat-item-container"
+      }
       style={{
-        backgroundColor: item.readed ? null : "#f5f5f5",
         opacity: item.readed ? 0.8 : 1,
       }}
       onClick={() => onClickChat()}
