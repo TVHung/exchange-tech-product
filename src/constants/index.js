@@ -17,23 +17,24 @@ export const apiResetPass = `${api}/reset-password`;
 export const apiProfile = `${api}/profiles`;
 export const apiChangeAvatar = `${api}/change-avatar`;
 
-//api post
-export const apiPost = `${api}/posts`;
-export const apiPostRecently = `${api}/posts-recently`;
-export const apiPostHasTrade = `${api}/posts-has-trade`;
-export const apiGetAllPost = `${api}/posts`;
-export const apiFetchPostDetail = `${api}/posts`;
-export const apiFetchPostDetailWithCheck = `${api}/get-post-edit`;
-export const apiFetchMyPosts = `${api}/my-posts`;
-export const apiFetchUserPosts = `${api}/user-posts`;
-export const apiFetchRecommendPosts = `${api}/recommend-posts`;
+//api product
+export const apiPost = `${api}/products`;
+export const apiPostRecently = `${api}/products-recently`;
+export const apiPostHasTrade = `${api}/products-has-trade`;
+export const apiGetAllPost = `${api}/products`;
+export const apiFetchPostDetail = `${api}/products`;
+export const apiFetchPostDetailWithCheck = `${api}/get-product-edit`;
+export const apiFetchMyPosts = `${api}/my-products`;
+export const apiFetchUserPosts = `${api}/user-products`;
+export const apiFetchRecommendPosts = `${api}/recommend-products`;
 export const apiWishList = `${api}/wish-list`;
+export const apiUpView = `${api}/up-view`;
 
-//api post trade
-export const apiPostTrade = `${api}/post-trades`;
+//api product trade
+export const apiPostTrade = `${api}/product-trades`;
 
 //api image
-export const apiImages = `${api}/post-image`;
+export const apiImages = `${api}/product-image`;
 export const apiUpload = `${api}/upload`;
 export const apiUploadVideo = `${api}/upload-video`;
 

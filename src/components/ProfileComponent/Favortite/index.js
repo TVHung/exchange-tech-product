@@ -29,7 +29,7 @@ export default function Favorite({ setPreload }) {
           <Grid container alignItems="stretch" spacing={1}>
             {get_wish_list &&
               get_wish_list?.data.map((data) => (
-                <Grid key={data.id} item xs={12} sm={6} md={3} lg={2}>
+                <Grid key={data.id} item xs={6} sm={6} md={3} lg={2}>
                   <Item data={data} status={true} />
                 </Grid>
               ))}
