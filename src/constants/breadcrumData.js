@@ -11,6 +11,10 @@ export const postBreadcrumb = [
   { name: "Trang chủ", direct: "/" },
   { name: "Tạo bài đăng", direct: "/create-post" },
 ];
+export const editPostBreadcrumb = [
+  { name: "Trang chủ", direct: "/" },
+  { name: "Chỉnh sửa thông tin sản phẩm", direct: "/" },
+];
 export const searchBreadcrumb = [
   { name: "Trang chủ", direct: "/" },
   { name: "Tìm kiếm", direct: "/search" },

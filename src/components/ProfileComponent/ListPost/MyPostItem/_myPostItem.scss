@@ -11,18 +11,30 @@
     align-items: center;
     display: flex;
     .post-result-img {
-      max-width: 200px;
-      height: 150px;
+      max-width: 170px;
+      height: 130px;
       object-fit: contain;
     }
   }
   .name {
     font-size: 1.2rem;
     font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+    -webkit-box-orient: vertical;
     .city {
       font-weight: normal;
-      font-size: 0.85rem;
+      font-size: 0.5rem;
     }
+  }
+  .my-item-address {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+    -webkit-box-orient: vertical;
   }
   .fas,
   .far {
@@ -81,5 +93,21 @@
   .post-result .btn {
     width: 120px;
     font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .post-result-img {
+    max-width: 120px !important;
+    height: 100px !important;
+    object-fit: contain;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+  .post-result-img {
+    max-width: 150px !important;
+    height: 110px !important;
+    object-fit: contain;
   }
 }
