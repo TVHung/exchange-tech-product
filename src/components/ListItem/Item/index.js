@@ -14,20 +14,20 @@ export default function Item({ data, status }) {
 
   const toggleFavorite = () => {
     if (favorite) {
-      removeWishList();
+      // removeWishList();
     } else {
       addNewWishList();
     }
-    setfavorite(!favorite);
+    setfavorite(true);
   };
 
   const dispatch = useDispatch();
   const addNewWishList = () => {
     dispatch(addWishList(data.id));
   };
-  const removeWishList = () => {
-    dispatch(deleteWishList(data.id));
-  };
+  // const removeWishList = () => {
+  //   dispatch(deleteWishList(data.id));
+  // };
 
   useEffect(() => {
     setfavorite(status);

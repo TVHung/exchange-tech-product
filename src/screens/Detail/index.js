@@ -4,6 +4,7 @@ import Preloading from "../../components/Loading";
 import SlideDetail from "../../components/SlideShow/SlideDetail";
 import {
   formatPrice,
+  formatView,
   handleCalculateTime,
   setLinkDirect,
 } from "../../utils/common";
@@ -26,6 +27,7 @@ import {
   apiFetchPostDetail,
   apiFetchRecommendPosts,
   apiGetUser,
+  apiUpView,
   categoryData,
   headers,
 } from "../../constants";
@@ -76,14 +78,16 @@ export default function Detail() {
 
   const fetchAllData = async (postId) => {
     let apiPostDetail = `${apiFetchPostDetail}/${postId}`;
+    let apiView = `${apiUpView}/${postId}`;
     const requestPost = axios.get(apiPostDetail, { headers: headers });
+    const requestView = axios.get(apiView);
 
     await axios
-      .all([requestPost])
+      .all([requestPost, requestView])
       .then(
         axios.spread((...responses) => {
           let status = responses[0].data?.status;
-          console.log("data", responses[0].data);
+          console.log("data view", responses[1].data);
           if (status === 1) {
             const post = responses[0].data.data;
             console.log("post", post);
@@ -170,6 +174,8 @@ export default function Detail() {
                         <p>
                           Bài đăng cách đây{" "}
                           {handleCalculateTime(postDetail?.created_at)}
+                          &nbsp;|&nbsp;
+                          {`${formatView(postDetail?.view)} lượt xem`}
                         </p>
                       </div>
                     </div>
@@ -217,16 +223,20 @@ export default function Detail() {
                         {/* mobile */}
                         {postDetail?.category_id === 1 && (
                           <>
-                            {postDetail?.brand && (
+                            {postDetail?.productMobile?.brand && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                 <i className="fas fa-tags"></i>
-                                <span>Hãng: {postDetail?.brand.name}</span>
+                                <span>
+                                  Hãng: {postDetail?.productMobile?.brand.name}
+                                </span>
                               </div>
                             )}
-                            {postDetail?.color && (
+                            {postDetail?.productMobile?.color && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                 <i className="fas fa-tags"></i>
-                                <span>Màu sắc: {postDetail?.color}</span>
+                                <span>
+                                  Màu sắc: {postDetail?.productMobile?.color}
+                                </span>
                               </div>
                             )}
                           </>
@@ -234,43 +244,56 @@ export default function Detail() {
                         {/* laptop */}
                         {postDetail?.category_id === 2 && (
                           <>
-                            {postDetail?.brand && (
+                            {postDetail?.productLaptop?.brand && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                 <i className="fas fa-tags"></i>
-                                <span>Hãng: {postDetail?.brand.name}</span>
-                              </div>
-                            )}
-                            {postDetail?.color && (
-                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                                <i className="fas fa-tags"></i>
-                                <span>Màu sắc: {postDetail?.color}</span>
-                              </div>
-                            )}
-                            {postDetail?.cpu && (
-                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                                <i className="fas fa-microchip"></i>
-                                <span>CPU: {postDetail?.cpu}</span>
-                              </div>
-                            )}
-                            {postDetail?.gpu && (
-                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                                <i className="fas fa-microchip"></i>
-                                <span>GPU: {postDetail?.gpu}</span>
-                              </div>
-                            )}
-                            {postDetail?.storage_type_value && (
-                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                                <i className="fas fa-hdd"></i>
                                 <span>
-                                  Loại ổ cứng: {postDetail?.storage_type_value}
+                                  Hãng: {postDetail?.productLaptop?.brand}
                                 </span>
                               </div>
                             )}
-                            {postDetail?.display_size && (
+                            {postDetail?.productLaptop?.color && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-tags"></i>
+                                <span>
+                                  Màu sắc: {postDetail?.productLaptop?.color}
+                                </span>
+                              </div>
+                            )}
+                            {postDetail?.productLaptop?.cpu && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-microchip"></i>
+                                <span>
+                                  CPU: {postDetail?.productLaptop?.cpu}
+                                </span>
+                              </div>
+                            )}
+                            {postDetail?.productLaptop?.gpu && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-microchip"></i>
+                                <span>
+                                  GPU: {postDetail?.productLaptop?.gpu}
+                                </span>
+                              </div>
+                            )}
+                            {postDetail?.productLaptop?.storage_type_value && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                 <i className="fas fa-hdd"></i>
                                 <span>
-                                  Màn hình: {postDetail?.display_size}
+                                  Loại ổ cứng:{" "}
+                                  {
+                                    postDetail?.productLaptop
+                                      ?.storage_type_value
+                                  }
+                                </span>
+                              </div>
+                            )}
+                            {postDetail?.productLaptop?.display_size && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-hdd"></i>
+                                <span>
+                                  Màn hình:{" "}
+                                  {postDetail?.productLaptop?.display_size} inch
                                 </span>
                               </div>
                             )}
@@ -279,23 +302,33 @@ export default function Detail() {
                         {/* pc */}
                         {postDetail?.category_id === 3 && (
                           <>
-                            {postDetail?.cpu && (
+                            {postDetail?.productPc?.cpu && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                 <i className="fas fa-microchip"></i>
-                                <span>CPU: {postDetail?.cpu}</span>
+                                <span>CPU: {postDetail?.productPc?.cpu}</span>
                               </div>
                             )}
-                            {postDetail?.gpu && (
+                            {postDetail?.productPc?.gpu && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                 <i className="fas fa-microchip"></i>
-                                <span>GPU: {postDetail?.gpu}</span>
+                                <span>GPU: {postDetail?.productPc?.gpu}</span>
                               </div>
                             )}
-                            {postDetail?.storage_type_value && (
+                            {postDetail?.productPc?.storage_type_value && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                 <i className="fas fa-hdd"></i>
                                 <span>
-                                  Loại ổ cứng: {postDetail?.storage_type_value}
+                                  Loại ổ cứng:{" "}
+                                  {postDetail?.productPc?.storage_type_value}
+                                </span>
+                              </div>
+                            )}
+                            {postDetail?.productPc?.display_size && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-hdd"></i>
+                                <span>
+                                  Màn hình:{" "}
+                                  {postDetail?.productPc?.display_size} inch
                                 </span>
                               </div>
                             )}
@@ -304,43 +337,6 @@ export default function Detail() {
                       </div>
                     </div>
                   </div>
-                  {postDetail?.is_trade == 1 ? (
-                    <div className="detail-left">
-                      <div className="detail-left-content">
-                        <h3>Sản phẩm mong muốn được đổi qua</h3>
-                        {postDetail?.postTrade.name && (
-                          <h4>Tên: {postDetail?.postTrade.name}</h4>
-                        )}
-                      </div>
-                      <div className="detail-left-description">
-                        <p>{postDetail?.postTrade.description}</p>
-                      </div>
-                      <div className="detail-properties">
-                        <div className="row">
-                          {postDetail?.postTrade.category && (
-                            <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                              <i className="fas fa-tags"></i>
-                              <span>
-                                Loaị sản phẩm: {postDetail?.postTrade.category}
-                              </span>
-                            </div>
-                          )}
-                          {postDetail?.postTrade.guarantee && (
-                            <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                              <i className="fas fa-tags"></i>
-                              {postDetail?.postTrade.guarantee > 0 ? (
-                                <span>
-                                  Bảo hành: {postDetail?.postTrade.guarantee}
-                                </span>
-                              ) : (
-                                <span>Bảo hành: Không</span>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ) : null}
                 </div>
                 <div className="col-sm-12 col-lg-4">
                   <div className="detail-right">

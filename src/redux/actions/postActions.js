@@ -116,9 +116,9 @@ export const deleteWishList = (id) => async (dispatch) => {
   }
 };
 
-export const addWishList = (post_id) => async (dispatch) => {
+export const addWishList = (product_id) => async (dispatch) => {
   const data = {
-    post_id: post_id,
+    product_id: product_id,
   };
   try {
     await axios
@@ -128,9 +128,11 @@ export const addWishList = (post_id) => async (dispatch) => {
       })
       .catch((error) => {
         toast.error("Thêm sản phẩm quan tâm không thành công");
+        window.location.href = "/login";
       });
   } catch (error) {
     toast.error("Thêm sản phẩm quan tâm không thành công");
+    window.location.href = "/login";
     return { statusCode: 500, body: error.toString() };
   }
 };

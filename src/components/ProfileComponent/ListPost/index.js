@@ -163,6 +163,19 @@ export default function ListPost({ setPreload }) {
                 Bị khóa
               </label>
             </div>
+            <div className="form-check filter-header-sort">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="trade"
+                id="my-post-trade"
+                onChange={(e) => onChangeCheckStatus(e)}
+                checked={filter === "trade"}
+              />
+              <label className="form-check-label" htmlFor="my-post-trade">
+                Bài viết trao đổi/mua
+              </label>
+            </div>
           </div>
         </div>
         {myPostFilter?.length > 0 ? (

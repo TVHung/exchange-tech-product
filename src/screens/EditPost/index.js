@@ -21,8 +21,7 @@ import {
 } from "./../../constants";
 import { toast } from "react-toastify";
 import Breadcrumb from "../../components/Breadcrumb";
-import { postBreadcrumb } from "../../constants/breadcrumData";
-import { getCookie } from "../../utils/cookie";
+import { editPostBreadcrumb } from "../../constants/breadcrumData";
 import { useParams } from "react-router-dom";
 import {
   appendArrayToFormData,
@@ -49,23 +48,26 @@ export default function EditPost() {
   const [postInfor, setPostInfor] = useState({
     category: 1, //1:phone, 2: laptop, 3: pc
     name: "",
-    brand_id: null,
     status: null,
     guarantee: null,
-    cpu: null,
-    gpu: null,
     ram: null,
-    storage_type: "",
     storage: null,
     address: "",
     price: null,
     title: "",
     description: "",
-    display_size: null,
     public_status: 1,
     is_trade: 0,
-    color: "",
     video_url: "",
+  });
+  const [productChild, setProductChild] = useState({
+    cpu: null,
+    gpu: null,
+    ram: null,
+    storage_type: null,
+    storage: null,
+    display_size: null,
+    color: null,
   });
   const [postTradeInfor, setPostTradeInfor] = useState({
     category: 1, //1:phone, 2: laptop, 3: pc
@@ -107,6 +109,7 @@ export default function EditPost() {
       setPostTradeInfor({});
       setvalidatePost({});
       setVideoFile();
+      setProductChild({});
     };
   }, []);
 
@@ -118,14 +121,22 @@ export default function EditPost() {
     }));
     console.log("change data", name, value);
   };
-  const handleOnChangeTrade = (e) => {
+  const handleOnChangeChild = (e) => {
     const { name, value } = e.target;
-    setPostTradeInfor((prevState) => ({
+    setProductChild((prevState) => ({
       ...prevState,
       [name]: value,
     }));
-    console.log(name, value);
+    console.log("change data child", name, value);
   };
+  // const handleOnChangeTrade = (e) => {
+  //   const { name, value } = e.target;
+  //   setPostTradeInfor((prevState) => ({
+  //     ...prevState,
+  //     [name]: value,
+  //   }));
+  //   console.log(name, value);
+  // };
   const [file, setFile] = useState([]);
   const [fileObject, setFileOject] = useState([]);
   const uploadSingleFile = (e) => {
@@ -226,9 +237,8 @@ export default function EditPost() {
   };
 
   const handleSaveImage = async (post_id, url, is_banner) => {
-    console.log("update anh", post_id);
     const imageData = {
-      post_id: post_id,
+      product_id: post_id,
       is_banner: is_banner,
       image_url: url,
     };
@@ -242,16 +252,16 @@ export default function EditPost() {
       });
   };
 
-  const onClickTrade = (e) => {
-    const { checked } = e.target;
-    let is_trade = "is_trade";
-    setPostInfor((prevState) => ({
-      ...prevState,
-      [is_trade]: checked ? 1 : 0,
-    }));
-    setIsTrade(checked);
-    console.log(checked);
-  };
+  // const onClickTrade = (e) => {
+  //   const { checked } = e.target;
+  //   let is_trade = "is_trade";
+  //   setPostInfor((prevState) => ({
+  //     ...prevState,
+  //     [is_trade]: checked ? 1 : 0,
+  //   }));
+  //   setIsTrade(checked);
+  //   console.log(checked);
+  // };
 
   const onClickFree = (e) => {
     const { checked } = e.target;
@@ -279,17 +289,12 @@ export default function EditPost() {
       description: "",
       fileImages: "",
       fileVideo: "",
-
-      nameTrade: "",
-      titleTrade: "",
-      descriptionTrade: "",
-      guaranteeTrade: "",
     });
     updatePost();
   };
 
   useEffect(() => {
-    fetchBrand(postInfor.category);
+    fetchBrand(postInfor?.category);
     return () => {};
   }, [postInfor.category]);
 
@@ -338,41 +343,41 @@ export default function EditPost() {
     const postData = {
       is_trade: postInfor?.is_trade,
       title: postInfor?.title,
-      category_id: Number(postInfor?.category),
+      category_id: parseInt(postInfor?.category),
       name: postInfor?.name,
       description: postInfor?.description,
-      ram: Number(postInfor?.ram),
-      storage: Number(postInfor?.storage),
-      status: Number(postInfor?.status),
-      price: Number(postInfor?.price),
+      ram: parseInt(postInfor?.ram || 0),
+      storage: parseInt(postInfor?.storage),
+      status: parseInt(postInfor?.status),
+      price: parseFloat(postInfor?.price),
       address: address,
-      public_status: Number(postInfor?.public_status),
-      guarantee: postInfor?.guarantee,
-      sold: postInfor?.sold,
-      color: postInfor?.color,
-      cpu: postInfor?.cpu,
-      gpu: postInfor?.gpu,
-      storage_type: Number(postInfor?.storage_type),
-      brand_id: Number(postInfor?.brand_id),
-      display_size: Number(postInfor?.display_size),
+      public_status: parseInt(postInfor?.public_status),
+      guarantee: parseInt(postInfor?.guarantee || 0),
+      sold: parseInt(postInfor?.sold),
+      color: productChild?.color,
+      brand_id: parseInt(productChild?.brand_id),
+      cpu: productChild?.cpu,
+      gpu: productChild?.gpu,
+      storage_type: parseInt(productChild?.storage_type),
+      display_size: parseFloat(productChild?.display_size || 0),
       fileImages: fileObject,
       fileVideo: videoFile,
       video_url: postInfor?.video_url,
       is_delete_video: isDeleteVideo,
       is_delete_image: deleteImageId,
     };
-    if (isTrade) {
-      const dataPostTrade = {
-        category_idTrade: Number(postTradeInfor.category),
-        nameTrade: postTradeInfor.name,
-        guaranteeTrade: Number(postTradeInfor.guarantee),
-        titleTrade: postTradeInfor.title,
-        descriptionTrade: postTradeInfor.description,
-      };
-      mergePostData = { ...postData, ...dataPostTrade };
-    } else {
-      mergePostData = { ...postData };
-    }
+    // if (isTrade) {
+    //   const dataPostTrade = {
+    //     category_idTrade: Number(postTradeInfor.category),
+    //     nameTrade: postTradeInfor.name,
+    //     guaranteeTrade: Number(postTradeInfor.guarantee),
+    //     titleTrade: postTradeInfor.title,
+    //     descriptionTrade: postTradeInfor.description,
+    //   };
+    //   mergePostData = { ...postData, ...dataPostTrade };
+    // } else {
+    mergePostData = { ...postData };
+    // }
 
     console.log("post", mergePostData);
     let fileImages = "fileImages";
@@ -391,6 +396,7 @@ export default function EditPost() {
           console.log("post success", p, res);
           if (res.data.status == 1) saveImages(fileObject, params.id);
           else {
+            toast.error("Cập nhật bài viết không thành công");
             handleValidate(res.data);
           }
           setPreload(false);
@@ -446,27 +452,38 @@ export default function EditPost() {
 
   const setPostInforData = (data) => {
     setPostInfor({
-      category: data.category_id,
-      name: data.name,
-      brand_id: data.brand_id,
-      status: data.status,
-      guarantee: data.guarantee,
-      cpu: data.cpu,
-      gpu: data.gpu,
-      ram: data.ram,
-      storage_type: data.storage_type,
-      storage: data.storage,
-      address: data.address,
-      price: data.price,
-      title: data.title,
-      description: data.description,
-      display_size: data.display_size,
-      public_status: data.public_status,
-      is_trade: data.is_trade,
-      color: data.color,
-      video_url: data.video_url,
-      sold: data.sold,
+      category: data?.category_id,
+      name: data?.name,
+      brand_id: data?.brand_id,
+      status: data?.status,
+      guarantee: data?.guarantee,
+      ram: data?.ram,
+      storage: data?.storage,
+      address: data?.address,
+      price: data?.price,
+      title: data?.title,
+      description: data?.description,
+      public_status: data?.public_status,
+      is_trade: data?.is_trade,
+      video_url: data?.video_url,
+      sold: data?.sold,
+      productChild: data?.productMobile
+        ? data?.productMobile
+        : data?.productLaptop
+        ? data?.productLaptop
+        : data.productPc
+        ? data?.productPc
+        : null,
     });
+    setProductChild(
+      data?.productMobile
+        ? data?.productMobile
+        : data?.productLaptop
+        ? data?.productLaptop
+        : data.productPc
+        ? data?.productPc
+        : null
+    );
   };
 
   const setPostTradeInforData = (data) => {
@@ -484,7 +501,7 @@ export default function EditPost() {
   return (
     <div className="createPostContainer container">
       {/* <button onClick={() => testUpload(fileObject)}>upload</button> */}
-      <Breadcrumb arrLink={postBreadcrumb} />
+      <Breadcrumb arrLink={editPostBreadcrumb} />
       <MetaTag
         title={"Chỉnh sửa bài viết"}
         description={"Đăng bán, trao đổi, tắng sản phẩm"}
@@ -666,6 +683,7 @@ export default function EditPost() {
                         Hãng sản xuất&nbsp;
                         <span style={{ color: "red" }}>*</span>
                       </label>
+                      {console.log("sp con", productChild)}
                       <select
                         className={
                           validatePost.brand_id
@@ -675,11 +693,10 @@ export default function EditPost() {
                         aria-label="Disabled select example"
                         name="brand_id"
                         id="post-brand"
-                        onChange={(e) => handleOnChange(e)}
-                        value={postInfor?.brand_id}
+                        onChange={(e) => handleOnChangeChild(e)}
+                        value={productChild?.brand_id || 0}
                       >
-                        {console.log(postInfor?.brand_id)}
-                        <option>Hãng sản xuất</option>
+                        <option value={0}>Hãng sản xuất</option>
                         {brandCategory &&
                           brandCategory.map((data, index) => (
                             <option key={index} value={data.id}>
@@ -707,8 +724,12 @@ export default function EditPost() {
                         }
                         placeholder="Màu sắc"
                         name="color"
-                        defaultValue={postInfor?.color}
-                        onChange={(e) => handleOnChange(e)}
+                        defaultValue={
+                          productChild?.color == "null"
+                            ? ""
+                            : productChild?.color
+                        }
+                        onChange={(e) => handleOnChangeChild(e)}
                       />
                       <p className="validate-form-text">{validatePost.color}</p>
                     </div>
@@ -731,9 +752,9 @@ export default function EditPost() {
                       name="status"
                       id="post-status"
                       onChange={(e) => handleOnChange(e)}
-                      value={postInfor?.status}
+                      value={postInfor?.status || 0}
                     >
-                      <option value="-1">Tình trạng</option>
+                      <option value={0}>Tình trạng</option>
                       {statusData.map((data, index) => (
                         <option key={index} value={data.id}>
                           {data.value}
@@ -776,8 +797,10 @@ export default function EditPost() {
                         className="form-control"
                         placeholder="Bộ vi xử lý"
                         name="cpu"
-                        defaultValue={postInfor?.cpu}
-                        onChange={(e) => handleOnChange(e)}
+                        defaultValue={
+                          productChild?.cpu == "null" ? "" : productChild?.cpu
+                        }
+                        onChange={(e) => handleOnChangeChild(e)}
                       />
                       <p className="validate-form-text">{validatePost.cpu}</p>
                     </div>
@@ -793,8 +816,10 @@ export default function EditPost() {
                         className="form-control"
                         placeholder="Card đồ họa dời"
                         name="gpu"
-                        defaultValue={postInfor?.gpu}
-                        onChange={(e) => handleOnChange(e)}
+                        defaultValue={
+                          productChild?.gpu == "null" ? "" : productChild?.gpu
+                        }
+                        onChange={(e) => handleOnChangeChild(e)}
                       />
                       <p className="validate-form-text">{validatePost.gpu}</p>
                     </div>
@@ -820,7 +845,7 @@ export default function EditPost() {
                     <p className="validate-form-text">{validatePost.ram}</p>
                   </div>
                 </div>
-                {Number(postInfor?.category) == 2 && (
+                {Number(postInfor?.category) > 1 && (
                   <div className="col">
                     <div className="form-outline">
                       <label className="form-label" htmlFor="post-display-size">
@@ -832,9 +857,9 @@ export default function EditPost() {
                         className="form-control"
                         placeholder="Kích thước màn hính"
                         min={0}
-                        defaultValue={postInfor?.display_size}
+                        defaultValue={productChild?.display_size}
                         name="display_size"
-                        onChange={(e) => handleOnChange(e)}
+                        onChange={(e) => handleOnChangeChild(e)}
                       />
                       <p className="validate-form-text">
                         {validatePost.display_size}
@@ -854,9 +879,9 @@ export default function EditPost() {
                         name="storage"
                         id="post-storage"
                         onChange={(e) => handleOnChange(e)}
-                        value={postInfor?.storage}
+                        value={postInfor?.storage || 0}
                       >
-                        <option value="0">Dung lượng bộ nhớ</option>
+                        <option value={0}>Dung lượng bộ nhớ</option>
                         {storageData.map((data, index) => (
                           <option key={index} value={data.value}>
                             {`${data.value}GB`}
@@ -882,10 +907,10 @@ export default function EditPost() {
                         aria-label="Disabled select example"
                         name="storage_type"
                         id="post-storage-type"
-                        onChange={(e) => handleOnChange(e)}
-                        value={postInfor?.storage_type}
+                        onChange={(e) => handleOnChangeChild(e)}
+                        value={productChild?.storage_type || 0}
                       >
-                        <option>Loại ổ cứng</option>
+                        <option value={0}>Loại ổ cứng</option>
                         {storageTypeData.map((data, index) => (
                           <option key={index} value={data.id}>
                             {data.value}
@@ -908,9 +933,9 @@ export default function EditPost() {
                         name="storage"
                         id="post-storage"
                         onChange={(e) => handleOnChange(e)}
-                        value={postInfor?.storage}
+                        value={postInfor?.storage || 0}
                       >
-                        <option value="0">Dung lượng ổ cứng cứng</option>
+                        <option value={0}>Dung lượng ổ cứng cứng</option>
                         {storageData.map((data, index) => (
                           <option key={index} value={data.value}>
                             {`${data.value}GB`}
@@ -1026,9 +1051,8 @@ export default function EditPost() {
                     id="post-public"
                     onChange={(e) => handleOnChange(e)}
                     placeholder="Chế độ bài viết"
-                    value={postInfor?.public_status}
+                    value={postInfor?.public_status || 0}
                   >
-                    {console.log("public", postInfor?.public_status)}
                     <option value={1}>Công khai</option>
                     <option value={0}>Riêng tư</option>
                   </select>
@@ -1048,7 +1072,7 @@ export default function EditPost() {
                     id="is-sold-product"
                     onChange={(e) => handleOnChange(e)}
                     placeholder="Tình trạng sản phẩm"
-                    value={postInfor?.sold}
+                    value={postInfor?.sold || 0}
                   >
                     <option value={1}>Đã bán</option>
                     <option value={0}>Chưa bán</option>
@@ -1057,7 +1081,7 @@ export default function EditPost() {
               </div>
             </form>
             {/* ----------------------------------------------------------------------- */}
-            <div className="mb-3 mt-4">
+            {/* <div className="mb-3 mt-4">
               <h4>Bạn muốn đổi sang sản phẩm khác</h4>
             </div>
             <div className="mb-3 form-check">
@@ -1203,7 +1227,7 @@ export default function EditPost() {
                   </div>
                 </form>
               </>
-            )}
+            )} */}
             <div className="row mb-3">
               <div className="col">
                 <button

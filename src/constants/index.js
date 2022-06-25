@@ -17,23 +17,24 @@ export const apiResetPass = `${api}/reset-password`;
 export const apiProfile = `${api}/profiles`;
 export const apiChangeAvatar = `${api}/change-avatar`;
 
-//api post
-export const apiPost = `${api}/posts`;
-export const apiPostRecently = `${api}/posts-recently`;
-export const apiPostHasTrade = `${api}/posts-has-trade`;
-export const apiGetAllPost = `${api}/posts`;
-export const apiFetchPostDetail = `${api}/posts`;
-export const apiFetchPostDetailWithCheck = `${api}/get-post-edit`;
-export const apiFetchMyPosts = `${api}/my-posts`;
-export const apiFetchUserPosts = `${api}/user-posts`;
-export const apiFetchRecommendPosts = `${api}/recommend-posts`;
+//api product
+export const apiPost = `${api}/products`;
+export const apiPostRecently = `${api}/products-recently`;
+export const apiPostHasTrade = `${api}/products-has-trade`;
+export const apiGetAllPost = `${api}/products`;
+export const apiFetchPostDetail = `${api}/products`;
+export const apiFetchPostDetailWithCheck = `${api}/get-product-edit`;
+export const apiFetchMyPosts = `${api}/my-products`;
+export const apiFetchUserPosts = `${api}/user-products`;
+export const apiFetchRecommendPosts = `${api}/recommend-products`;
 export const apiWishList = `${api}/wish-list`;
+export const apiUpView = `${api}/up-view`;
 
-//api post trade
-export const apiPostTrade = `${api}/post-trades`;
+//api product trade
+export const apiPostTrade = `${api}/product-trades`;
 
 //api image
-export const apiImages = `${api}/post-image`;
+export const apiImages = `${api}/product-image`;
 export const apiUpload = `${api}/upload`;
 export const apiUploadVideo = `${api}/upload-video`;
 
@@ -77,22 +78,23 @@ export const storageData = [
   { value: 256 },
   { value: 512 },
   { value: 1024 },
+  { value: 2048 },
 ];
 
 export const statusData = [
-  { id: 0, value: "Mới" },
-  { id: 1, value: "Cũ (90-99%)" },
-  { id: 2, value: "Cũ (<90%)" },
+  { id: 1, value: "Mới" },
+  { id: 2, value: "Cũ (90-99%)" },
+  { id: 3, value: "Cũ (<90%)" },
 ];
 export const sexData = [
-  { id: 0, value: "Nam" },
-  { id: 1, value: "Nữ" },
-  { id: 2, value: "Khác" },
+  { id: 1, value: "Nam" },
+  { id: 2, value: "Nữ" },
+  { id: 3, value: "Khác" },
 ];
 export const storageTypeData = [
-  { id: 0, value: "HDD", type: 0 },
-  { id: 1, value: "SSD", type: 1 },
-  { id: 2, value: "SSHD", type: 2 },
+  { id: 1, value: "HDD", type: 1 },
+  { id: 2, value: "SSD", type: 2 },
+  { id: 3, value: "SSHD", type: 3 },
 ];
 export const categoryData = [
   { id: 1, value: "Điện thoại, máy tính bảng" },
@@ -235,11 +237,11 @@ export const marksRam = [
   },
 ];
 export const displaySizeData = [
-  { id: 0, value: "< 13 inch" },
-  { id: 1, value: "13 - 13.9 inch" },
-  { id: 2, value: "14 - 14.9 inch" },
-  { id: 3, value: "15 - 15.9 inch" },
-  { id: 4, value: "> 16 inch" },
+  { id: 1, value: "< 13 inch" },
+  { id: 2, value: "13 - 13.9 inch" },
+  { id: 3, value: "14 - 14.9 inch" },
+  { id: 4, value: "15 - 15.9 inch" },
+  { id: 5, value: "> 16 inch" },
 ];
 export const cardData = [
   { id: 1, value: "Có GPU" },

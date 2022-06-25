@@ -37,7 +37,7 @@ export default function MyPostItem({ data, handleShow }) {
           <div className="col-lg-7 my-post-content">
             <div className="d-md-flex align-items-md-center">
               <div className="name">{data?.name}</div>
-              <div className="ms-auto code">
+              <div className="ms-auto code my-item-address">
                 <i className="fas fa-map-marker-alt"></i>{" "}
                 {data?.address && data?.address.split(", ")[2]}
               </div>
