@@ -115,7 +115,7 @@ export default function Login() {
   return (
     <div className="containerLogin">
       <MetaTag
-        title="Login"
+        title="Đăng nhập"
         description={"Đăng nhập, đăng kí để trao đổi, mua bán sản phẩm"}
       />
       {isLoading ? (
@@ -124,7 +124,7 @@ export default function Login() {
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <div className="paperLogin">
-            <p className="titleLogin">Login</p>
+            <p className="titleLogin">Đăng nhập</p>
             <form className="formLogin" noValidate>
               <TextField
                 error={userValidate?.email != "" ? true : false}
