@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Login from "./screens/Auth/login";
 import Register from "./screens/Auth/register";
@@ -33,6 +33,31 @@ import FormResetPassword from "./screens/Auth/FormResetPassword";
 import LoginGoogle from "./screens/Auth/LoginGoogle";
 toast.configure();
 
+const HeaderComponent = React.lazy(() => import("./components/Navigation"));
+const FooterComponent = React.lazy(() => import("./components/Footer"));
+const LoginPage = React.lazy(() => import("./screens/Auth/login"));
+const RegisterPage = React.lazy(() => import("./screens/Auth/register"));
+const SearchPage = React.lazy(() => import("./screens/Search"));
+const HomePage = React.lazy(() => import("./screens/Home"));
+const ResetPasswordPage = React.lazy(() =>
+  import("./screens/Auth/ResetPassword")
+);
+const FormResetPasswordPage = React.lazy(() =>
+  import("./screens/Auth/FormResetPassword")
+);
+const LoginGooglePage = React.lazy(() => import("./screens/Auth/LoginGoogle"));
+const ChatPage = React.lazy(() => import("./screens/Chat"));
+const PostManagerPage = React.lazy(() => import("./screens/PostManager"));
+const CreatePostPage = React.lazy(() => import("./screens/CreatePost"));
+const EditPostPage = React.lazy(() => import("./screens/EditPost"));
+const PreviewPostPage = React.lazy(() =>
+  import("./screens/CreatePost/PreviewPost")
+);
+const ErrorPage = React.lazy(() => import("./screens/Error"));
+const DetailPage = React.lazy(() => import("./screens/Detail"));
+const ProfilePage = React.lazy(() => import("./screens/Profile"));
+const UserProfilePage = React.lazy(() => import("./screens/ProfileUser"));
+
 function App() {
   const [isAuth, setIsAuth] = useState(false);
   const dispatch = useDispatch();
@@ -52,10 +77,10 @@ function App() {
     <Fragment>
       <Router>
         <ScrollUp />
-        <Navigation />
+        <HeaderComponent />
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route exact path="/search" render={(props) => <Search />} />
+          <Route exact path="/search" component={SearchPage} />
           <Route
             exact
             path="/reset-password"
@@ -66,28 +91,29 @@ function App() {
             path="/request-reset-password"
             render={(props) => <FormResetPassword />}
           />
-          <Route
+          <Route exact path="/login-google" component={LoginGooglePage} />
+          <PrivateRoute
+            path="/chat"
             exact
-            path="/login-google"
-            render={(props) => <LoginGoogle />}
+            component={ChatPage}
+            isAuth={isAuth}
           />
-          <PrivateRoute path="/chat" exact component={Chat} isAuth={isAuth} />
           <PrivateRoute
             path="/chat/:id"
             exact
-            component={Chat}
+            component={ChatPage}
             isAuth={isAuth}
           />
           <PrivateRoute
             path="/post-manager"
             exact
-            component={PostManager}
+            component={PostManagerPage}
             isAuth={isAuth}
           />
           <PrivateRoute
             path="/create-post"
             exact
-            component={CreatePost}
+            component={CreatePostPage}
             isAuth={isAuth}
           />
           <PrivateRoute
@@ -102,8 +128,8 @@ function App() {
             component={PreviewPost}
             isAuth={isAuth}
           />
-          <AuthRoute exact path="/login" component={Login} />
-          <AuthRoute exact path="/register" component={Register} />
+          <AuthRoute exact path="/login" component={LoginPage} />
+          <AuthRoute exact path="/register" component={RegisterPage} />
           <Route exact path="/detail/:id" render={(props) => <Detail />} />
           <Route exact path="/profile/:id" render={(props) => <Profile />} />
           <PrivateRoute
@@ -112,9 +138,9 @@ function App() {
             component={ProfileUser}
             isAuth={isAuth}
           />
-          <Route path="/:someString" component={Error} />
+          <Route path="/:someString" component={ErrorPage} />
         </Switch>
-        <Footer />
+        <FooterComponent />
       </Router>
     </Fragment>
   );

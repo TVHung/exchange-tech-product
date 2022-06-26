@@ -5,6 +5,7 @@
   position: relative;
   // @include scroll-custom();
   // overflow: hidden;
+  min-height: 100vh;
   .home-posts {
     height: auto;
     h3 {

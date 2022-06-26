@@ -144,7 +144,7 @@ export default function Login({ type }) {
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <div className="paperLogin">
-            <p className="titleLogin">Register</p>
+            <p className="titleLogin">Đăng ký</p>
             <form className="formLogin" noValidate>
               <TextField
                 error={userValidate?.name != "" ? true : false}
