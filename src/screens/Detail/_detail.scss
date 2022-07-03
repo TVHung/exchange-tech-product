@@ -33,6 +33,7 @@
   }
   .detail-left-content {
     position: relative;
+    margin-top: 30px;
     h4 {
       margin-top: 10px;
     }
@@ -40,16 +41,27 @@
       color: red;
       font-size: 20px;
       font-weight: bold;
+      margin-top: 10px;
     }
     .detail-favorite-heart {
       position: absolute;
       bottom: 0px;
       right: 0px;
-      i {
-        &:hover {
-          cursor: pointer;
-        }
+      button {
+        background-color: $base-color-1;
+        color: white;
+        border-radius: 5px;
+        padding: 5px 10px;
+        border: none;
       }
+      button:hover {
+        background-color: $base-color-2;
+      }
+    }
+  }
+  .detail-left-description {
+    p {
+      margin: 8px 0px;
     }
   }
   .detail-properties {
