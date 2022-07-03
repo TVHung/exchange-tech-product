@@ -33,9 +33,10 @@ import {
 } from "../../constants";
 import axios from "axios";
 import Breadcrumb from "../../components/Breadcrumb";
-import { gameBreadcrumb } from "../../constants/breadcrumData";
 import { useParams } from "react-router-dom";
 import NotPost from "../../components/NotPost";
+import { useDispatch } from "react-redux";
+import { addWishList } from "../../redux/actions/postActions";
 
 export default function Detail() {
   const [preload, setPreload] = useState(false);
@@ -118,6 +119,11 @@ export default function Detail() {
     ]);
   };
 
+  const dispatch = useDispatch();
+  const addNewWishList = () => {
+    dispatch(addWishList(params.id));
+  };
+
   const fetchUserPost = async (user_id) => {
     try {
       await axios
@@ -187,8 +193,14 @@ export default function Detail() {
                           ? `${formatPrice(postDetail?.price)}đ`
                           : "Miễn phí"}
                       </p>
+                      <div className="detail-favorite-heart">
+                        <button onClick={() => addNewWishList()}>
+                          Quan tâm
+                        </button>
+                      </div>
                     </div>
                     <div className="detail-left-description">
+                      <p>{postDetail?.title}</p>
                       <p>{postDetail?.description}</p>
                     </div>
                     <div className="detail-properties">

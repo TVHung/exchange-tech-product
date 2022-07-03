@@ -124,7 +124,9 @@ export const addWishList = (product_id) => async (dispatch) => {
     await axios
       .post(`${apiWishList}`, data, { headers: headers })
       .then((res) => {
-        toast.success("Thêm sản phẩm quan tâm thành công");
+        console.log(res.data);
+        if (res.data.status == 1) toast.success(res.data.message);
+        else toast.error(res.data.message);
       })
       .catch((error) => {
         toast.error("Thêm sản phẩm quan tâm không thành công");
