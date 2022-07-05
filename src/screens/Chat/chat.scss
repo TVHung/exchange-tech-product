@@ -16,12 +16,12 @@
 
 .chat-left {
   width: 100%;
-  height: calc(100vh - 230px);
+  height: calc(100vh - 215px);
   border: #f4f4f4 solid 2px;
-  border-radius: 5px;
   padding-right: 1px !important;
   padding-left: 0px !important;
   @include scroll-custom();
+  overflow-x: hidden;
 }
 
 .chat-right {

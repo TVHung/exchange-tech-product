@@ -4,13 +4,13 @@ import "./_chat.scss";
 export default function Message({ message }) {
   return (
     <div className="message-content">
-      <div className={message.isSend ? "mess-sender" : "mess-receiver"}>
+      <div className={message?.isSend ? "mess-sender" : "mess-receiver"}>
         <div className="mess">
-          <span className="d-block">{message.message}</span>
-          {message?.imageUrl && (
+          <span className="d-block">{message?.message}</span>
+          {message?.image_url && (
             // eslint-disable-next-line jsx-a11y/img-redundant-alt
             <img
-              src={message?.imageUrl}
+              src={message?.image_url}
               alt="image-chat"
               className="mess-img d-block"
             />

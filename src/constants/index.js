@@ -54,6 +54,9 @@ export const apiSearch = `${api}/search`;
 export const apiGetGoogleUrl = `${api}/get-google-sign-in-url`;
 export const apiLoginGoogleCallback = `${api}/callback`;
 
+//chat
+export const apiSendMessage = `${api}/send-message`;
+
 export const headers = {
   "Content-type": "application/json",
   Authorization: `Bearer ${getCookie("access_token")}`,
