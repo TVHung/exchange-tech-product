@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Grid } from "@material-ui/core";
 import avt from "../../assets/image/avt.jpg";
 import "./_chat.scss";
@@ -7,7 +7,11 @@ export default function ItemChat({ item, userActive, setIsStart }) {
   const onClickChat = () => {
     setIsStart(false);
   };
-  console.log(userActive == item.id);
+  useEffect(() => {
+    if (userActive) setIsStart(false);
+    return () => {};
+  }, []);
+
   return (
     <div
       className={
@@ -15,30 +19,38 @@ export default function ItemChat({ item, userActive, setIsStart }) {
           ? "chat-item-container activeChat"
           : "chat-item-container"
       }
-      style={{
-        opacity: item.readed ? 0.8 : 1,
-      }}
       onClick={() => onClickChat()}
     >
       <Grid container style={{ flexWrap: "nowrap" }}>
         <Grid item>
-          <img src={avt} alt="avt" className="chat-account-avatar" />
+          <img
+            src={item?.profile?.avatar_url}
+            alt="avt"
+            className="chat-account-avatar"
+          />
         </Grid>
         <Grid item>
           <div className="chat-item-infor">
-            <span className="chat-item-name">Trương Hùng</span>
-            <span className="chat-item-online">online 5 ngày trước</span>
+            <span className="chat-item-name">{item?.profile?.name}</span>
+            <span className="chat-item-online"></span>
           </div>
-          <div style={{ fontWeight: item.readed ? "none" : "bold" }}>
+          <div>
             <span>
-              <span className="chat-account-mess">
-                Sản phẩm này còn không tôi muốn mua nó, bạn bán cho tôi nhé?
-              </span>
+              {item.id == 101 ? (
+                <span className="chat-account-mess">
+                  Bạn: Sản phẩm này còn không tôi muốn mua nó, bạn bán cho tôi
+                  nhé?
+                </span>
+              ) : (
+                <span className="chat-account-mess">
+                  Sản phẩm này còn không tôi muốn mua nó, bạn bán cho tôi nhé?
+                </span>
+              )}
             </span>
           </div>
         </Grid>
       </Grid>
-      {!item.readed ? <div className="chat-dot-have-mess"></div> : null}
+      {/* {!item.readed ? <div className="chat-dot-have-mess"></div> : null} */}
     </div>
   );
 }

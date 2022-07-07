@@ -41,10 +41,10 @@
 
 //item chat
 .chat-item-container {
-    padding: 5px;
+    padding: 10px;
     height: auto;
-    border-radius: 5px;
     position: relative;
+    border-bottom: 2px solid #f4f4f4;
     &:hover {
         cursor: pointer;
     }
@@ -56,6 +56,7 @@
         height: 50px;
         transition: ease-in-out 0.4s;
         margin-right: 10px;
+        border: 1px solid $base-color-2;
     }
 
     .chat-item-infor {
@@ -196,7 +197,7 @@
             height: 100%;
             padding: 5px 10px;
             border: 1px solid $base-color-1;
-            border-radius: 20px;
+            border-radius: 10px;
             .mess-time {
                 font-size: 12px;
             }

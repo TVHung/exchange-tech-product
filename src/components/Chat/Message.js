@@ -1,10 +1,17 @@
 import React from "react";
+import { timeConverter } from "../../utils/common";
 import "./_chat.scss";
 
-export default function Message({ message }) {
+export default function Message({ userActive, message }) {
   return (
     <div className="message-content">
-      <div className={message?.isSend ? "mess-sender" : "mess-receiver"}>
+      <div
+        className={
+          Number(message?.user_id) !== Number(userActive)
+            ? "mess-sender"
+            : "mess-receiver"
+        }
+      >
         <div className="mess">
           <span className="d-block">{message?.message}</span>
           {message?.image_url && (
@@ -15,7 +22,9 @@ export default function Message({ message }) {
               className="mess-img d-block"
             />
           )}
-          <span className="d-block mess-time">3:30</span>
+          <span className="d-block mess-time">
+            {timeConverter(message.created_at)}
+          </span>
         </div>
       </div>
     </div>

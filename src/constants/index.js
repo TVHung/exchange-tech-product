@@ -56,6 +56,8 @@ export const apiLoginGoogleCallback = `${api}/callback`;
 
 //chat
 export const apiSendMessage = `${api}/send-message`;
+export const apiGetMessage = `${api}/all-message`;
+export const apiGetMyConversation = `${api}/my-conversations`;
 
 export const headers = {
   "Content-type": "application/json",

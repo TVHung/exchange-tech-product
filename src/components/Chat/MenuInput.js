@@ -14,53 +14,50 @@ const messSuggest = [
 export default function MenuInput({ sendMessage }) {
   const [inputVal, setInputVal] = useState("");
   const submitSendMessage = () => {
-    sendMessage(inputVal);
+    sendMessage(inputVal, fileUpload);
     setInputVal("");
+    deleteFile();
   };
 
-  const [file, setFile] = useState([]);
-  const [fileObject, setFileOject] = useState([]);
+  const [file, setFile] = useState();
+  const [fileUpload, setFileUpload] = useState(); //dung de upload len server
   const uploadSingleFile = (e) => {
     let fileImage = e.target.files[0];
     let mess = "";
-    if (file && file.length < maxNumImageChat && fileImage) {
+    if (fileImage) {
       if (fileImage.size <= maxSizeImage) {
-        setFile([...file, URL.createObjectURL(fileImage)]);
-        setFileOject([...fileObject, fileImage]);
+        setFile(URL.createObjectURL(fileImage));
+        setFileUpload(fileImage);
       } else {
         mess = "Bạn chỉ được đăng ảnh kích thước tối đa 2mb";
         alert(mess);
       }
     } else {
-      mess = `Bạn chỉ được đăng tối đa ${maxNumImage} ảnh`;
+      mess = `Có lỗi xảy ra, hãy thử lại`;
       alert(mess);
     }
   };
 
   const deleteFile = (e) => {
-    const s = file.filter((item, index) => index !== e);
-    const o = fileObject.filter((item, index) => index !== e);
-    setFile(s);
-    setFileOject(o);
+    setFile(null);
+    setFileUpload(null);
+    document.getElementById("file-upload-chat").value = "";
   };
 
   return (
     <div className="chat-mess-input">
       <div className="preview-image-send row">
-        {file &&
-          file.map((item, index) => {
-            return (
-              <div key={index} className="col-4 image-preview mb-2 ">
-                <div className="image-selected">
-                  <img src={item} alt="" width="100%" />
-                  <i
-                    className="fas fa-times-circle fa delete-image"
-                    onClick={() => deleteFile(index)}
-                  ></i>
-                </div>
-              </div>
-            );
-          })}
+        {file && (
+          <div className="col-4 image-preview mb-2 ">
+            <div className="image-selected">
+              <img src={file} alt="" width="100%" />
+              <i
+                className="fas fa-times-circle fa delete-image"
+                onClick={() => deleteFile()}
+              ></i>
+            </div>
+          </div>
+        )}
       </div>
       <div className="chat-mess-suggest">
         {messSuggest.map((item, index) => (
