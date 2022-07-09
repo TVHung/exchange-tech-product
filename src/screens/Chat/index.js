@@ -31,6 +31,7 @@ export default function Chat() {
   const [userActive, setUserActive] = useState(null);
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
+  const [latestMessage, setLatestMessage] = useState({});
 
   const params = useParams();
   //scroll when add chat
@@ -54,6 +55,7 @@ export default function Chat() {
         .then((res) => {
           // alert("Thành công");
           console.log(res);
+          setLatestMessage(res.data);
         })
         .catch((error) => {
           console.error(error);
@@ -139,6 +141,7 @@ export default function Chat() {
       .then((res) => {
         setUsers(res.data.data);
         setPreload(true);
+        console.log(res.data.data);
       })
       .catch((error) => {
         console.error(error);
@@ -165,6 +168,7 @@ export default function Chat() {
                     item={item}
                     userActive={userActive}
                     setIsStart={setIsStart}
+                    latestMessage={latestMessage}
                   />
                 </Link>
               </div>

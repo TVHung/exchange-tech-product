@@ -24,6 +24,7 @@ import ListItemRecommend from "./../../components/ListItemRecommend";
 import StarRatings from "react-star-ratings";
 import CheckMark from "../../components/CheckMark";
 import {
+  apiAddComment,
   apiFetchPostDetail,
   apiFetchRecommendPosts,
   apiGetUser,
@@ -37,6 +38,8 @@ import { useParams } from "react-router-dom";
 import NotPost from "../../components/NotPost";
 import { useDispatch } from "react-redux";
 import { addWishList } from "../../redux/actions/postActions";
+import Comment from "../../components/Comment";
+import { toast } from "react-toastify";
 
 export default function Detail() {
   const [preload, setPreload] = useState(false);
@@ -47,6 +50,7 @@ export default function Detail() {
   const [postUser, setPostUser] = useState({});
   const [getError, setGetError] = useState(false);
   const [breadcrumb, setBreadcrumb] = useState([]);
+
   const params = useParams();
 
   useEffect(() => {
@@ -74,6 +78,8 @@ export default function Detail() {
     return () => {
       setPostDetail({});
       setPreload(false);
+      setRecommendPost([]);
+      setPostUser({});
     };
   }, []);
 
@@ -134,7 +140,6 @@ export default function Detail() {
           const userPost = res.data.data;
           setPostUser(userPost);
           setPreload(true);
-          console.log("post user profile", userPost);
         });
     } catch (error) {
       console.error(error);
@@ -150,7 +155,6 @@ export default function Detail() {
         .then((res) => {
           const recommendPost = res.data.data;
           setRecommendPost(recommendPost);
-          console.log("post recommend", recommendPost);
         });
     } catch (error) {
       console.error(error);
@@ -445,6 +449,13 @@ export default function Detail() {
                       >
                         <i className="fas fa-link"></i>
                       </button>
+                    </div>
+                    <div className="comment-component">
+                      <h5>Bình luận về sản phẩm</h5>
+                      <Comment
+                        comments={postDetail?.comments}
+                        product_id={params.id}
+                      />
                     </div>
                   </div>
                 </div>

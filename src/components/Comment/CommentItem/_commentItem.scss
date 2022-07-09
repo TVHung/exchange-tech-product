@@ -1,0 +1,68 @@
+@import "../../../assets/css/common";
+@import "../../../assets/css/valiables";
+
+.comment-item {
+    margin-bottom: 10px;
+    height: auto;
+    width: 100%;
+    .avatar-comment {
+        vertical-align: top;
+        padding: 0px !important;
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid $base-color-1;
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 5px;
+        }
+    }
+    .avatar-comment-reply {
+        vertical-align: top;
+        padding: 0px !important;
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid $base-color-1;
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 5px;
+        }
+    }
+    .comment-detail {
+        padding: 0px !important;
+        .comment-content {
+            background-color: $base-color-1;
+            padding: 5px 10px;
+            border-radius: 5px;
+            span {
+                color: white;
+                font-size: 14px;
+                width: 100%;
+                display: block;
+            }
+            .bold {
+                font-weight: bold;
+            }
+            .created-at {
+                font-size: 10px;
+            }
+        }
+    }
+    .reply,
+    .cancel-reply {
+        &:hover {
+            cursor: pointer;
+            span {
+                color: $base-color-2;
+            }
+        }
+    }
+    .comment-reply {
+        // margin-left: 50px;
+        width: 95%;
+        margin-left: 30px;
+    }
+}

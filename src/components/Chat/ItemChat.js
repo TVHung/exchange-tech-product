@@ -3,7 +3,12 @@ import { Grid } from "@material-ui/core";
 import avt from "../../assets/image/avt.jpg";
 import "./_chat.scss";
 
-export default function ItemChat({ item, userActive, setIsStart }) {
+export default function ItemChat({
+  item,
+  userActive,
+  setIsStart,
+  latestMessage,
+}) {
   const onClickChat = () => {
     setIsStart(false);
   };
@@ -34,20 +39,19 @@ export default function ItemChat({ item, userActive, setIsStart }) {
             <span className="chat-item-name">{item?.profile?.name}</span>
             <span className="chat-item-online"></span>
           </div>
-          <div>
+          {/* <div>
             <span>
-              {item.id == 101 ? (
+              {item.id != latestMessage?.user_id ? (
                 <span className="chat-account-mess">
-                  Bạn: Sản phẩm này còn không tôi muốn mua nó, bạn bán cho tôi
-                  nhé?
+                  Bạn: {latestMessage?.message}
                 </span>
               ) : (
                 <span className="chat-account-mess">
-                  Sản phẩm này còn không tôi muốn mua nó, bạn bán cho tôi nhé?
+                  {latestMessage?.message}
                 </span>
               )}
             </span>
-          </div>
+          </div> */}
         </Grid>
       </Grid>
       {/* {!item.readed ? <div className="chat-dot-have-mess"></div> : null} */}
