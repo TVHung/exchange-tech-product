@@ -61,6 +61,7 @@ export const apiGetMyConversation = `${api}/my-conversations`;
 
 //comment
 export const apiAddComment = `${api}/comments`;
+export const apiGetCommentProduct = `${api}/comments/products`;
 
 export const headers = {
   "Content-type": "application/json",

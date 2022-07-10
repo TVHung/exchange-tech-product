@@ -6,7 +6,7 @@ import "./_commentItem.scss";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export default function CommentItem({ comment, product_id }) {
+export default function CommentItem({ comment, product_id, isAuth }) {
   const [isReply, setIsReply] = useState(false);
   const [commentContentReply, setCommentContentReply] = useState({
     content: "",
@@ -82,17 +82,17 @@ export default function CommentItem({ comment, product_id }) {
             {timeConverter(comment?.created_at)}
           </span>
         </div>
-        <div className="reply" onClick={() => onClickReply()}>
-          <span>Trả lời</span>
+        <div className="reply">
+          {isAuth && <span onClick={() => onClickReply()}>Trả lời</span>}
         </div>
       </div>
       <div className="col-12 comment-reply">
         <Reply replies={comment?.replies} />
       </div>
-      {isReply && (
+      {isReply && isAuth && (
         <div className="comment-reply-form">
           <form>
-            <div className="input-group mb-3">
+            <div className="input-group mb-1">
               <input
                 type="text"
                 className="form-control"

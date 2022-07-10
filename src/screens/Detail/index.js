@@ -24,9 +24,9 @@ import ListItemRecommend from "./../../components/ListItemRecommend";
 import StarRatings from "react-star-ratings";
 import CheckMark from "../../components/CheckMark";
 import {
-  apiAddComment,
   apiFetchPostDetail,
   apiFetchRecommendPosts,
+  apiGetCommentProduct,
   apiGetUser,
   apiUpView,
   categoryData,
@@ -39,9 +39,8 @@ import NotPost from "../../components/NotPost";
 import { useDispatch } from "react-redux";
 import { addWishList } from "../../redux/actions/postActions";
 import Comment from "../../components/Comment";
-import { toast } from "react-toastify";
 
-export default function Detail() {
+export default function Detail({ isAuth }) {
   const [preload, setPreload] = useState(false);
   const [favorite, setFavorite] = useState(false);
   const [stateCopy, setStateCopy] = useState(false);
@@ -57,6 +56,7 @@ export default function Detail() {
     setLinkDirect();
     fetchAllData(params.id);
     fetchRecommendPost();
+    console.log("Ban da login chua", isAuth);
     return () => {};
   }, [params.id]);
 
@@ -94,7 +94,6 @@ export default function Detail() {
       .then(
         axios.spread((...responses) => {
           let status = responses[0].data?.status;
-          console.log("data view", responses[1].data);
           if (status === 1) {
             const post = responses[0].data.data;
             console.log("post", post);
@@ -452,10 +451,7 @@ export default function Detail() {
                     </div>
                     <div className="comment-component">
                       <h5>Bình luận về sản phẩm</h5>
-                      <Comment
-                        comments={postDetail?.comments}
-                        product_id={params.id}
-                      />
+                      <Comment product_id={params.id} isAuth={isAuth} />
                     </div>
                   </div>
                 </div>

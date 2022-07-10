@@ -53,6 +53,7 @@
     }
     .reply,
     .cancel-reply {
+        min-height: 5px;
         &:hover {
             cursor: pointer;
             span {

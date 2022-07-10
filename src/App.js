@@ -130,7 +130,11 @@ function App() {
           />
           <AuthRoute exact path="/login" component={LoginPage} />
           <AuthRoute exact path="/register" component={RegisterPage} />
-          <Route exact path="/detail/:id" render={(props) => <Detail />} />
+          <Route
+            exact
+            path="/detail/:id"
+            render={(props) => <Detail isAuth={isAuth} />}
+          />
           <Route exact path="/profile/:id" render={(props) => <Profile />} />
           <PrivateRoute
             path="/profile"
