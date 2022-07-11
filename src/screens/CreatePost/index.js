@@ -130,19 +130,32 @@ export default function CreatePost() {
       ...prevState,
       [name]: value,
     }));
-    console.log("change data child", name, value);
   };
   const [file, setFile] = useState([]);
   const [fileObject, setFileOject] = useState([]);
   const uploadSingleFile = (e) => {
-    let fileImage = e.target.files[0];
+    let fileImage = e.target.files;
     let fileImages = "fileImages";
     let mess = "";
-    if (file && file.length < maxNumImage && fileImage) {
-      if (fileImage.size <= maxSizeImage) {
-        setFile([...file, URL.createObjectURL(fileImage)]);
-        setFileOject([...fileObject, fileImage]);
-      } else mess = "Bạn chỉ được đăng ảnh kích thước tối đa 2mb";
+    if (file && file.length + fileImage.length <= maxNumImage && fileImage) {
+      let status = true;
+      for (let i = 0; i < fileImage?.length; i++) {
+        if (fileImage[i].size > maxSizeImage) {
+          mess = "Bạn chỉ được đăng ảnh kích thước tối đa 2mb";
+          status = false;
+          break;
+        }
+      }
+      let arrShow = [];
+      let arrFile = [];
+      if (status) {
+        for (let i = 0; i < fileImage?.length; i++) {
+          arrShow.push(URL.createObjectURL(fileImage[i]));
+          arrFile.push(fileImage[i]);
+        }
+        setFile([...file, ...arrShow]);
+        setFileOject([...fileObject, ...arrFile]);
+      }
     } else {
       mess = `Bạn chỉ được đăng tối đa ${maxNumImage} ảnh`;
     }
@@ -179,44 +192,44 @@ export default function CreatePost() {
     setVideoFile();
   };
 
-  const saveImages = (files, post_id) => {
-    const uploaders = files.map((file, index) => {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("tags", `codeinfuse, medium, gist`);
-      formData.append("upload_preset", "weedzflm"); // Replace the preset name with your own
-      formData.append("api_key", "141866846121189"); // Replace API key with your own Cloudinary key
-      formData.append("timestamp", (Date.now() / 1000) | 0);
-      return axios
-        .post(
-          "https://api.cloudinary.com/v1_1/codeinfuse/image/upload",
-          formData,
-          {
-            headers: { "X-Requested-With": "XMLHttpRequest" },
-          }
-        )
-        .then((response) => {
-          const data = response.data;
-          const fileURL = data.secure_url;
-          setImageUrl((imageUrl) => [...imageUrl, fileURL]);
-          let isBanner = index == 0 ? 1 : 0;
-          handleSaveImage(post_id, fileURL, isBanner);
-        });
-    });
-    axios
-      .all(uploaders)
-      .then((res) => {
-        setIsCreatePost(false);
-        toast.success("Tạo bài viết thành công");
-        setTimeout(() => {
-          // window.location.href = "/post-manager";
-        }, 1000);
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error("Tạo bài viết không thành công");
-      });
-  };
+  // const saveImages = (files, post_id) => {
+  //   const uploaders = files.map((file, index) => {
+  //     const formData = new FormData();
+  //     formData.append("file", file);
+  //     formData.append("tags", `codeinfuse, medium, gist`);
+  //     formData.append("upload_preset", "weedzflm"); // Replace the preset name with your own
+  //     formData.append("api_key", "141866846121189"); // Replace API key with your own Cloudinary key
+  //     formData.append("timestamp", (Date.now() / 1000) | 0);
+  //     return axios
+  //       .post(
+  //         "https://api.cloudinary.com/v1_1/codeinfuse/image/upload",
+  //         formData,
+  //         {
+  //           headers: { "X-Requested-With": "XMLHttpRequest" },
+  //         }
+  //       )
+  //       .then((response) => {
+  //         const data = response.data;
+  //         const fileURL = data.secure_url;
+  //         setImageUrl((imageUrl) => [...imageUrl, fileURL]);
+  //         let isBanner = index == 0 ? 1 : 0;
+  //         handleSaveImage(post_id, fileURL, isBanner);
+  //       });
+  //   });
+  //   axios
+  //     .all(uploaders)
+  //     .then((res) => {
+  //       setIsCreatePost(false);
+  //       toast.success("Tạo bài viết thành công");
+  //       setTimeout(() => {
+  //         // window.location.href = "/post-manager";
+  //       }, 1000);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       toast.error("Tạo bài viết không thành công");
+  //     });
+  // };
 
   const toPreview = (e) => {
     window.location.href = "/create-post/preview";
@@ -287,7 +300,6 @@ export default function CreatePost() {
       price: parseInt(postInfor?.price),
       status: parseInt(postInfor?.status),
       sold: 0,
-      fileImages: fileObject,
       public_status: parseInt(postInfor?.public_status),
       ram: parseInt(postInfor?.ram || 0),
       storage: parseInt(postInfor?.storage) || 0,
@@ -303,15 +315,24 @@ export default function CreatePost() {
     };
     mergePostData = { ...postData };
 
-    console.log("post", mergePostData);
+    const formData = appendArrayToFormData(mergePostData);
+    for (let i = 0; i < fileObject.length; i++) {
+      formData.append("fileImages[]", fileObject[i]);
+    }
     await axios
-      .post(apiPost, appendArrayToFormData(mergePostData), {
+      .post(apiPost, formData, {
         headers: headerFiles,
       })
       .then((res) => {
         const p = res.data.data;
-        console.log("post success", p, res);
-        if (res.data.status === 1) saveImages(fileObject, p.id);
+        if (res.data.status === 1) {
+          console.log("post success", p);
+          setIsCreatePost(false);
+          toast.success(res.data.message);
+          setTimeout(() => {
+            window.location.href = "/post-manager";
+          }, 1000);
+        }
         if (res.data.status === -1) toast.error(res.data.message);
         else {
           handleValidate(res.data);
@@ -335,38 +356,38 @@ export default function CreatePost() {
     });
   };
 
-  const handleSaveImage = async (post_id, url, is_banner) => {
-    const imageData = {
-      product_id: post_id,
-      is_banner: is_banner,
-      image_url: url,
-    };
-    console.log("image data", imageData);
-    // responses.push(
-    await axios
-      .post(apiImages, imageData, { headers: headers })
-      .then((res) => {
-        const i = res.data.data;
-        console.log("imagesss", i);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+  // const handleSaveImage = async (post_id, url, is_banner) => {
+  //   const imageData = {
+  //     product_id: post_id,
+  //     is_banner: is_banner,
+  //     image_url: url,
+  //   };
+  //   console.log("image data", imageData);
+  //   // responses.push(
+  //   await axios
+  //     .post(apiImages, imageData, { headers: headers })
+  //     .then((res) => {
+  //       const i = res.data.data;
+  //       console.log("imagesss", i);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
 
-  const up = async (fileImage) => {
-    const formData = new FormData();
-    formData.append("file", fileImage);
-    console.log(formData);
-    await axios
-      .post(apiImages, formData, { headers: headers })
-      .then((res) => {
-        console.log("post image", res.data.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+  // const up = async (fileImage) => {
+  //   const formData = new FormData();
+  //   formData.append("file", fileImage);
+  //   console.log(formData);
+  //   await axios
+  //     .post(apiImages, formData, { headers: headers })
+  //     .then((res) => {
+  //       console.log("post image", res.data.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
 
   return (
     <div className="createPostContainer container">
@@ -390,7 +411,7 @@ export default function CreatePost() {
                   type="file"
                   className="custom-file-input"
                   id="file-upload"
-                  // multiple
+                  multiple
                   accept="image/*"
                   onChange={(e) => uploadSingleFile(e)}
                 />
@@ -485,6 +506,21 @@ export default function CreatePost() {
             >
               <div className="mb-3 mt-4">
                 <h4>Thông tin chi tiết</h4>
+              </div>
+              <div className="mb-3 mt-4">
+                <h5>Đây là sản phẩm bạn có mong muốn mua?</h5>
+              </div>
+              <div className="mb-3 form-check">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  id="tradeCheckbox"
+                  checked={isTrade}
+                  onChange={(e) => onClickTrade(e)}
+                />
+                <label className="form-check-label" htmlFor="tradeCheckbox">
+                  Mua sản phẩm
+                </label>
               </div>
               <div className="form-outline mb-3">
                 <label className="form-label" htmlFor="post-name">
@@ -865,21 +901,6 @@ export default function CreatePost() {
                 </p>
               </div>
             </form>
-            <div className="mb-3 mt-4">
-              <h4>Bạn muốn mua sản phẩm này</h4>
-            </div>
-            <div className="mb-3 form-check">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="tradeCheckbox"
-                checked={isTrade}
-                onChange={(e) => onClickTrade(e)}
-              />
-              <label className="form-check-label" htmlFor="tradeCheckbox">
-                Mua sản phẩm
-              </label>
-            </div>
             <div className="row mb-3">
               <div className="col">
                 <button
