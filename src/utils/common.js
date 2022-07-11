@@ -182,11 +182,28 @@ export const appendArrayToFormData = (object) => {
 //scroll to top and bottom off div component
 export const scrollInViewDiv = (ref, type = "top") => {
   if (type === "top") ref.current.scrollTop = 0;
-  else ref.current.scrollTop = ref.current.scrollHeight;
+  else ref.current.scrollTop = ref?.current?.scrollHeight;
 };
 
 export const formatView = (view) => {
   if (view < 1000) return view;
   if (view < 1000000) return `${Math.floor(view / 1000)}K+`;
   return `${Math.floor(view / 10000000)}Tr+`;
+};
+
+export const timeConverter = (time) => {
+  if (time) {
+    let date = new Date(time);
+    return (
+      date.getHours() +
+      ":" +
+      date.getMinutes() +
+      " " +
+      date.getDate() +
+      "/" +
+      (date.getMonth() + 1) +
+      "/" +
+      date.getFullYear()
+    );
+  }
 };

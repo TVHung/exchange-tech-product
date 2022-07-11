@@ -2,11 +2,18 @@ import axios from "axios";
 import {
   apiFetchMyPosts,
   apiGetAllPost,
+  apiGetCommentProduct,
   apiPost,
   apiSearch,
   apiWishList,
 } from "../../constants";
-import { ALL_POST, MY_POSTS, SEARCH_POST_RESULT, WISH_LIST } from "./../case";
+import {
+  ALL_POST,
+  MY_POSTS,
+  PRODUCT_COMMENTS,
+  SEARCH_POST_RESULT,
+  WISH_LIST,
+} from "./../case";
 import { headers } from "./../../constants";
 import { toast } from "react-toastify";
 
@@ -42,6 +49,22 @@ export const fetchMyPosts =
         });
     } catch (error) {
       dispatch({ type: MY_POSTS, payload: [] });
+      return { statusCode: 500, body: error.toString() };
+    }
+  };
+
+export const getCommentProduct =
+  (productId, pageNumber = 1) =>
+  async (dispatch) => {
+    try {
+      await axios
+        .get(`${apiGetCommentProduct}/${productId}?page=${pageNumber}`)
+        .then((res) => {
+          const productComments = res.data;
+          dispatch({ type: PRODUCT_COMMENTS, payload: productComments });
+        });
+    } catch (error) {
+      dispatch({ type: PRODUCT_COMMENTS, payload: [] });
       return { statusCode: 500, body: error.toString() };
     }
   };

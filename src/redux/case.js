@@ -6,3 +6,4 @@ export const SEARCH_POST_RESULT = "SEARCH_POST_RESULT";
 export const WISH_LIST = "WISH_LIST";
 export const MY_POSTS = "MY_POSTS";
 export const BRAND_CATEGORY = "BRAND_CATEGORY";
+export const PRODUCT_COMMENTS = "PRODUCT_COMMENTS";

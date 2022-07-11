@@ -1,10 +1,17 @@
-import { ALL_POST, MY_POSTS, SEARCH_POST_RESULT, WISH_LIST } from "../case";
+import {
+  ALL_POST,
+  MY_POSTS,
+  PRODUCT_COMMENTS,
+  SEARCH_POST_RESULT,
+  WISH_LIST,
+} from "../case";
 
 const initialState = {
   all_post: [],
   search_result: [],
   wish_list: [],
   my_posts: [],
+  commentsOfProduct: [],
 };
 
 const postReducer = (state = initialState, action) => {
@@ -28,6 +35,11 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         wish_list: action.payload,
+      };
+    case PRODUCT_COMMENTS:
+      return {
+        ...state,
+        commentsOfProduct: action.payload,
       };
     default:
       return state;
