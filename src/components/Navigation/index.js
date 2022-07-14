@@ -172,6 +172,12 @@ export default function Navigation() {
                 Tin nhắn
               </a>
             </li>
+            <li className="option" onClick={closeMobileMenu}>
+              <a href="/recommend" className="underline">
+                <i class="fa fa-star icon-btn" aria-hidden="true"></i>
+                Dành cho bạn
+              </a>
+            </li>
             {!getCookie("access_token") ? (
               <>
                 <li className="option mobile-option" onClick={closeMobileMenu}>

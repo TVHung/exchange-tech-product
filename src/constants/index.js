@@ -106,7 +106,7 @@ export const storageTypeData = [
   { id: 3, value: "SSHD", type: 3 },
 ];
 export const categoryData = [
-  { id: 1, value: "Điện thoại, máy tính bảng" },
+  { id: 1, value: "Mobile" },
   { id: 2, value: "Laptop" },
   { id: 3, value: "Pc" },
 ];
