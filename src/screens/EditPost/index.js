@@ -397,7 +397,8 @@ export default function EditPost() {
         ...prevState,
         [fileImages]: "Bạn cần đăng ít nhất 1 hình ảnh",
       }));
-    } else
+    } else {
+      setPreload(true);
       await axios
         .post(`${apiPost}/${params.id}`, formData, {
           headers: headerFiles,
@@ -419,6 +420,7 @@ export default function EditPost() {
           setPreload(false);
           toast.error("Cập nhật bài viết không thành công");
         });
+    }
   };
 
   const handleValidate = (validateData) => {
@@ -851,7 +853,7 @@ export default function EditPost() {
                       className="form-control"
                       placeholder="Ram"
                       min={0}
-                      defaultValue={postInfor?.ram}
+                      defaultValue={postInfor?.ram == 0 ? null : postInfor?.ram}
                       name="ram"
                       onChange={(e) => handleOnChange(e)}
                     />

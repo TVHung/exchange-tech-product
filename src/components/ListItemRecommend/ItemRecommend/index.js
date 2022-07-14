@@ -68,6 +68,7 @@ export default function Item({ data, status }) {
           ) : (
             <p className="item-value">Giá: Miễn phí</p>
           )}
+          <span>{data?.category}</span>
           <div className="item-create-location">
             <span className="item-createAt">
               {handleCalculateTime(data.created_at || null)}

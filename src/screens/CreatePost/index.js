@@ -254,7 +254,6 @@ export default function CreatePost() {
   const onSubmitForm = (event) => {
     event.preventDefault();
     scrollToTop();
-    // setPreload(true);
     setvalidatePost({
       name: "",
       brand_id: "",
@@ -319,6 +318,7 @@ export default function CreatePost() {
     for (let i = 0; i < fileObject.length; i++) {
       formData.append("fileImages[]", fileObject[i]);
     }
+    setPreload(true);
     await axios
       .post(apiPost, formData, {
         headers: headerFiles,
@@ -903,13 +903,13 @@ export default function CreatePost() {
             </form>
             <div className="row mb-3">
               <div className="col">
-                <button
+                {/* <button
                   type="button"
                   className="btn btn-primary btn-block btn-preview"
                   onClick={(e) => toPreview(e)}
                 >
                   Xem trước
-                </button>
+                </button> */}
               </div>
               <div className="col">
                 <button

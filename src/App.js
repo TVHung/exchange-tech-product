@@ -31,6 +31,7 @@ import { toast } from "react-toastify";
 import ResetPassword from "./screens/Auth/ResetPassword";
 import FormResetPassword from "./screens/Auth/FormResetPassword";
 import LoginGoogle from "./screens/Auth/LoginGoogle";
+import Recommend from "./screens/Recommend";
 toast.configure();
 
 const HeaderComponent = React.lazy(() => import("./components/Navigation"));
@@ -126,6 +127,12 @@ function App() {
             path="/create-post/preview"
             exact
             component={PreviewPost}
+            isAuth={isAuth}
+          />
+          <PrivateRoute
+            path="/recommend"
+            exact
+            component={Recommend}
             isAuth={isAuth}
           />
           <AuthRoute exact path="/login" component={LoginPage} />

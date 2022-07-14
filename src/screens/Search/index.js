@@ -43,12 +43,14 @@ import { Box, Slider } from "@material-ui/core";
 import AddressSelectSearch from "./../../components/AddressSelectSearch";
 import Pagination from "react-js-pagination";
 import Loading from "../../components/Loading";
+import { useCallback } from "react";
 
 function valuetext(value) {
   return `${value}vnđ`;
 }
 export default function Search() {
   const [load, setLoad] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); //gia tri filter
 
   const [openPrice, setOpenPrice] = useState(false);
   const [openCategory, setOpenCategory] = useState(false);
@@ -330,13 +332,15 @@ export default function Search() {
   };
 
   const dispatch = useDispatch();
-
   const ApplySearch = () => {
-    dispatch(searchPostByName(window.location.search));
-    setLoad(true);
-    setTimeout(() => {
-      setLoad(false);
-    }, 500);
+    if (searchQuery != window.location.search) {
+      dispatch(searchPostByName(window.location.search));
+      setLoad(true);
+      setTimeout(() => {
+        setLoad(false);
+      }, 500);
+      setSearchQuery(window.location.search);
+    }
   };
 
   //brand by category
