@@ -207,3 +207,14 @@ export const timeConverter = (time) => {
     );
   }
 };
+
+export const suggest = (value, array) => {
+  let matches = [];
+  if (value.length > 0) {
+    matches = array.filter((color) => {
+      const regex = new RegExp(`${value}`, "gi");
+      return color.match(regex);
+    });
+  }
+  return matches;
+};

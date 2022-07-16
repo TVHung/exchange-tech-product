@@ -172,3 +172,20 @@
 input[type="radio"] {
   cursor: pointer;
 }
+
+.suggest-component {
+  border: 1px solid grey;
+  border-top: none;
+  border-radius: 5px;
+  position: absolute;
+  background-color: #fff;
+  width: 100%;
+  p {
+    padding: 5px 10px !important;
+    margin: 0px !important;
+  }
+  div:hover {
+    background-color: $base-color-2;
+    cursor: pointer;
+  }
+}

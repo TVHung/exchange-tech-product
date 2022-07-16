@@ -18,6 +18,11 @@ import {
   headerFiles,
   maxNumImage,
   maxSizeImage,
+  apiGetSuggestColor,
+  apiGetSuggestName,
+  apiGetSuggestCpu,
+  apiGetSuggestGpu,
+  apiGetSuggestDisplaySize,
 } from "./../../constants";
 import { toast } from "react-toastify";
 import Breadcrumb from "../../components/Breadcrumb";
@@ -27,6 +32,7 @@ import {
   appendArrayToFormData,
   scrollToTop,
   setLinkDirect,
+  suggest,
 } from "../../utils/common";
 import AddressSelect from "../../components/AddressSelect";
 
@@ -37,9 +43,19 @@ export default function EditPost() {
   const [address, setAddress] = useState("");
 
   const [isCreatePost, setIsCreatePost] = useState(false);
-  const [imageUrl, setImageUrl] = useState([]);
   const [imageUrlEdit, setImageUrlEdit] = useState([]);
   const [videoFile, setVideoFile] = useState();
+
+  const [suggestName, setSuggestName] = useState([]);
+  const [suggestNames, setSuggestNames] = useState([]);
+  const [suggestColor, setSuggestColor] = useState([]);
+  const [suggestColors, setSuggestColors] = useState([]);
+  const [suggestCpu, setSuggestCpu] = useState([]);
+  const [suggestCpus, setSuggestCpus] = useState([]);
+  const [suggestGpu, setSuggestGpu] = useState([]);
+  const [suggestGpus, setSuggestGpus] = useState([]);
+  const [suggestDisplay, setSuggestDisplay] = useState([]);
+  const [suggestDisplays, setSuggestDisplays] = useState([]);
 
   //state delete image, video
   const [deleteImageId, setDeleteImageId] = useState("");
@@ -104,12 +120,23 @@ export default function EditPost() {
   useEffect(() => {
     setLinkDirect();
     fetchAllData(params.id);
+    fetchSuggestOtherFeild();
     return () => {
       setPostInfor({});
       setPostTradeInfor({});
       setvalidatePost({});
       setVideoFile();
       setProductChild({});
+      setSuggestName([]);
+      setSuggestNames([]);
+      setSuggestColor([]);
+      setSuggestColors([]);
+      setSuggestCpu([]);
+      setSuggestCpus([]);
+      setSuggestGpu([]);
+      setSuggestGpus([]);
+      setSuggestDisplay([]);
+      setSuggestDisplays([]);
     };
   }, []);
 
@@ -120,6 +147,10 @@ export default function EditPost() {
       [name]: value,
     }));
     console.log("change data", name, value);
+    if (name == "name") {
+      let matches = suggest(value, suggestNames);
+      setSuggestName(matches);
+    }
   };
   const handleOnChangeChild = (e) => {
     const { name, value } = e.target;
@@ -128,15 +159,83 @@ export default function EditPost() {
       [name]: value,
     }));
     console.log("change data child", name, value);
+    if (name == "color") {
+      let matches = suggest(value, suggestColors);
+      setSuggestColor(matches);
+    }
+    if (name == "cpu") {
+      let matches = suggest(value, suggestCpus);
+      setSuggestCpu(matches);
+    }
+    if (name == "gpu") {
+      let matches = suggest(value, suggestGpus);
+      setSuggestGpu(matches);
+    }
+    if (name == "display_size") {
+      let matches = suggest(value, suggestDisplays);
+      setSuggestDisplay(matches);
+    }
   };
-  // const handleOnChangeTrade = (e) => {
-  //   const { name, value } = e.target;
-  //   setPostTradeInfor((prevState) => ({
-  //     ...prevState,
-  //     [name]: value,
-  //   }));
-  //   console.log(name, value);
-  // };
+
+  const onClickSuggest = (type, value) => {
+    if (
+      type == "color" ||
+      type == "cpu" ||
+      type == "gpu" ||
+      type == "display_size"
+    )
+      setProductChild((prevState) => ({
+        ...prevState,
+        [type]: value,
+      }));
+    if (type == "name")
+      setPostInfor((prevState) => ({
+        ...prevState,
+        [type]: value,
+      }));
+  };
+
+  const fetchSuggestByCategory = async (id) => {
+    if (id == "1" || id == "2") {
+      let apiSuggestName = `${apiGetSuggestColor}/${id}`;
+      let apiSuggestColor = `${apiGetSuggestName}/${id}`;
+      let apiSuggestDisplaySize = `${apiGetSuggestDisplaySize}/${id}`;
+      const requestName = axios.get(apiSuggestName, { headers: headers });
+      const requestColor = axios.get(apiSuggestColor, { headers: headers });
+      const requestDisplay = axios.get(apiSuggestDisplaySize, {
+        headers: headers,
+      });
+      await axios
+        .all([requestName, requestColor, requestDisplay])
+        .then(
+          axios.spread((...responses) => {
+            setSuggestColors(responses[0].data.data);
+            setSuggestNames(responses[1].data.data);
+            setSuggestDisplays(responses[2].data.data);
+          })
+        )
+        .catch((errors) => {
+          console.error(errors);
+        });
+    }
+  };
+  const fetchSuggestOtherFeild = async () => {
+    const requestCpu = axios.get(apiGetSuggestCpu, { headers: headers });
+    const requestGpu = axios.get(apiGetSuggestGpu, { headers: headers });
+
+    await axios
+      .all([requestCpu, requestGpu])
+      .then(
+        axios.spread((...responses) => {
+          setSuggestCpus(responses[0].data.data);
+          setSuggestGpus(responses[1].data.data);
+        })
+      )
+      .catch((errors) => {
+        console.error(errors);
+      });
+  };
+
   const [file, setFile] = useState([]);
   const [fileObject, setFileOject] = useState([]);
   const uploadSingleFile = (e) => {
@@ -221,65 +320,6 @@ export default function EditPost() {
     setImageUrlEdit(imageUrlEdit.filter((item) => item.id !== id));
   };
 
-  // const saveImages = (files, post_id) => {
-  //   const uploaders = files.map((file, index) => {
-  //     const formData = new FormData();
-  //     formData.append("file", file);
-  //     formData.append("tags", `codeinfuse, medium, gist`);
-  //     formData.append("upload_preset", "weedzflm"); // Replace the preset name with your own
-  //     formData.append("api_key", "141866846121189"); // Replace API key with your own Cloudinary key
-  //     formData.append("timestamp", (Date.now() / 1000) | 0);
-  //     return axios
-  //       .post(
-  //         "https://api.cloudinary.com/v1_1/codeinfuse/image/upload",
-  //         formData,
-  //         {
-  //           headers: { "X-Requested-With": "XMLHttpRequest" },
-  //         }
-  //       )
-  //       .then((response) => {
-  //         const data = response.data;
-  //         const fileURL = data.secure_url;
-  //         setImageUrl((imageUrl) => [...imageUrl, fileURL]);
-  //         let isBanner = imageUrlEdit.length > 0 ? 0 : 1;
-  //         handleSaveImage(post_id, fileURL, isBanner);
-  //       });
-  //   });
-  //   axios.all(uploaders).then((res) => {
-  //     setIsCreatePost(false);
-  //     toast.success("Cập nhật sản phẩm thành công");
-  //     setPreload(false);
-  //     // window.location.href = "/profile?tab=my-posts";
-  //   });
-  // };
-
-  // const handleSaveImage = async (post_id, url, is_banner) => {
-  //   const imageData = {
-  //     product_id: post_id,
-  //     is_banner: is_banner,
-  //     image_url: url,
-  //   };
-  //   await axios
-  //     .post(apiImages, imageData, { headers: headers })
-  //     .then((res) => {
-  //       const i = res.data.data;
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // };
-
-  // const onClickTrade = (e) => {
-  //   const { checked } = e.target;
-  //   let is_trade = "is_trade";
-  //   setPostInfor((prevState) => ({
-  //     ...prevState,
-  //     [is_trade]: checked ? 1 : 0,
-  //   }));
-  //   setIsTrade(checked);
-  //   console.log(checked);
-  // };
-
   const onClickFree = (e) => {
     const { checked } = e.target;
     setIsFree(checked);
@@ -312,6 +352,7 @@ export default function EditPost() {
 
   useEffect(() => {
     fetchBrand(postInfor?.category);
+    fetchSuggestByCategory(postInfor.category);
     return () => {};
   }, [postInfor.category]);
 
@@ -329,31 +370,6 @@ export default function EditPost() {
       }
   };
 
-  // const uploadVideo = async () => {
-  //   const videoData = new FormData();
-  //   videoData.append("file", videoFile, "product");
-  //   console.log("update video");
-  //   await axios
-  //     .post(apiUploadVideo, videoData, { headers: headerFiles })
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       let data = res.data;
-  //       if (data.status) {
-  //         //thanh cong
-  //         let video_url = "video_url";
-  //         setPostInfor((prevState) => ({
-  //           ...prevState,
-  //           [video_url]: data.data,
-  //         }));
-  //         updatePost();
-  //       } else {
-  //         //that bai
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // };
   //tao post
   const updatePost = async () => {
     var mergePostData = null;
@@ -377,7 +393,6 @@ export default function EditPost() {
       gpu: productChild?.gpu,
       storage_type: parseInt(productChild?.storage_type),
       display_size: parseFloat(productChild?.display_size || 0),
-      // fileImages: fileObject,
       fileVideo: videoFile,
       video_url: postInfor?.video_url,
       is_delete_video: isDeleteVideo,
@@ -671,7 +686,7 @@ export default function EditPost() {
               <div className="mb-3 mt-4">
                 <h4>Thông tin chi tiết</h4>
               </div>
-              <div className="form-outline mb-3">
+              <div className="form-outline mb-3 position-relative">
                 <label className="form-label" htmlFor="post-name">
                   Tên sản phẩm&nbsp;<span style={{ color: "red" }}>*</span>
                 </label>
@@ -685,9 +700,27 @@ export default function EditPost() {
                   }
                   placeholder="Tên sản phẩm"
                   name="name"
-                  defaultValue={postInfor?.name}
+                  // defaultValue={postInfor?.name || ""}
+                  value={postInfor?.name || ""}
                   onChange={(e) => handleOnChange(e)}
+                  onBlur={() =>
+                    setTimeout(() => {
+                      setSuggestName([]);
+                    }, 100)
+                  }
                 />
+                {suggestName?.length > 0 && (
+                  <div className="suggest-component">
+                    {suggestName?.map((name, index) => (
+                      <div
+                        key={index}
+                        onClick={() => onClickSuggest("name", name)}
+                      >
+                        <p>{name}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <p className="validate-form-text">{validatePost.name}</p>
               </div>
               {Number(postInfor?.category) < 3 && (
@@ -698,7 +731,6 @@ export default function EditPost() {
                         Hãng sản xuất&nbsp;
                         <span style={{ color: "red" }}>*</span>
                       </label>
-                      {console.log("sp con", productChild)}
                       <select
                         className={
                           validatePost.brand_id
@@ -725,7 +757,7 @@ export default function EditPost() {
                     </div>
                   </div>
                   <div className="col">
-                    <div className="form-outline">
+                    <div className="form-outline position-relative">
                       <label className="form-label" htmlFor="post-color">
                         Màu sắc
                       </label>
@@ -739,13 +771,37 @@ export default function EditPost() {
                         }
                         placeholder="Màu sắc"
                         name="color"
-                        defaultValue={
+                        // defaultValue={
+                        //   productChild?.color == "null"
+                        //     ? ""
+                        //     : productChild?.color
+                        // }
+                        value={
                           productChild?.color == "null"
                             ? ""
                             : productChild?.color
+                            ? productChild?.color
+                            : ""
                         }
                         onChange={(e) => handleOnChangeChild(e)}
+                        onBlur={() =>
+                          setTimeout(() => {
+                            setSuggestColor([]);
+                          }, 100)
+                        }
                       />
+                      {suggestColor?.length > 0 && (
+                        <div className="suggest-component">
+                          {suggestColor?.map((color, index) => (
+                            <div
+                              key={index}
+                              onClick={() => onClickSuggest("color", color)}
+                            >
+                              <p>{color}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       <p className="validate-form-text">{validatePost.color}</p>
                     </div>
                   </div>
@@ -802,7 +858,7 @@ export default function EditPost() {
               {Number(postInfor?.category) > 1 && (
                 <div className="row mb-3">
                   <div className="col">
-                    <div className="form-outline">
+                    <div className="form-outline position-relative">
                       <label className="form-label" htmlFor="post-cpu">
                         Bộ vi xử lý (CPU)
                       </label>
@@ -812,11 +868,35 @@ export default function EditPost() {
                         className="form-control"
                         placeholder="Bộ vi xử lý"
                         name="cpu"
-                        defaultValue={
-                          productChild?.cpu == "null" ? "" : productChild?.cpu
+                        // defaultValue={
+                        //   productChild?.cpu == "null" ? "" : productChild?.cpu
+                        // }
+                        value={
+                          productChild?.cpu == "null"
+                            ? ""
+                            : productChild?.cpu
+                            ? productChild?.cpu
+                            : ""
                         }
                         onChange={(e) => handleOnChangeChild(e)}
+                        onBlur={() =>
+                          setTimeout(() => {
+                            setSuggestCpu([]);
+                          }, 100)
+                        }
                       />
+                      {suggestCpu?.length > 0 && (
+                        <div className="suggest-component">
+                          {suggestCpu?.map((cpu, index) => (
+                            <div
+                              key={index}
+                              onClick={() => onClickSuggest("cpu", cpu)}
+                            >
+                              <p>{cpu}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       <p className="validate-form-text">{validatePost.cpu}</p>
                     </div>
                   </div>
@@ -831,11 +911,35 @@ export default function EditPost() {
                         className="form-control"
                         placeholder="Card đồ họa dời"
                         name="gpu"
-                        defaultValue={
-                          productChild?.gpu == "null" ? "" : productChild?.gpu
+                        // defaultValue={
+                        //   productChild?.gpu == "null" ? "" : productChild?.gpu
+                        // }
+                        value={
+                          productChild?.gpu == "null"
+                            ? ""
+                            : productChild?.gpu
+                            ? productChild?.gpu
+                            : ""
                         }
                         onChange={(e) => handleOnChangeChild(e)}
+                        onBlur={() =>
+                          setTimeout(() => {
+                            setSuggestGpu([]);
+                          }, 100)
+                        }
                       />
+                      {suggestGpu?.length > 0 && (
+                        <div className="suggest-component">
+                          {suggestGpu?.map((gpu, index) => (
+                            <div
+                              key={index}
+                              onClick={() => onClickSuggest("gpu", gpu)}
+                            >
+                              <p>{gpu}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       <p className="validate-form-text">{validatePost.gpu}</p>
                     </div>
                   </div>
@@ -862,7 +966,7 @@ export default function EditPost() {
                 </div>
                 {Number(postInfor?.category) > 1 && (
                   <div className="col">
-                    <div className="form-outline">
+                    <div className="form-outline position-relative">
                       <label className="form-label" htmlFor="post-display-size">
                         Kích thước màn hình
                       </label>
@@ -872,10 +976,30 @@ export default function EditPost() {
                         className="form-control"
                         placeholder="Kích thước màn hính"
                         min={0}
-                        defaultValue={productChild?.display_size}
+                        // defaultValue={productChild?.display_size || ""}
+                        value={productChild?.display_size || ""}
                         name="display_size"
                         onChange={(e) => handleOnChangeChild(e)}
+                        onBlur={() =>
+                          setTimeout(() => {
+                            setSuggestDisplay([]);
+                          }, 100)
+                        }
                       />
+                      {suggestDisplay?.length > 0 && (
+                        <div className="suggest-component">
+                          {suggestDisplay?.map((display_size, index) => (
+                            <div
+                              key={index}
+                              onClick={() =>
+                                onClickSuggest("display_size", display_size)
+                              }
+                            >
+                              <p>{display_size}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       <p className="validate-form-text">
                         {validatePost.display_size}
                       </p>

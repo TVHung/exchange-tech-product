@@ -63,6 +63,13 @@ export const apiGetMyConversation = `${api}/my-conversations`;
 export const apiAddComment = `${api}/comments`;
 export const apiGetCommentProduct = `${api}/comments/products`;
 
+//suggest
+export const apiGetSuggestColor = `${api}/suggest-color`;
+export const apiGetSuggestName = `${api}/suggest-name`;
+export const apiGetSuggestCpu = `${api}/suggest-cpu`;
+export const apiGetSuggestGpu = `${api}/suggest-gpu`;
+export const apiGetSuggestDisplaySize = `${api}/suggest-display-size`;
+
 export const headers = {
   "Content-type": "application/json",
   Authorization: `Bearer ${getCookie("access_token")}`,
