@@ -174,7 +174,7 @@ export default function Navigation() {
             </li>
             <li className="option" onClick={closeMobileMenu}>
               <a href="/recommend" className="underline">
-                <i class="fa fa-star icon-btn" aria-hidden="true"></i>
+                <i className="fa fa-star icon-btn" aria-hidden="true"></i>
                 Dành cho bạn
               </a>
             </li>
