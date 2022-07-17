@@ -66,8 +66,8 @@ export default function Detail({ isAuth }) {
   const toProfile = (user_id) => {
     window.location.href = `/profile/${user_id}`;
   };
-  const toChat = () => {
-    window.location.href = "/chat";
+  const toChat = (user_id) => {
+    window.location.href = `/chat/${user_id}`;
   };
   const onClickCopyLink = (s) => {
     navigator.clipboard.writeText(window.location.href);
@@ -396,7 +396,10 @@ export default function Detail({ isAuth }) {
                       )}
                     </div>
                     <div className="detail-chat-seller">
-                      <button className="btn" onClick={() => toChat()}>
+                      <button
+                        className="btn"
+                        onClick={() => toChat(postUser?.id)}
+                      >
                         Chat với người bán
                       </button>
                     </div>

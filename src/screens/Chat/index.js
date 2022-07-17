@@ -75,6 +75,10 @@ export default function Chat() {
     return () => {
       setPreload();
       setMessages([]);
+      setIsStart();
+      setUserActive();
+      setUsers();
+      setLatestMessage();
     };
   }, []);
 
@@ -87,7 +91,7 @@ export default function Chat() {
   }, [params.id]);
 
   useEffect(() => {
-    Pusher.logToConsole = true;
+    Pusher.logToConsole = false;
 
     const pusher = new Pusher("1bf1895dca0e9f4afb6a", {
       cluster: "ap1",
@@ -95,21 +99,21 @@ export default function Chat() {
 
     const channel = pusher.subscribe("chat");
     channel.bind("message", function (data) {
-      getAllMess(params.id);
-      // AllMessages.push(data);
-      // setMessages(AllMessages);
-      // console.log("all message", data);
-      // const newMess = {
-      //   id: 1,
-      //   message: data.message,
-      //   user_id: 101,
-      //   target_user_id: userActive,
-      //   imageUrl: null,
-      // };
-      // setMessages((oldMess) => [...oldMess, newMess]);
-      // setTimeout(() => {
-      //   onScroll();
-      // }, 50);
+      console.log(data);
+      let newMess = {
+        image_url: data?.image_url,
+        message: data?.message,
+        target_user_id: data?.target_user_id,
+        user_id: data?.user_id,
+        created_at: "2022-07-16T09:12:15.000000Z",
+        id: 33,
+        updated_at: "2022-07-16T09:12:15.000000Z",
+      };
+      // getAllMess(params.id);
+      setMessages((messages) => [...messages, newMess]);
+      setTimeout(() => {
+        onScroll();
+      }, 100);
     });
   }, []);
 
@@ -123,6 +127,7 @@ export default function Chat() {
       })
       .then((res) => {
         setMessages(res.data.data);
+        console.log("Get all message", res.data.data);
         setTimeout(() => {
           onScroll();
         }, 100);
@@ -183,14 +188,20 @@ export default function Chat() {
               <>
                 <Header userActive={userActive} users={users} />
                 <div className="chat-mess-content" ref={listInnerRef}>
-                  {messages &&
+                  {console.log("Danh sach message", messages)}
+                  {messages?.length > 0 ? (
                     messages.map((mess, index) => (
                       <Message
                         userActive={userActive}
                         key={index}
                         message={mess}
                       />
-                    ))}
+                    ))
+                  ) : (
+                    <div className="new-chat w-100 h-100 d-flex justify-content-center align-items-center">
+                      {/* <p>Hãy gửi tin nhắn để bắt đầu cuộc trò chuyện</p> */}
+                    </div>
+                  )}
                 </div>
                 <MenuInput sendMessage={sendMessage} />
               </>
