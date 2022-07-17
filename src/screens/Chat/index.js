@@ -27,6 +27,7 @@ import {
 
 export default function Chat() {
   const [preload, setPreload] = useState(false);
+  const [loadChat, setLoadChat] = useState(false);
   const [isStart, setIsStart] = useState(true);
   const [userActive, setUserActive] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -105,11 +106,10 @@ export default function Chat() {
         message: data?.message,
         target_user_id: data?.target_user_id,
         user_id: data?.user_id,
-        created_at: "2022-07-16T09:12:15.000000Z",
-        id: 33,
-        updated_at: "2022-07-16T09:12:15.000000Z",
+        created_at: null,
+        id: null,
+        updated_at: null,
       };
-      // getAllMess(params.id);
       setMessages((messages) => [...messages, newMess]);
       setTimeout(() => {
         onScroll();
@@ -121,6 +121,7 @@ export default function Chat() {
     const target = {
       target_user_id: target_user_id,
     };
+    setLoadChat(true);
     await axios
       .post(apiGetMessage, target, {
         headers: headers,
@@ -131,9 +132,11 @@ export default function Chat() {
         setTimeout(() => {
           onScroll();
         }, 100);
+        setLoadChat(false);
       })
       .catch((error) => {
         console.error(error);
+        setLoadChat(false);
       });
   };
 
@@ -188,8 +191,7 @@ export default function Chat() {
               <>
                 <Header userActive={userActive} users={users} />
                 <div className="chat-mess-content" ref={listInnerRef}>
-                  {console.log("Danh sach message", messages)}
-                  {messages?.length > 0 ? (
+                  {!loadChat ? (
                     messages.map((mess, index) => (
                       <Message
                         userActive={userActive}
@@ -199,7 +201,9 @@ export default function Chat() {
                     ))
                   ) : (
                     <div className="new-chat w-100 h-100 d-flex justify-content-center align-items-center">
-                      {/* <p>Hãy gửi tin nhắn để bắt đầu cuộc trò chuyện</p> */}
+                      <p>
+                        <b>Đang tải cuộc trò chuyện...</b>
+                      </p>
                     </div>
                   )}
                 </div>

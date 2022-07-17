@@ -181,7 +181,7 @@ export const appendArrayToFormData = (object) => {
 
 //scroll to top and bottom off div component
 export const scrollInViewDiv = (ref, type = "top") => {
-  if (ref)
+  if (ref?.current?.scrollTop)
     if (type === "top") ref.current.scrollTop = 0;
     else ref.current.scrollTop = ref?.current?.scrollHeight;
 };
