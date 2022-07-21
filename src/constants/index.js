@@ -29,6 +29,7 @@ export const apiFetchUserPosts = `${api}/user-products`;
 export const apiFetchRecommendPosts = `${api}/recommend-products`;
 export const apiWishList = `${api}/wish-list`;
 export const apiUpView = `${api}/up-view`;
+export const apiProductCompare = `${api}/get-list-compare`;
 
 //api product trade
 export const apiPostTrade = `${api}/product-trades`;
