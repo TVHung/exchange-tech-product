@@ -36,8 +36,8 @@ import axios from "axios";
 import Breadcrumb from "../../components/Breadcrumb";
 import { useParams } from "react-router-dom";
 import NotPost from "../../components/NotPost";
-import { useDispatch } from "react-redux";
-import { addWishList } from "../../redux/actions/postActions";
+import { useDispatch, useSelector } from "react-redux";
+import { addWishList, setListCompare } from "../../redux/actions/postActions";
 import Comment from "../../components/Comment";
 
 export default function Detail({ isAuth }) {
@@ -49,14 +49,22 @@ export default function Detail({ isAuth }) {
   const [postUser, setPostUser] = useState({});
   const [getError, setGetError] = useState(false);
   const [breadcrumb, setBreadcrumb] = useState([]);
+  const [isCompare, setIsCompare] = useState(false);
 
   const params = useParams();
+  const list_compare = useSelector((state) => state.post.list_compare);
+
+  useEffect(() => {
+    setIsCompare(list_compare?.split(",")?.includes(params.id));
+  }, [list_compare]);
 
   useEffect(() => {
     setLinkDirect();
     fetchAllData(params.id);
     fetchRecommendPost();
-    console.log("Ban da login chua", isAuth);
+    setIsCompare(
+      localStorage.getItem("array_id_compare")?.split(",")?.includes(params.id)
+    );
     return () => {};
   }, [params.id]);
 
@@ -127,6 +135,52 @@ export default function Detail({ isAuth }) {
   const dispatch = useDispatch();
   const addNewWishList = () => {
     dispatch(addWishList(params.id));
+  };
+  const addCompare = (id, category) => {
+    let current = localStorage.getItem("array_id_compare");
+    let current_category = localStorage.getItem("current_category");
+    let arrId = [];
+    if (current) arrId = current.split(",");
+    console.log(
+      "current",
+      parseInt(current_category),
+      parseInt(category),
+      parseInt(current_category) != parseInt(category) && arrId?.length > 0
+    );
+    if (parseInt(current_category) != parseInt(category) && arrId?.length > 0) {
+      console.log("vao clear");
+      localStorage.removeItem("array_id_compare");
+      localStorage.removeItem("current_category");
+      dispatch(setListCompare(""));
+      arrId = [];
+    }
+    if (arrId.length === 3) {
+      alert("Vui lòng xóa bớt sản phẩm để tiếp tục so sánh");
+    } else if (arrId.includes(id)) {
+      alert("Sản phẩm này đã được thêm vào so sánh");
+    } else {
+      arrId.push(id);
+      current = arrId.length > 1 ? arrId.join(",") : arrId.join("");
+      console.log("current", current, arrId);
+      localStorage.setItem("array_id_compare", current);
+      localStorage.setItem("current_category", category);
+      dispatch(setListCompare(current));
+      setIsCompare(true);
+    }
+  };
+
+  const deleteCompare = (id) => {
+    let current = localStorage.getItem("array_id_compare");
+    let arrId = [];
+    if (current) arrId = current.split(",");
+    if (arrId.includes(id)) {
+      arrId.pop(id);
+      current = arrId.length > 1 ? arrId.join(",") : arrId.join("");
+      localStorage.setItem("array_id_compare", current);
+      dispatch(setListCompare(current));
+      setIsCompare(false);
+      if (arrId.length === 0) localStorage.removeItem("current_category");
+    }
   };
 
   const fetchUserPost = async (user_id) => {
@@ -373,18 +427,27 @@ export default function Detail({ isAuth }) {
                           <p>Tham gia</p>
                           <p>{handleCalculateTime(postUser?.created_at)}</p>
                         </div>
-                        <div className="col-6 detail-rating">
-                          <p>Đánh giá</p>
-                          <div className="detail-seller-rating">
-                            <StarRatings
-                              starRatedColor="#fcbb00"
-                              rating={4}
-                              changeRating={() => changeRating()}
-                              numberOfStars={5}
-                              name="rating"
-                              starDimension="20px"
-                              starSpacing="2px"
-                            />
+                        <div className="col-6 detail-compare text-center">
+                          <div className="mt-2">
+                            {isCompare ? (
+                              <button
+                                className="detail-compare-btn btn fs-12"
+                                onClick={() => deleteCompare(params.id)}
+                              >
+                                <i className="fas fa-plus-circle"></i>
+                                Đã thêm so sánh
+                              </button>
+                            ) : (
+                              <button
+                                className="detail-compare-btn btn"
+                                onClick={() =>
+                                  addCompare(params.id, postDetail.category_id)
+                                }
+                              >
+                                <i className="fas fa-plus-circle"></i>
+                                So sánh
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>

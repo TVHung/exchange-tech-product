@@ -3,6 +3,7 @@
 
 .detail-container {
   position: relative;
+  min-height: 100vh;
 }
 
 .copy-check-mark {
@@ -118,12 +119,21 @@
       font-weight: bolder;
       width: 100%;
     }
-    .detail-time-join,
-    .detail-rating {
+    .detail-time-join {
       text-align: center;
     }
     .detail-time-join {
       border-right: $base-color-1 2px solid;
+    }
+    .detail-compare {
+      .detail-compare-btn {
+        background-color: $base-color-1;
+        color: #fff;
+        i {
+          color: #fff;
+          margin-right: 5px;
+        }
+      }
     }
   }
   .detail-contact-seller {

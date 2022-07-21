@@ -32,6 +32,8 @@ import ResetPassword from "./screens/Auth/ResetPassword";
 import FormResetPassword from "./screens/Auth/FormResetPassword";
 import LoginGoogle from "./screens/Auth/LoginGoogle";
 import Recommend from "./screens/Recommend";
+import Compare from "./components/Compare";
+import CompareView from "./screens/CompareView";
 toast.configure();
 
 const HeaderComponent = React.lazy(() => import("./components/Navigation"));
@@ -78,6 +80,7 @@ function App() {
     <Fragment>
       <Router>
         <ScrollUp />
+        <Compare />
         <HeaderComponent />
         <Switch>
           <Route exact path="/" component={Home} />
@@ -149,6 +152,7 @@ function App() {
             component={ProfileUser}
             isAuth={isAuth}
           />
+          <Route path="/compare" component={CompareView} />
           <Route path="/:someString" component={ErrorPage} />
         </Switch>
         <FooterComponent />

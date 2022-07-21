@@ -13,6 +13,7 @@ import {
   PRODUCT_COMMENTS,
   SEARCH_POST_RESULT,
   WISH_LIST,
+  LIST_COMPARE,
 } from "./../case";
 import { headers } from "./../../constants";
 import { toast } from "react-toastify";
@@ -160,4 +161,8 @@ export const addWishList = (product_id) => async (dispatch) => {
     window.location.href = "/login";
     return { statusCode: 500, body: error.toString() };
   }
+};
+
+export const setListCompare = (arr_id) => async (dispatch) => {
+  dispatch({ type: LIST_COMPARE, payload: arr_id });
 };

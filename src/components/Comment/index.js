@@ -16,11 +16,11 @@ export default function Comment({ product_id, isAuth }) {
     setCommentContent(value);
   };
 
+  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getCommentProduct(product_id, 1));
     return () => {};
   }, []);
-  const dispatch = useDispatch();
   const product_comments = useSelector((state) => state.post.commentsOfProduct);
   useEffect(() => {
     console.log("my post", product_comments);

@@ -1,5 +1,6 @@
 import {
   ALL_POST,
+  LIST_COMPARE,
   MY_POSTS,
   PRODUCT_COMMENTS,
   SEARCH_POST_RESULT,
@@ -12,6 +13,7 @@ const initialState = {
   wish_list: [],
   my_posts: [],
   commentsOfProduct: [],
+  list_compare: localStorage.getItem("array_id_compare") || "",
 };
 
 const postReducer = (state = initialState, action) => {
@@ -40,6 +42,11 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         commentsOfProduct: action.payload,
+      };
+    case LIST_COMPARE:
+      return {
+        ...state,
+        list_compare: action.payload,
       };
     default:
       return state;

@@ -69,7 +69,7 @@ export default function Login() {
       .then((res) => {
         if (res.data.access_token) {
           toast.success("Đăng nhập thành công");
-          setCookie("access_token", res.data.access_token, 3600);
+          setCookie("access_token", res.data.access_token, 86400);
           window.location.href = localStorage.getItem("linkDirect");
         } else if (res.data?.message) {
           toast.error(res.data.message);

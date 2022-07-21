@@ -17,7 +17,6 @@ export default function Header({ userActive, users }) {
           headers: headers,
         })
         .then((res) => {
-          console.log(res?.data?.data);
           setUserChat(res?.data?.data);
         });
     } catch (error) {

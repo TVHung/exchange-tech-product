@@ -165,9 +165,9 @@ export default function Navigation() {
             <li className="option" onClick={closeMobileMenu}>
               <a href="/chat" className="underline">
                 <i className="fas fa-comments icon-btn">
-                  <div className="nofi-dot">
+                  {/* <div className="nofi-dot">
                     <p className="nofi-num">10</p>
-                  </div>
+                  </div> */}
                 </i>
                 Tin nhắn
               </a>

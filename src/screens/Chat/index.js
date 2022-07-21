@@ -24,7 +24,7 @@ import {
   headerFiles,
   headers,
 } from "../../constants";
-
+import InfiniteScroll from "react-infinite-scroll-component";
 export default function Chat() {
   const [preload, setPreload] = useState(false);
   const [loadChat, setLoadChat] = useState(false);
@@ -33,6 +33,7 @@ export default function Chat() {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [latestMessage, setLatestMessage] = useState({});
+  const [page, setPage] = useState(1);
 
   const params = useParams();
   //scroll when add chat
@@ -48,15 +49,15 @@ export default function Chat() {
         image: imageFile,
       };
       const messFormData = appendArrayToFormData(mess);
-      console.log("form", imageFile);
       await axios
         .post(apiSendMessage, messFormData, {
           headers: headerFiles,
         })
         .then((res) => {
           // alert("Thành công");
-          console.log(res);
           setLatestMessage(res.data);
+          addMessage(res.data);
+          console.log("new message", res);
         })
         .catch((error) => {
           console.error(error);
@@ -80,6 +81,7 @@ export default function Chat() {
       setUserActive();
       setUsers();
       setLatestMessage();
+      setPage();
     };
   }, []);
 
@@ -100,39 +102,54 @@ export default function Chat() {
 
     const channel = pusher.subscribe("chat");
     channel.bind("message", function (data) {
-      console.log(data);
-      let newMess = {
-        image_url: data?.image_url,
-        message: data?.message,
-        target_user_id: data?.target_user_id,
-        user_id: data?.user_id,
-        created_at: null,
-        id: null,
-        updated_at: null,
-      };
-      setMessages((messages) => [...messages, newMess]);
-      setTimeout(() => {
-        onScroll();
-      }, 100);
+      console.log(
+        "show nhieu data",
+        data,
+        parseInt(data.user_id),
+        parseInt(params.id)
+      );
+      if (parseInt(data.user_id) == parseInt(params.id)) {
+        addMessage(data);
+      }
     });
   }, []);
 
-  const getAllMess = async (target_user_id) => {
+  const addMessage = (data) => {
+    let newMess = {
+      image_url: data?.image_url,
+      message: data?.message,
+      target_user_id: data?.target_user_id,
+      user_id: data?.user_id,
+      created_at: null,
+      id: null,
+      updated_at: null,
+    };
+    setMessages((messages) => [...messages, newMess]);
+    setTimeout(() => {
+      onScroll();
+    }, 100);
+  };
+
+  const getAllMess = async (target_user_id, page = 1) => {
     const target = {
       target_user_id: target_user_id,
     };
     setLoadChat(true);
+
     await axios
-      .post(apiGetMessage, target, {
+      .post(`${apiGetMessage}/?page=${page}`, target, {
         headers: headers,
       })
       .then((res) => {
+        // console.log("Scroll top bottom", res.data.data?.per_page);
+        // let maxPage = res.data.data?.per_page;
+        // if (maxPage && page <= maxPage) setPage(page);
+        // setMessages((messages) => [...messages, ...res.data.data.data]);
         setMessages(res.data.data);
-        console.log("Get all message", res.data.data);
+        setLoadChat(false);
         setTimeout(() => {
           onScroll();
-        }, 100);
-        setLoadChat(false);
+        }, 1000);
       })
       .catch((error) => {
         console.error(error);
@@ -149,12 +166,19 @@ export default function Chat() {
       .then((res) => {
         setUsers(res.data.data);
         setPreload(true);
-        console.log(res.data.data);
       })
       .catch((error) => {
         console.error(error);
         setPreload(true);
       });
+  };
+
+  const fetchMoreData = (e) => {
+    // if (e.target.scrollTop == 0) {
+    //   let pageCurent = page + 1;
+    //   console.log("load to top", pageCurent);
+    //   getAllMess(params.id, pageCurent);
+    // }
   };
 
   return (
@@ -168,8 +192,8 @@ export default function Chat() {
           <div className="chat-left col-md-4">
             {users?.map((item) => (
               <div key={item.id}>
-                <Link
-                  to={`/chat/${item.id}`}
+                <a
+                  href={`/chat/${item.id}`}
                   style={{ textDecoration: "none", color: "#000" }}
                 >
                   <ItemChat
@@ -178,7 +202,7 @@ export default function Chat() {
                     setIsStart={setIsStart}
                     latestMessage={latestMessage}
                   />
-                </Link>
+                </a>
               </div>
             ))}
           </div>
@@ -190,9 +214,40 @@ export default function Chat() {
             ) : (
               <>
                 <Header userActive={userActive} users={users} />
-                <div className="chat-mess-content" ref={listInnerRef}>
+                {/* <div
+                  id="scrollableDiv"
+                  style={{
+                    height: 300,
+                    overflow: "auto",
+                    display: "flex",
+                    flexDirection: "column-reverse",
+                  }}
+                >
+                  <InfiniteScroll
+                    dataLength={messages?.length}
+                    next={fetchMoreData()}
+                    hasMore={true}
+                    loader={<p>Đang tải tin nhắn...</p>}
+                    style={{ display: "flex", flexDirection: "column-reverse" }} //To put endMessage and loader to the top
+                    inverse={true} //
+                    scrollableTarget="scrollableDiv"
+                  >
+                    {messages?.map((mess, index) => (
+                      <Message
+                        userActive={userActive}
+                        key={index}
+                        message={mess}
+                      />
+                    ))}
+                  </InfiniteScroll>
+                </div> */}
+                <div
+                  className="chat-mess-content"
+                  ref={listInnerRef}
+                  onScroll={(e) => fetchMoreData(e)}
+                >
                   {!loadChat ? (
-                    messages.map((mess, index) => (
+                    messages?.map((mess, index) => (
                       <Message
                         userActive={userActive}
                         key={index}

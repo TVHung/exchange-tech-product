@@ -1,0 +1,62 @@
+@import "../../assets/css/common";
+@import "../../assets/css/valiables";
+
+.compare-container {
+    margin-top: $height-sum;
+    min-height: 100vh;
+    padding: 20px 0px;
+    overflow-x: hidden;
+    .col-4 {
+        padding-left: 20px;
+    }
+    .basic-infor {
+        border: 1px solid #f1f1f1;
+        .product-header-wrap {
+            .product-header {
+                padding: 10px;
+                img {
+                    height: 200px;
+                }
+                h5 {
+                    margin-top: 15px;
+                }
+                p {
+                    margin-bottom: 10px;
+                }
+                .delete-product {
+                    top: 0;
+                    right: 0;
+                    i {
+                        &:hover {
+                            cursor: pointer;
+                            transform: scale(1.05);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .title-detail {
+        width: 100%;
+        background-color: #f1f1f1;
+        padding: 5px 10px;
+        h5 {
+            color: $base-color-1;
+        }
+    }
+    .detail-infor {
+        border: 1px solid #f1f1f1;
+        .product-detail-wrap {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+    }
+    .col-center {
+        border-right: 1px solid #f1f1f1;
+        border-left: 1px solid #f1f1f1;
+        border-bottom: 1px solid #f1f1f1;
+    }
+    .col-not-center {
+        border-bottom: 1px solid #f1f1f1;
+    }
+}
