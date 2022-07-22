@@ -70,18 +70,10 @@ export default function Login({ type }) {
       password: user.password,
       password_confirmation: user.password_confirmation,
     };
-
+    setIsLoading(true);
     await axios
       .post(apiRegister, userRegister)
       .then((res) => {
-        // console.log(res);
-        // if (res.data?.status == 1) {
-        //   toast.success(res.data?.message);
-        //   window.location.href = `/login`;
-        // } else {
-        //   handleValidate(res.data);
-        //   toast.error("Đăng ký không thành công");
-        // }
         if (res.data.access_token) {
           toast.success("Đăng ký thành công");
           setCookie("access_token", res.data.access_token, 86400);
@@ -91,10 +83,12 @@ export default function Login({ type }) {
         } else {
           handleValidate(res.data);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error(error);
         toast.error("Đăng ký không thành công");
+        setIsLoading(false);
       });
   };
 

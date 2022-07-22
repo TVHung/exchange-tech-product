@@ -6,7 +6,6 @@ import Preloading from "../../components/Loading";
 import axios from "axios";
 import {
   headers,
-  apiImages,
   storageData,
   statusData,
   apiPost,
@@ -18,11 +17,7 @@ import {
   headerFiles,
   maxNumImage,
   maxSizeImage,
-  apiGetSuggestColor,
-  apiGetSuggestName,
-  apiGetSuggestCpu,
-  apiGetSuggestGpu,
-  apiGetSuggestDisplaySize,
+  apiGetSuggest,
 } from "./../../constants";
 import { toast } from "react-toastify";
 import Breadcrumb from "../../components/Breadcrumb";
@@ -120,7 +115,7 @@ export default function EditPost() {
   useEffect(() => {
     setLinkDirect();
     fetchAllData(params.id);
-    fetchSuggestOtherFeild();
+    fetchSuggest();
     return () => {
       setPostInfor({});
       setPostTradeInfor({});
@@ -146,7 +141,6 @@ export default function EditPost() {
       ...prevState,
       [name]: value,
     }));
-    console.log("change data", name, value);
     if (name == "name") {
       let matches = suggest(value, suggestNames);
       setSuggestName(matches);
@@ -158,7 +152,6 @@ export default function EditPost() {
       ...prevState,
       [name]: value,
     }));
-    console.log("change data child", name, value);
     if (name == "color") {
       let matches = suggest(value, suggestColors);
       setSuggestColor(matches);
@@ -195,44 +188,20 @@ export default function EditPost() {
       }));
   };
 
-  const fetchSuggestByCategory = async (id) => {
-    if (id == "1" || id == "2") {
-      let apiSuggestName = `${apiGetSuggestColor}/${id}`;
-      let apiSuggestColor = `${apiGetSuggestName}/${id}`;
-      let apiSuggestDisplaySize = `${apiGetSuggestDisplaySize}/${id}`;
-      const requestName = axios.get(apiSuggestName, { headers: headers });
-      const requestColor = axios.get(apiSuggestColor, { headers: headers });
-      const requestDisplay = axios.get(apiSuggestDisplaySize, {
-        headers: headers,
-      });
-      await axios
-        .all([requestName, requestColor, requestDisplay])
-        .then(
-          axios.spread((...responses) => {
-            setSuggestColors(responses[0].data.data);
-            setSuggestNames(responses[1].data.data);
-            setSuggestDisplays(responses[2].data.data);
-          })
-        )
-        .catch((errors) => {
-          console.error(errors);
-        });
-    }
-  };
-  const fetchSuggestOtherFeild = async () => {
-    const requestCpu = axios.get(apiGetSuggestCpu, { headers: headers });
-    const requestGpu = axios.get(apiGetSuggestGpu, { headers: headers });
-
+  const fetchSuggest = async () => {
     await axios
-      .all([requestCpu, requestGpu])
-      .then(
-        axios.spread((...responses) => {
-          setSuggestCpus(responses[0].data.data);
-          setSuggestGpus(responses[1].data.data);
-        })
-      )
-      .catch((errors) => {
-        console.error(errors);
+      .get(apiGetSuggest)
+      .then((res) => {
+        console.log(res.data.data);
+        const data = res.data.data;
+        setSuggestNames(data?.name);
+        setSuggestColors(data?.color);
+        setSuggestDisplays(data?.display_size);
+        setSuggestCpus(data?.cpu);
+        setSuggestGpus(data?.gpu);
+      })
+      .catch((error) => {
+        console.error(error);
       });
   };
 
@@ -352,7 +321,6 @@ export default function EditPost() {
 
   useEffect(() => {
     fetchBrand(postInfor?.category);
-    fetchSuggestByCategory(postInfor.category);
     return () => {};
   }, [postInfor.category]);
 
@@ -1219,154 +1187,6 @@ export default function EditPost() {
                 </div>
               </div>
             </form>
-            {/* ----------------------------------------------------------------------- */}
-            {/* <div className="mb-3 mt-4">
-              <h4>Bạn muốn đổi sang sản phẩm khác</h4>
-            </div>
-            <div className="mb-3 form-check">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="tradeCheckbox"
-                checked={isTrade}
-                onChange={(e) => onClickTrade(e)}
-              />
-              <label className="form-check-label" htmlFor="tradeCheckbox">
-                Đổi sản phẩm
-              </label>
-            </div>
-            {isTrade && (
-              <>
-                <div className="mb-3">
-                  <h3>Thông tin sản phẩm muốn đổi</h3>
-                </div>
-                <div className="form-outline mb-3">
-                  <label className="form-label" htmlFor="post-trade-category">
-                    Loại sản phẩm
-                  </label>
-                  <select
-                    className="form-select"
-                    aria-label="Disabled select example"
-                    required
-                    id="post-trade-category"
-                    name="category"
-                    onChange={(e) => handleOnChangeTrade(e)}
-                    placeholder="Loại sản phẩm"
-                    value={postTradeInfor?.category_id}
-                  >
-                    {categoryData &&
-                      categoryData.map((data, index) => (
-                        <option key={index} value={data.id}>
-                          {data.value}
-                        </option>
-                      ))}
-                  </select>
-                  <p className="validate-form-text">
-                    {validatePost.category_idTrade}
-                  </p>
-                </div>
-                <form
-                  className="form-product"
-                  id="form-create-post"
-                  onSubmit={(e) => onSubmitForm(e)}
-                >
-                  <div className="mb-3 mt-4">
-                    <h4>Thông tin chi tiết</h4>
-                  </div>
-                  <div className="form-outline mb-3">
-                    <label className="form-label" htmlFor="post-trade-name">
-                      Tên sản phẩm&nbsp;<span style={{ color: "red" }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="post-trade-name"
-                      className={
-                        validatePost.nameTrade
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      placeholder="Tên sản phẩm"
-                      name="name"
-                      defaultValue={postTradeInfor?.name}
-                      onChange={(e) => handleOnChangeTrade(e)}
-                    />
-                    <p className="validate-form-text">
-                      {validatePost.nameTrade}
-                    </p>
-                  </div>
-                  <div className="mb-3 mt-4">
-                    <h4>Tiêu đề và mô tả</h4>
-                  </div>
-                  <div className="form-outline mb-3">
-                    <label className="form-label" htmlFor="post-trade-title">
-                      Tiêu đề&nbsp;<span style={{ color: "red" }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="post-trade-title"
-                      className={
-                        validatePost?.titleTrade
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      name="title"
-                      placeholder="Tiêu đề"
-                      defaultValue={postTradeInfor?.title}
-                      onChange={(e) => handleOnChangeTrade(e)}
-                    />
-                    <p className="validate-form-text">
-                      {validatePost.titleTrade}
-                    </p>
-                  </div>
-                  <div className="form-outline  mb-3">
-                    <label
-                      className="form-label"
-                      htmlFor="post-trade-guarantee"
-                    >
-                      Bảo hành
-                    </label>
-                    <input
-                      type="number"
-                      id="post-trade-guarantee"
-                      className="form-control"
-                      placeholder="Thời gian bảo hành"
-                      min={0}
-                      defaultValue={postTradeInfor?.guarantee}
-                      name="guarantee"
-                      onChange={(e) => handleOnChangeTrade(e)}
-                    />
-                  </div>
-                  <div className="form-outline mb-3">
-                    <label
-                      className="form-label"
-                      htmlFor="post-trade-description"
-                    >
-                      Mô tả chi tiết&nbsp;
-                      <span style={{ color: "red" }}>*</span>
-                    </label>
-                    <textarea
-                      className={
-                        validatePost?.descriptionTrade
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      id="post-trade-description"
-                      rows="4"
-                      placeholder="Mô tả chi tiết
-                  - Sản phẩm như thế nào
-                  - Chất lượng ra sao
-                  - Nhu cầu cụ thể như thế nào"
-                      name="description"
-                      defaultValue={postTradeInfor?.description}
-                      onChange={(e) => handleOnChangeTrade(e)}
-                    ></textarea>
-                    <p className="validate-form-text">
-                      {validatePost?.descriptionTrade}
-                    </p>
-                  </div>
-                </form>
-              </>
-            )} */}
             <div className="row mb-3">
               <div className="col">
                 <button
