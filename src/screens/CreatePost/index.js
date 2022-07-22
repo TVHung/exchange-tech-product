@@ -14,11 +14,7 @@ import {
   headerFiles,
   maxNumImage,
   maxSizeVideo,
-  apiGetSuggestColor,
-  apiGetSuggestName,
-  apiGetSuggestCpu,
-  apiGetSuggestGpu,
-  apiGetSuggestDisplaySize,
+  apiGetSuggest,
 } from "./../../constants";
 import { toast } from "react-toastify";
 import Breadcrumb from "../../components/Breadcrumb";
@@ -89,7 +85,7 @@ export default function CreatePost() {
   });
   useEffect(() => {
     setLinkDirect();
-    fetchSuggestOtherFeild();
+    fetchSuggest();
     return () => {
       setPostInfor({});
       setvalidatePost({});
@@ -194,42 +190,20 @@ export default function CreatePost() {
       }));
   };
 
-  const fetchSuggestByCategory = async (id) => {
-    let apiSuggestName = `${apiGetSuggestColor}/${id}`;
-    let apiSuggestColor = `${apiGetSuggestName}/${id}`;
-    let apiSuggestDisplaySize = `${apiGetSuggestDisplaySize}/${id}`;
-    const requestName = axios.get(apiSuggestName, { headers: headers });
-    const requestColor = axios.get(apiSuggestColor, { headers: headers });
-    const requestDisplay = axios.get(apiSuggestDisplaySize, {
-      headers: headers,
-    });
+  const fetchSuggest = async () => {
     await axios
-      .all([requestName, requestColor, requestDisplay])
-      .then(
-        axios.spread((...responses) => {
-          setSuggestColors(responses[0].data.data);
-          setSuggestNames(responses[1].data.data);
-          setSuggestDisplays(responses[2].data.data);
-        })
-      )
-      .catch((errors) => {
-        console.error(errors);
-      });
-  };
-  const fetchSuggestOtherFeild = async () => {
-    const requestCpu = axios.get(apiGetSuggestCpu, { headers: headers });
-    const requestGpu = axios.get(apiGetSuggestGpu, { headers: headers });
-
-    await axios
-      .all([requestCpu, requestGpu])
-      .then(
-        axios.spread((...responses) => {
-          setSuggestCpus(responses[0].data.data);
-          setSuggestGpus(responses[1].data.data);
-        })
-      )
-      .catch((errors) => {
-        console.error(errors);
+      .get(apiGetSuggest)
+      .then((res) => {
+        console.log(res.data.data);
+        const data = res.data.data;
+        setSuggestNames(data?.name);
+        setSuggestColors(data?.color);
+        setSuggestDisplays(data?.display_size);
+        setSuggestCpus(data?.cpu);
+        setSuggestGpus(data?.gpu);
+      })
+      .catch((error) => {
+        console.error(error);
       });
   };
   const [file, setFile] = useState([]);
@@ -329,7 +303,6 @@ export default function CreatePost() {
 
   useEffect(() => {
     fetchBrand(postInfor.category);
-    fetchSuggestByCategory(postInfor.category);
     return () => {};
   }, [postInfor.category]);
 
@@ -519,7 +492,7 @@ export default function CreatePost() {
                 onChange={(e) => handleOnChange(e)}
                 placeholder="Loại sản phẩm"
               >
-                <option value="1">Điện thoại, Máy tính bảng</option>
+                <option value="1">Mobile</option>
                 <option value="2">Laptop</option>
                 <option value="3">PC</option>
               </select>

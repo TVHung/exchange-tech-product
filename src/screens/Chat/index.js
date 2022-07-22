@@ -190,21 +190,29 @@ export default function Chat() {
       ) : (
         <div className="row chatContainer">
           <div className="chat-left col-md-4">
-            {users?.map((item) => (
-              <div key={item.id}>
-                <a
-                  href={`/chat/${item.id}`}
-                  style={{ textDecoration: "none", color: "#000" }}
-                >
-                  <ItemChat
-                    item={item}
-                    userActive={userActive}
-                    setIsStart={setIsStart}
-                    latestMessage={latestMessage}
-                  />
-                </a>
+            {users.length > 0 ? (
+              <>
+                {users?.map((item) => (
+                  <div key={item.id}>
+                    <a
+                      href={`/chat/${item.id}`}
+                      style={{ textDecoration: "none", color: "#000" }}
+                    >
+                      <ItemChat
+                        item={item}
+                        userActive={userActive}
+                        setIsStart={setIsStart}
+                        latestMessage={latestMessage}
+                      />
+                    </a>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <div className="text-center mt-5">
+                <p>Bạn chưa có tin nhắn nào</p>
               </div>
-            ))}
+            )}
           </div>
           <div className="chat-right col-md-8 col-sm-12">
             {isStart ? (

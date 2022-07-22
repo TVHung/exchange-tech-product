@@ -64,6 +64,7 @@ export default function Login() {
       email: user?.email,
       password: user?.password,
     };
+    setIsLoading(true);
     await axios
       .post(apiLogin, userLogin)
       .then((res) => {
@@ -76,9 +77,11 @@ export default function Login() {
         } else {
           handleValidate(res.data);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         toast.error("Đặng nhập không thành công");
+        setIsLoading(false);
       });
   };
 
