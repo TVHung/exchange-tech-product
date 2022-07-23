@@ -289,6 +289,7 @@ label {
     border-radius: 5px;
     max-height: calc(100vh);
     @include scroll-custom();
+    overflow-x: hidden;
     .search-result-status {
         background-color: #f9fafc;
         padding: 10px;

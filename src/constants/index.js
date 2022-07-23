@@ -59,6 +59,7 @@ export const apiLoginGoogleCallback = `${api}/callback`;
 export const apiSendMessage = `${api}/send-message`;
 export const apiGetMessage = `${api}/all-message`;
 export const apiGetMyConversation = `${api}/my-conversations`;
+export const apiDeleteConversation = `${api}/delete-conversation`;
 
 //comment
 export const apiAddComment = `${api}/comments`;
@@ -66,6 +67,7 @@ export const apiGetCommentProduct = `${api}/comments/products`;
 
 //suggest
 export const apiGetSuggest = `${api}/products-feild-suggest`;
+export const apiGetNameSuggest = `${api}/products-name-suggest`;
 
 export const headers = {
   "Content-type": "application/json",
@@ -98,6 +100,10 @@ export const statusData = [
   { id: 1, value: "Mới" },
   { id: 2, value: "Cũ (90-99%)" },
   { id: 3, value: "Cũ (<90%)" },
+];
+export const typeProductData = [
+  { id: 0, value: "Sản phẩm đăng bán" },
+  { id: 1, value: "Sản phẩm đăng mua" },
 ];
 export const sexData = [
   { id: 1, value: "Nam" },

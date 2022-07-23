@@ -3,13 +3,17 @@ import SearchIcon from "@material-ui/icons/Search";
 import "./search.scss";
 import { useDispatch } from "react-redux";
 import { searchPostByName } from "./../../../redux/actions/postActions";
-import { getParam, insertParam } from "../../../utils/common";
+import { getParam, insertParam, suggest } from "../../../utils/common";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
+import { apiGetNameSuggest } from "../../../constants";
 
 export default function Search() {
   const [inputVal, setInputVal] = useState("");
   const formRef = useRef(null);
   const history = useHistory();
+  const [suggestName, setSuggestName] = useState([]);
+  const [suggestNames, setSuggestNames] = useState([]);
 
   const insertParams = (key, value) => {
     let params = insertParam(key, value);
@@ -38,11 +42,17 @@ export default function Search() {
   const onChangeSearch = (e) => {
     const val = e.target.value;
     setInputVal(val);
+    let matches = suggest(val, suggestNames);
+    setSuggestName(matches);
   };
 
   useEffect(() => {
     setValueWhenReload();
-    return () => {};
+    fetchSuggest();
+    return () => {
+      setSuggestName();
+      setSuggestNames();
+    };
   }, []);
 
   //get value param and set to ui
@@ -54,6 +64,30 @@ export default function Search() {
     }
   };
 
+  const fetchSuggest = async () => {
+    try {
+      var nameSuggest = JSON.parse(sessionStorage.suggestName);
+      console.log("suggest", nameSuggest);
+      setSuggestNames(nameSuggest?.name);
+    } catch (error) {
+      await axios
+        .get(apiGetNameSuggest)
+        .then((res) => {
+          console.log(res.data.data);
+          const data = res.data.data;
+          setSuggestNames(data?.name);
+          sessionStorage.setItem("suggestName", JSON.stringify(data));
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
+
+  const onClickSuggest = (value) => {
+    setInputVal(value);
+  };
+
   return (
     <form id="boxSearch" ref={formRef}>
       <input
@@ -63,7 +97,21 @@ export default function Search() {
         placeholder="Tìm kiếm sản phẩm"
         name="search"
         value={inputVal || ""}
+        onBlur={() =>
+          setTimeout(() => {
+            setSuggestName([]);
+          }, 100)
+        }
       />
+      {suggestName?.length > 0 && (
+        <div className="suggest-component">
+          {suggestName?.map((name, index) => (
+            <div key={index} onClick={() => onClickSuggest(name)}>
+              <p>{name}</p>
+            </div>
+          ))}
+        </div>
+      )}
       <button
         type="submit"
         id="button"

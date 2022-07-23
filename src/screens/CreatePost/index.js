@@ -191,20 +191,31 @@ export default function CreatePost() {
   };
 
   const fetchSuggest = async () => {
-    await axios
-      .get(apiGetSuggest)
-      .then((res) => {
-        console.log(res.data.data);
-        const data = res.data.data;
-        setSuggestNames(data?.name);
-        setSuggestColors(data?.color);
-        setSuggestDisplays(data?.display_size);
-        setSuggestCpus(data?.cpu);
-        setSuggestGpus(data?.gpu);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    try {
+      var allSuggest = JSON.parse(sessionStorage.suggestAll);
+      console.log("suggest", allSuggest);
+      setSuggestNames(allSuggest?.name);
+      setSuggestColors(allSuggest?.color);
+      setSuggestDisplays(allSuggest?.display_size);
+      setSuggestCpus(allSuggest?.cpu);
+      setSuggestGpus(allSuggest?.gpu);
+    } catch (error) {
+      await axios
+        .get(apiGetSuggest)
+        .then((res) => {
+          console.log(res.data.data);
+          const data = res.data.data;
+          setSuggestNames(data?.name);
+          setSuggestColors(data?.color);
+          setSuggestDisplays(data?.display_size);
+          setSuggestCpus(data?.cpu);
+          setSuggestGpus(data?.gpu);
+          sessionStorage.setItem("suggestAll", JSON.stringify(data));
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
   const [file, setFile] = useState([]);
   const [fileObject, setFileOject] = useState([]);

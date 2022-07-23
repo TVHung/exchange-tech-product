@@ -38,6 +38,7 @@ import {
   marksStorageData,
   storageTypeData,
   timeData,
+  typeProductData,
 } from "../../constants";
 import { Box, Slider } from "@material-ui/core";
 import AddressSelectSearch from "./../../components/AddressSelectSearch";
@@ -64,10 +65,12 @@ export default function Search() {
   const [openCard, setOpenCard] = useState(false);
   const [openBrand, setOpenBrand] = useState(false);
   const [openAddress, setOpenAddress] = useState(false);
+  const [openTrade, setOpenTrade] = useState(false);
 
   //value filter
   const [searchValue, setsearchValue] = useState("");
   const [categoryValue, setCategoryValue] = useState("");
+  const [tradeValue, setTradeValue] = useState("2");
   const [storageTypeValue, setStorageTypeValue] = useState("");
   const [videoValue, setVideoValue] = useState("");
   const [displaySizeValue, setDisplaySizeValue] = useState("");
@@ -130,6 +133,9 @@ export default function Search() {
       case "address":
         setOpenAddress(!openAddress);
         break;
+      case "trade":
+        setOpenTrade(!openTrade);
+        break;
       default:
         break;
     }
@@ -150,6 +156,7 @@ export default function Search() {
     let addressVal = getParam("address");
     let sortTimeVal = getParam("create_at");
     let sortPriceVal = getParam("sort");
+    let tradeVal = getParam("trade");
 
     if (addressVal) {
       setAddressValue(addressVal);
@@ -158,6 +165,10 @@ export default function Search() {
     if (categoryVal) {
       setCategoryValue(categoryVal);
       setOpenCategory(true);
+    }
+    if (tradeVal) {
+      setCategoryValue(tradeVal);
+      setOpenTrade(true);
     }
     if (priceVal) {
       let newValue = priceVal.split("_").map(function (item) {
@@ -269,6 +280,13 @@ export default function Search() {
     else insertParams("category", value);
     console.log("value", value);
     setCategoryValue(value);
+  };
+  const onChangeCheckTrade = (e) => {
+    const { value } = e.target;
+    if (value == "2") deleteParam("trade");
+    else insertParams("trade", value);
+    console.log("value", value);
+    setTradeValue(value);
   };
   const onChangeCheckVideo = (e) => {
     const { value } = e.target;
@@ -586,6 +604,52 @@ export default function Search() {
                         >
                           <option value="0">Tất cả</option>
                           {categoryData.map((data, index) => (
+                            <option key={index} value={data.id}>
+                              {data.value}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </Collapse>
+                  </div>
+                  <div className="box border-bottom-custom">
+                    <div
+                      className="box-label text-uppercase d-flex align-items-center"
+                      onClick={() => showHideCollapse("trade")}
+                    >
+                      Kiểu sản phẩm{" "}
+                      <button
+                        className="btn ms-auto  collapse-filter"
+                        name="trade"
+                        onClick={() => showHideCollapse("trade")}
+                        aria-controls="collpase-trade-filter"
+                        aria-expanded={openTrade}
+                      >
+                        {" "}
+                        {openTrade ? (
+                          <i className="fas fa-minus"></i>
+                        ) : (
+                          <i className="fas fa-plus"></i>
+                        )}{" "}
+                      </button>
+                    </div>
+                    <Collapse in={openTrade}>
+                      <div id="collpase-trade-filter">
+                        <label className="form-label" htmlFor="post-trade">
+                          Kiểu sản phẩm
+                        </label>
+                        <select
+                          className="form-select"
+                          aria-label="Disabled select example"
+                          required
+                          id="post-trade"
+                          name="trade"
+                          value={Number(tradeValue)}
+                          onChange={(e) => onChangeCheckTrade(e)}
+                          placeholder="Kiểu sản phẩm"
+                        >
+                          <option value="2">Tất cả</option>
+                          {typeProductData.map((data, index) => (
                             <option key={index} value={data.id}>
                               {data.value}
                             </option>
@@ -1142,7 +1206,7 @@ export default function Search() {
                     )}
                   </div>
                 </div>
-                {get_post_search?.data?.length && (
+                {get_post_search?.data?.length > 0 && (
                   <div className="col-12">
                     <div className="paginate mt-3">
                       <small className="fw-bold d-block">

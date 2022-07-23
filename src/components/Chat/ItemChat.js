@@ -54,7 +54,7 @@ export default function ItemChat({
           </div> */}
         </Grid>
       </Grid>
-      {/* {!item.readed ? <div className="chat-dot-have-mess"></div> : null} */}
+      {/* {true ? <div className="chat-dot-have-mess"></div> : null} */}
     </div>
   );
 }
