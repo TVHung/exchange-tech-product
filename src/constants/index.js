@@ -59,6 +59,7 @@ export const apiLoginGoogleCallback = `${api}/callback`;
 export const apiSendMessage = `${api}/send-message`;
 export const apiGetMessage = `${api}/all-message`;
 export const apiGetMyConversation = `${api}/my-conversations`;
+export const apiDeleteConversation = `${api}/delete-conversation`;
 
 //comment
 export const apiAddComment = `${api}/comments`;
