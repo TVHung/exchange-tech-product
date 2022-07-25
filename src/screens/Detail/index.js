@@ -50,6 +50,7 @@ export default function Detail({ isAuth }) {
   const [getError, setGetError] = useState(false);
   const [breadcrumb, setBreadcrumb] = useState([]);
   const [isCompare, setIsCompare] = useState(false);
+  const [show, setShow] = useState(false);
 
   const params = useParams();
   const list_compare = useSelector((state) => state.post.list_compare);
@@ -202,7 +203,7 @@ export default function Detail({ isAuth }) {
   const fetchRecommendPost = async () => {
     try {
       await axios
-        .get(`${apiFetchRecommendPosts}`, {
+        .get(`${apiFetchRecommendPosts}/${params.id}`, {
           headers: headers,
         })
         .then((res) => {
@@ -296,7 +297,7 @@ export default function Detail({ isAuth }) {
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                 <i className="fas fa-tags"></i>
                                 <span>
-                                  Hãng: {postDetail?.productMobile?.brand.name}
+                                  Hãng: {postDetail?.productMobile?.brand}
                                 </span>
                               </div>
                             )}
@@ -434,7 +435,7 @@ export default function Detail({ isAuth }) {
                                 className="detail-compare-btn btn fs-12"
                                 onClick={() => deleteCompare(params.id)}
                               >
-                                <i className="fas fa-plus-circle"></i>
+                                <i className="fas fa-minus-circle"></i>
                                 Đã thêm so sánh
                               </button>
                             ) : (

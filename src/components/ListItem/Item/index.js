@@ -4,10 +4,7 @@ import { Button } from "@material-ui/core";
 import { formatPrice, handleCalculateTime } from "./../../../utils/common";
 import imgDefault from "../../../assets/image/product-default.png";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  deleteWishList,
-  addWishList,
-} from "../../../redux/actions/postActions";
+import { addWishList } from "../../../redux/actions/postActions";
 
 export default function Item({ data, status }) {
   const [favorite, setfavorite] = useState(false);
@@ -23,10 +20,10 @@ export default function Item({ data, status }) {
 
   const dispatch = useDispatch();
   const addNewWishList = () => {
-    dispatch(addWishList(data.id));
+    dispatch(addWishList(data?.id));
   };
   // const removeWishList = () => {
-  //   dispatch(deleteWishList(data.id));
+  //   dispatch(deleteWishList(data?.id));
   // };
 
   useEffect(() => {
@@ -37,8 +34,8 @@ export default function Item({ data, status }) {
   }, []);
 
   const toDetail = () => {
-    console.log("to detail");
-    window.location.href = `/detail/${data.id}`;
+    if (data?.image_url) window.location.href = `/detail/${data?.product_id}`;
+    else window.location.href = `/detail/${data?.id}`;
   };
 
   const getBanner = (data_images) => {
@@ -51,30 +48,30 @@ export default function Item({ data, status }) {
     <div className="itemContainer">
       <div className="itemHeader">
         <img
-          src={getBanner(data.images) || imgDefault}
+          src={getBanner(data?.images) || imgDefault}
           alt="productImg"
           className="itemImg"
         />
       </div>
       <div>
         <div className="itemContent">
-          <h5>{data.name}</h5>
-          {data.price != 0 ? (
-            <p className="item-value">Giá: {formatPrice(data.price)}đ</p>
+          <h5>{data?.name}</h5>
+          {data?.price != 0 ? (
+            <p className="item-value">Giá: {formatPrice(data?.price)}đ</p>
           ) : (
             <p className="item-value">Giá: Miễn phí</p>
           )}
           <span>{data?.category}</span>
           <div className="item-create-location">
             <span className="item-createAt">
-              {handleCalculateTime(data.created_at || null)}
+              {handleCalculateTime(data?.created_at || null)}
             </span>
             <span className="item-location">
-              {data.address && data.address.split(", ")[2]}
+              {data?.address && data?.address.split(", ")[2]}
             </span>
           </div>
         </div>
-        <div className="itemDrop">
+        <div className="itemDrop" onClick={() => toDetail()}>
           <i
             className="fas fa-heart favorite-heart"
             onClick={() => toggleFavorite()}
@@ -82,14 +79,15 @@ export default function Item({ data, status }) {
           ></i>
           <div className="itemDrop-container">
             <div className="itemDrop-content">
-              <p>{data.description}</p>
+              <span>{data?.category}</span>
+              <p>{data?.description}</p>
             </div>
-            <div className="itemDrop-btn">
-              <Button className="item-btn-care" onClick={() => toDetail()}>
+            {/* <div className="itemDrop-btn"> */}
+            {/* <Button className="item-btn-care" onClick={() => toDetail()}>
                 Chi tiết
-              </Button>
-              <Button className="item-btn-chat">Nhắn tin</Button>
-            </div>
+              </Button> */}
+            {/* <Button className="item-btn-chat">Nhắn tin</Button> */}
+            {/* </div> */}
           </div>
         </div>
       </div>

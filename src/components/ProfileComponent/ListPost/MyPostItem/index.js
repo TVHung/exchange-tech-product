@@ -6,7 +6,7 @@ import imgBlock from "../../../../assets/image/block.png";
 
 export default function MyPostItem({ data, handleShow }) {
   const toDetail = () => {
-    window.location.href = `/detail/${data.id}`;
+    window.location.href = `edit-post/${data.id}`;
   };
 
   const handleDelete = (e) => {

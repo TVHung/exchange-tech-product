@@ -86,14 +86,15 @@ export default function Item({ data, status }) {
           ></i>
           <div className="itemDrop-container">
             <div className="itemDrop-content">
+              <span>{data?.category}</span>
               <p>{data.description}</p>
             </div>
-            <div className="itemDrop-btn">
-              <Button className="item-btn-care" onClick={() => toDetail()}>
+            {/* <div className="itemDrop-btn"> */}
+            {/* <Button className="item-btn-care" onClick={() => toDetail()}>
                 Chi tiết
-              </Button>
-              <Button className="item-btn-chat">Nhắn tin</Button>
-            </div>
+              </Button> */}
+            {/* <Button className="item-btn-chat">Nhắn tin</Button> */}
+            {/* </div> */}
           </div>
         </div>
       </div>

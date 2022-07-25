@@ -204,6 +204,10 @@ export default function AccountUserInfor() {
   };
 
   useEffect(() => {
+    setIsLoaded(true);
+    setTimeout(() => {
+      setIsLoaded(false);
+    }, 1000);
     return () => {
       setfileImage();
       setfileImageUrl();
@@ -479,14 +483,16 @@ export default function AccountUserInfor() {
                         <i className="fas fa-check-circle"></i>
                         <b>Kết nối: </b>
                         <span className="infor-detail">
-                          <a
-                            href={user_profile?.facebook_url}
-                            title="Facebook"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            <i className="fab fa-facebook social-icon"></i>
-                          </a>
+                          {user_profile?.facebook_url && (
+                            <a
+                              href={user_profile?.facebook_url}
+                              title="Facebook"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              <i className="fab fa-facebook social-icon"></i>
+                            </a>
+                          )}
                         </span>
                       </li>
                     </ul>

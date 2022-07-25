@@ -54,6 +54,8 @@ export default function Navigation() {
           .then((res) => {
             toast.success("Đăng xuất thành công");
             deleteCookie("access_token");
+            localStorage.removeItem("array_id_compare");
+            localStorage.removeItem("current_category");
             setTimeout(() => {
               window.location.href = `/`;
             }, 1000);
