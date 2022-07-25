@@ -9,7 +9,7 @@ import banner1 from "../../assets/image/banner1.jpg";
 import banner2 from "../../assets/image/banner2.jpg";
 import banner3 from "../../assets/image/banner3.jpg";
 import axios from "axios";
-import { apiPost, apiPostRecently } from "../../constants";
+import { apiPostMostInterest, apiPostRecently } from "../../constants";
 import { setLinkDirect } from "../../utils/common";
 import { apiPostHasTrade } from "./../../constants/index";
 
@@ -36,7 +36,7 @@ const dataSlides = [
 
 export default function Home() {
   const [preload, setPreload] = useState(false);
-  const [allPost, setAllPost] = useState([]);
+  const [allPostMostInterest, setAllPostMostInterest] = useState([]);
   const [postRecently, setPostRecently] = useState([]);
   const [postHasTrade, setPostHasTrade] = useState([]);
 
@@ -49,7 +49,7 @@ export default function Home() {
   }, []);
 
   const fetchAllPostWithFeild = () => {
-    let URL1 = apiPost;
+    let URL1 = apiPostMostInterest;
     let URL2 = apiPostRecently;
     let URL3 = apiPostHasTrade;
 
@@ -58,7 +58,7 @@ export default function Home() {
     const promise3 = axios.get(URL3);
 
     Promise.all([promise1, promise2, promise3]).then(function (res) {
-      setAllPost(res[0].data.data);
+      setAllPostMostInterest(res[0].data.data);
       setPostRecently(res[1].data.data);
       setPostHasTrade(res[2].data.data);
       setPreload(true);
@@ -68,7 +68,7 @@ export default function Home() {
   return (
     <div id="homeContainer" className="container">
       <MetaTag
-        title={"Trang chủ"}
+        title={"Texchange - Trang chủ"}
         description={"Trang web buôn bán, trao đổi sản phẩm cũ"}
       />
       {!preload ? (
@@ -78,9 +78,9 @@ export default function Home() {
           <SlideShow dataSlides={dataSlides} />
           <Categories />
           <h3>Tin mới đăng</h3>
-          <ListItem dataList={allPost} />
-          <h3>Bài viết nổi bật</h3>
           <ListItem dataList={postRecently} />
+          <h3>Bài viết được nhiều người quan tâm</h3>
+          <ListItem dataList={allPostMostInterest} />
           <h3>Bài viết đổi sản phẩm</h3>
           <ListItem dataList={postHasTrade} />
         </div>

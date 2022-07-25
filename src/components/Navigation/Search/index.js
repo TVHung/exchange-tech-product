@@ -6,7 +6,7 @@ import { searchPostByName } from "./../../../redux/actions/postActions";
 import { getParam, insertParam, suggest } from "../../../utils/common";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
-import { apiGetNameSuggest } from "../../../constants";
+import { apiGetSuggest } from "../../../constants";
 
 export default function Search() {
   const [inputVal, setInputVal] = useState("");
@@ -66,17 +66,17 @@ export default function Search() {
 
   const fetchSuggest = async () => {
     try {
-      var nameSuggest = JSON.parse(sessionStorage.suggestName);
+      var nameSuggest = JSON.parse(sessionStorage.suggestAll);
       console.log("suggest", nameSuggest);
       setSuggestNames(nameSuggest?.name);
     } catch (error) {
       await axios
-        .get(apiGetNameSuggest)
+        .get(apiGetSuggest)
         .then((res) => {
           console.log(res.data.data);
           const data = res.data.data;
           setSuggestNames(data?.name);
-          sessionStorage.setItem("suggestName", JSON.stringify(data));
+          sessionStorage.setItem("suggestAll", JSON.stringify(data));
         })
         .catch((error) => {
           console.error(error);

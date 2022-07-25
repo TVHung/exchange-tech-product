@@ -89,14 +89,16 @@ export default function AccountInfor() {
                   <h4 style={{ marginTop: 0 }}>{userProfile?.name}</h4>
                   <div>
                     <span className="infor-detail">
-                      <a
-                        href={userProfile?.facebook_url}
-                        title="Facebook"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <i className="fab fa-facebook fa-2x social-icon"></i>
-                      </a>
+                      {userProfile?.facebook_url && (
+                        <a
+                          href={userProfile?.facebook_url}
+                          title="Facebook"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <i className="fab fa-facebook fa-2x social-icon"></i>
+                        </a>
+                      )}
                     </span>
                   </div>
                 </Grid>

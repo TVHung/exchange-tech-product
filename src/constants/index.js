@@ -20,6 +20,7 @@ export const apiChangeAvatar = `${api}/change-avatar`;
 //api product
 export const apiPost = `${api}/products`;
 export const apiPostRecently = `${api}/products-recently`;
+export const apiPostMostInterest = `${api}/products-most-interest`;
 export const apiPostHasTrade = `${api}/products-has-trade`;
 export const apiGetAllPost = `${api}/products`;
 export const apiFetchPostDetail = `${api}/products`;

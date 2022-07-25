@@ -465,6 +465,7 @@ export default function EditPost() {
       is_trade: data?.is_trade,
       video_url: data?.video_url,
       sold: data?.sold,
+      is_block: data?.is_block,
       productChild: data?.productMobile
         ? data?.productMobile
         : data?.productLaptop
@@ -1202,9 +1203,15 @@ export default function EditPost() {
                   type="submit"
                   className="btn btn-success btn-block btn-submit"
                   onClick={(e) => onSubmitForm(e)}
+                  disabled={postInfor?.is_block}
                 >
                   Cập nhật
                 </button>
+                <p className="color-red">
+                  {postInfor?.is_block == 1
+                    ? "Bạn không thể chỉnh sửa sản phẩm bị khóa"
+                    : ""}
+                </p>
               </div>
             </div>
           </Grid>
