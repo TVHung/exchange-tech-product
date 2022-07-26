@@ -18,6 +18,8 @@ import {
   maxNumImage,
   maxSizeImage,
   apiGetSuggest,
+  commandData,
+  resolutionData,
 } from "./../../constants";
 import { toast } from "react-toastify";
 import Breadcrumb from "../../components/Breadcrumb";
@@ -70,6 +72,7 @@ export default function EditPost() {
     public_status: 1,
     is_trade: 0,
     video_url: "",
+    command: null,
   });
   const [productChild, setProductChild] = useState({
     cpu: null,
@@ -79,6 +82,8 @@ export default function EditPost() {
     storage: null,
     display_size: null,
     color: null,
+    pin: null,
+    resolution: null,
   });
   const [postTradeInfor, setPostTradeInfor] = useState({
     category: 1, //1:phone, 2: laptop, 3: pc
@@ -105,6 +110,9 @@ export default function EditPost() {
     description: "",
     fileImages: "",
     fileVideo: "",
+    command: "",
+    pin: "",
+    resolution: "",
 
     nameTrade: "",
     titleTrade: "",
@@ -365,6 +373,9 @@ export default function EditPost() {
       video_url: postInfor?.video_url,
       is_delete_video: isDeleteVideo,
       is_delete_image: deleteImageId,
+      command: parseInt(postInfor?.command || 0),
+      pin: parseInt(productChild?.pin),
+      resolution: productChild?.resolution,
     };
 
     mergePostData = { ...postData };
@@ -466,6 +477,7 @@ export default function EditPost() {
       video_url: data?.video_url,
       sold: data?.sold,
       is_block: data?.is_block,
+      command: data?.command,
       productChild: data?.productMobile
         ? data?.productMobile
         : data?.productLaptop
@@ -776,6 +788,83 @@ export default function EditPost() {
                   </div>
                 </div>
               )}
+              {/* -----------------new------------------ */}
+              {Number(postInfor.category) == 1 && (
+                <div className="col">
+                  <div className="form-outline position-relative">
+                    <label className="form-label" htmlFor="post-pin">
+                      Dung lượng pin
+                    </label>
+                    <input
+                      type="number"
+                      id="post-pin"
+                      className="form-control"
+                      placeholder="Dung lượng pin"
+                      min={0}
+                      name="pin"
+                      onChange={(e) => handleOnChangeChild(e)}
+                      value={productChild?.pin || ""}
+                    />
+                    <p className="validate-form-text">{validatePost.pin}</p>
+                  </div>
+                </div>
+              )}
+              {Number(postInfor.category) < 3 && (
+                <div className="col">
+                  <div className="form-outline">
+                    <label className="form-label" htmlFor="post-resolution">
+                      Độ phân giải màn hình
+                    </label>
+                    <select
+                      className="form-select"
+                      aria-label="Disabled select example"
+                      name="resolution"
+                      id="post-resolution"
+                      onChange={(e) => handleOnChangeChild(e)}
+                      value={productChild?.resolution || ""}
+                    >
+                      <option value={""}>Độ phân giải màn hình</option>
+                      {resolutionData?.map((data, index) => (
+                        <option key={index} value={data.value}>
+                          {`${data.value}`}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="validate-form-text">{validatePost.storage}</p>
+                  </div>
+                </div>
+              )}
+              <div className="row mb-3">
+                <div className="col">
+                  <div className="form-outline">
+                    <label className="form-label" htmlFor="post-command">
+                      Nhu cầu sử dụng
+                    </label>
+                    <select
+                      className={
+                        validatePost.command
+                          ? "form-select is-invalid"
+                          : "form-select"
+                      }
+                      aria-label="Disabled select example"
+                      name="command"
+                      id="post-command"
+                      onChange={(e) => handleOnChange(e)}
+                      value={postInfor?.command || 0}
+                    >
+                      <option>Nhu cầu sử dụng</option>
+                      {commandData &&
+                        commandData.map((data, index) => (
+                          <option key={index} value={data.id}>
+                            {data.value}
+                          </option>
+                        ))}
+                    </select>
+                    <p className="validate-form-text">{validatePost.command}</p>
+                  </div>
+                </div>
+              </div>
+              {/* ------------------------------------ */}
               <div className="row mb-3">
                 <div className="col">
                   <div className="form-outline">

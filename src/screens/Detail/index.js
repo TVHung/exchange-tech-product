@@ -309,6 +309,23 @@ export default function Detail({ isAuth }) {
                                 </span>
                               </div>
                             )}
+                            {postDetail?.productMobile?.pin && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-tags"></i>
+                                <span>
+                                  Pin: {postDetail?.productMobile?.pin} mah
+                                </span>
+                              </div>
+                            )}
+                            {postDetail?.productMobile?.resolution && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-tags"></i>
+                                <span>
+                                  Độ phân giải:{" "}
+                                  {postDetail?.productMobile?.resolution}
+                                </span>
+                              </div>
+                            )}
                           </>
                         )}
                         {/* laptop */}
@@ -364,6 +381,15 @@ export default function Detail({ isAuth }) {
                                 <span>
                                   Màn hình:{" "}
                                   {postDetail?.productLaptop?.display_size} inch
+                                </span>
+                              </div>
+                            )}
+                            {postDetail?.productLaptop?.resolution && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-tags"></i>
+                                <span>
+                                  Độ phân giải:{" "}
+                                  {postDetail?.productLaptop?.resolution}
                                 </span>
                               </div>
                             )}
