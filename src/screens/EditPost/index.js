@@ -825,7 +825,7 @@ export default function EditPost() {
                     >
                       <option value={""}>Độ phân giải màn hình</option>
                       {resolutionData?.map((data, index) => (
-                        <option key={index} value={data.value}>
+                        <option key={index} value={data.id}>
                           {`${data.value}`}
                         </option>
                       ))}

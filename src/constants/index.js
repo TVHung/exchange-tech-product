@@ -184,6 +184,44 @@ export const marksPrice = [
     label: "20tr",
   },
 ];
+export const pinStep = 100;
+export const marksPin = [
+  {
+    value: 0,
+    label: "0",
+  },
+  {
+    value: 10,
+  },
+  {
+    value: 20,
+  },
+  {
+    value: 30,
+  },
+  {
+    value: 40,
+  },
+  {
+    value: 50,
+  },
+  {
+    value: 60,
+  },
+  {
+    value: 70,
+  },
+  {
+    value: 80,
+  },
+  {
+    value: 90,
+  },
+  {
+    value: 100,
+    label: "10Kmah",
+  },
+];
 export const guaranteeStep = 0.3;
 export const marksGuarantee = [
   {

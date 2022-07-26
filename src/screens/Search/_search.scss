@@ -279,6 +279,7 @@ label {
     border-radius: 5px;
     height: calc(100vh);
     @include scroll-custom();
+    overflow-x: hidden;
 }
 .border-bottom-custom {
     border-bottom: 1px solid $base-color-2;

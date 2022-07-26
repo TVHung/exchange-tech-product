@@ -39,6 +39,10 @@ import {
   storageTypeData,
   timeData,
   typeProductData,
+  commandData,
+  marksPin,
+  pinStep,
+  resolutionData,
 } from "../../constants";
 import { Box, Slider } from "@material-ui/core";
 import AddressSelectSearch from "./../../components/AddressSelectSearch";
@@ -66,6 +70,9 @@ export default function Search() {
   const [openBrand, setOpenBrand] = useState(false);
   const [openAddress, setOpenAddress] = useState(false);
   const [openTrade, setOpenTrade] = useState(false);
+  const [openPin, setOpenPin] = useState(false);
+  const [openResolution, setOpenResolution] = useState(false);
+  const [openCommand, setOpenCommand] = useState(false);
 
   //value filter
   const [searchValue, setsearchValue] = useState("");
@@ -81,6 +88,9 @@ export default function Search() {
   const [addressValue, setAddressValue] = useState("");
   const [sortTimeValue, setSortTimeValue] = useState("");
   const [sortPriceValue, setSortPriceValue] = useState("");
+  const [pinValue, setPinValue] = useState("");
+  const [resolutionValue, setResolutionValue] = useState("");
+  const [commandValue, setCommandValue] = useState("");
 
   //useRef
   const categoryRef = useRef(null);
@@ -136,6 +146,15 @@ export default function Search() {
       case "trade":
         setOpenTrade(!openTrade);
         break;
+      case "pin":
+        setOpenPin(!openPin);
+        break;
+      case "resolution":
+        setOpenResolution(!openResolution);
+        break;
+      case "command":
+        setOpenCommand(!openCommand);
+        break;
       default:
         break;
     }
@@ -157,6 +176,9 @@ export default function Search() {
     let sortTimeVal = getParam("create_at");
     let sortPriceVal = getParam("sort");
     let tradeVal = getParam("trade");
+    let pinVal = getParam("pin");
+    let resolutionVal = getParam("resolution");
+    let commandVal = getParam("command");
 
     if (addressVal) {
       setAddressValue(addressVal);
@@ -245,6 +267,27 @@ export default function Search() {
     }
     if (sortPriceVal) {
       setSortPriceValue(sortPriceVal);
+    }
+    if (pinVal) {
+      let newValue = pinVal.split("_").map(function (item) {
+        return parseInt(item, 10);
+      });
+      setValuePinStart(newValue[0]);
+      setValuePinEnd(newValue[1]);
+      setPinValue(
+        newValue.map(function (item) {
+          return (item / pinStep).toFixed();
+        })
+      );
+      setOpenPin(true);
+    }
+    if (resolutionVal) {
+      setResolutionValue(resolutionVal);
+      setOpenResolution(true);
+    }
+    if (commandVal) {
+      setCommandValue(commandVal);
+      setOpenCommand(true);
     }
   };
 
@@ -342,6 +385,22 @@ export default function Search() {
     }
     setAddressValue(address);
   };
+  const onChangeCommand = (e) => {
+    const { value } = e.target;
+    let paramVal = changeParamString("command", value);
+    if (paramVal != null) {
+      insertParams("command", paramVal);
+    }
+    setCommandValue(paramVal);
+  };
+  const onChangeResolution = (e) => {
+    const { value } = e.target;
+    let paramVal = changeParamString("resolution", value);
+    if (paramVal != null) {
+      insertParams("resolution", paramVal);
+    }
+    setResolutionValue(paramVal);
+  };
 
   const scrollRef = useRef(null);
   const scrollInView = () => {
@@ -410,6 +469,18 @@ export default function Search() {
     if (newValue[1] == 0) deleteParam("price");
   };
 
+  //slider step price
+  const [valuePin, setValuePin] = useState([0, 0]);
+  const [valuePinStart, setValuePinStart] = useState(0);
+  const [valuePinEnd, setValuePinEnd] = useState(0);
+  const handleChangePin = (event, newValue) => {
+    setValuePinStart(newValue[0] * pinStep);
+    setValuePinEnd(newValue[1] * pinStep);
+    setValuePin(newValue);
+    insertParams("pin", `${newValue[0] * pinStep}_${newValue[1] * pinStep}`);
+    if (newValue[1] == 0) deleteParam("pin");
+  };
+
   //slider step guarantee
   const [valueGuarantee, setValueGuarantee] = useState([0, 0]);
   const handleChangeGuarantee = (event, newValue) => {
@@ -473,11 +544,17 @@ export default function Search() {
       setValue([0, 0]);
       setValueStart(0);
       setValueEnd(0);
+      setValuePin([0, 0]);
+      setValuePinStart(0);
+      setValuePinEnd(0);
       setValueGuarantee([0, 0]);
       setValueRam([0, 0]);
       setValueStorage([0, 0]);
       setValueStorageStart(0);
       setValueStorageEnd(0);
+      setPinValue("");
+      setResolutionValue("");
+      setCommandValue();
     };
   }, []);
 
@@ -655,6 +732,108 @@ export default function Search() {
                             </option>
                           ))}
                         </select>
+                      </div>
+                    </Collapse>
+                  </div>
+                  <div className="box border-bottom-custom">
+                    <div
+                      className="box-label text-uppercase d-flex align-items-center"
+                      onClick={() => showHideCollapse("command")}
+                    >
+                      Nhu cầu sử dụng{" "}
+                      <button
+                        className="btn ms-auto collapse-filter"
+                        name="command"
+                        onClick={() => showHideCollapse("command")}
+                        aria-controls="collpase-command-filter"
+                        aria-expanded={openCommand}
+                      >
+                        {" "}
+                        {openCommand ? (
+                          <i className="fas fa-minus"></i>
+                        ) : (
+                          <i className="fas fa-plus"></i>
+                        )}{" "}
+                      </button>
+                    </div>
+                    <Collapse in={openCommand}>
+                      <div id="collpase-command-filter">
+                        {commandData &&
+                          commandData?.map((data, index) => (
+                            <div className="my-1" key={index}>
+                              {" "}
+                              <label className="tick">
+                                {data.value}
+                                <input
+                                  type="checkbox"
+                                  value={data.id}
+                                  onChange={onChangeCommand}
+                                  checked={
+                                    (commandValue?.length &&
+                                      commandValue
+                                        .split(".")
+                                        .map(function (item) {
+                                          return parseInt(item, 10);
+                                        })
+                                        .includes(data.id)) ||
+                                    false
+                                  }
+                                />{" "}
+                                <span className="check"></span>{" "}
+                              </label>{" "}
+                            </div>
+                          ))}
+                      </div>
+                    </Collapse>
+                  </div>
+                  <div className="box border-bottom-custom">
+                    <div
+                      className="box-label text-uppercase d-flex align-items-center"
+                      onClick={() => showHideCollapse("resolution")}
+                    >
+                      Độ phân giải{" "}
+                      <button
+                        className="btn ms-auto collapse-filter"
+                        name="resolution"
+                        onClick={() => showHideCollapse("resolution")}
+                        aria-controls="collpase-resolution-filter"
+                        aria-expanded={openResolution}
+                      >
+                        {" "}
+                        {openResolution ? (
+                          <i className="fas fa-minus"></i>
+                        ) : (
+                          <i className="fas fa-plus"></i>
+                        )}{" "}
+                      </button>
+                    </div>
+                    <Collapse in={openResolution}>
+                      <div id="collpase-resolution-filter">
+                        {resolutionData &&
+                          resolutionData?.map((data, index) => (
+                            <div className="my-1" key={index}>
+                              {" "}
+                              <label className="tick">
+                                {data.value}
+                                <input
+                                  type="checkbox"
+                                  value={data.id}
+                                  onChange={onChangeResolution}
+                                  checked={
+                                    (resolutionValue?.length &&
+                                      resolutionValue
+                                        .split(".")
+                                        .map(function (item) {
+                                          return parseInt(item, 10);
+                                        })
+                                        .includes(data.id)) ||
+                                    false
+                                  }
+                                />{" "}
+                                <span className="check"></span>{" "}
+                              </label>{" "}
+                            </div>
+                          ))}
                       </div>
                     </Collapse>
                   </div>
@@ -969,6 +1148,62 @@ export default function Search() {
                       </div>
                     </Collapse>
                   </div>
+                  {categoryValue == "1" ? (
+                    <div className="box border-bottom-custom">
+                      <div
+                        className="box-label text-uppercase d-flex align-items-center"
+                        onClick={() => showHideCollapse("pin")}
+                      >
+                        Dung lượng pin{" "}
+                        <button
+                          className="btn ms-auto collapse-filter"
+                          name="pin"
+                          onClick={() => showHideCollapse("pin")}
+                          aria-controls="collpase-pin-filter"
+                          aria-expanded={openPin}
+                        >
+                          {" "}
+                          {openPin ? (
+                            <i className="fas fa-minus"></i>
+                          ) : (
+                            <i className="fas fa-plus"></i>
+                          )}{" "}
+                        </button>
+                      </div>
+                      <Collapse in={openPin}>
+                        <div id="collpase-pin-filter">
+                          <div className="slider-step-pin">
+                            <label>Lựa chọn dung lượng pin</label>
+                            <Box sx={{ width: "100%" }}>
+                              <Slider
+                                getAriaLabel={() => "Temperature range"}
+                                value={valuePin}
+                                onChange={handleChangePin}
+                                step={10}
+                                marks={marksPin}
+                                getAriaValueText={valuetext}
+                              />
+                            </Box>
+                          </div>
+                          <div className="slider-step-value">
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={`${valuePinStart}mah` || 0}
+                              readOnly
+                            />{" "}
+                            ~{" "}
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={`${valuePinEnd}mah` || 0}
+                              readOnly
+                            />
+                          </div>
+                        </div>
+                      </Collapse>
+                    </div>
+                  ) : null}
                   {categoryValue == "2" || categoryValue == "3" ? (
                     <div className="box border-bottom-custom">
                       <div

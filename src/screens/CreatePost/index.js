@@ -697,7 +697,7 @@ export default function CreatePost() {
                     >
                       <option value={0}>Độ phân giải màn hình</option>
                       {resolutionData?.map((data, index) => (
-                        <option key={index} value={data.value}>
+                        <option key={index} value={data.id}>
                           {`${data.value}`}
                         </option>
                       ))}
