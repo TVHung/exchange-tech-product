@@ -15,6 +15,8 @@ import {
   maxNumImage,
   maxSizeVideo,
   apiGetSuggest,
+  commandData,
+  resolutionData,
 } from "./../../constants";
 import { toast } from "react-toastify";
 import Breadcrumb from "../../components/Breadcrumb";
@@ -62,6 +64,7 @@ export default function CreatePost() {
     public_status: 1,
     is_trade: 0,
     video_url: null,
+    command: null,
   });
   const [productChild, setProductChild] = useState({
     brand_id: null,
@@ -70,6 +73,8 @@ export default function CreatePost() {
     storage_type: null,
     display_size: null,
     color: null,
+    pin: null,
+    resolution: null,
   });
   const [validatePost, setvalidatePost] = useState({
     name: "",
@@ -82,6 +87,9 @@ export default function CreatePost() {
     description: "",
     fileImages: "",
     fileVideo: "",
+    command: "",
+    pin: "",
+    resolution: "",
   });
   useEffect(() => {
     setLinkDirect();
@@ -112,6 +120,7 @@ export default function CreatePost() {
       ...prevState,
       [name]: value,
     }));
+    console.log(name, value);
     if (name === "category") {
       setvalidatePost({
         name: "",
@@ -124,6 +133,9 @@ export default function CreatePost() {
         description: "",
         fileImages: "",
         fileVideo: "",
+        command: "",
+        resolution: "",
+        pin: "",
       });
       //reset form post
       document.getElementById("form-create-post").reset();
@@ -141,6 +153,7 @@ export default function CreatePost() {
         public_status: 1,
         is_trade: 0,
         video_url: null,
+        command: null,
       });
     }
     if (name == "name") {
@@ -308,6 +321,9 @@ export default function CreatePost() {
       description: "",
       fileImages: "",
       fileVideo: "",
+      command: "",
+      pin: "",
+      resolution: "",
     });
     createPost();
   };
@@ -346,6 +362,7 @@ export default function CreatePost() {
       ram: parseInt(postInfor?.ram || 0),
       storage: parseInt(postInfor?.storage) || 0,
       guarantee: parseInt(postInfor?.guarantee || 0),
+      command: parseInt(postInfor?.command || 0),
       fileVideo: videoFile,
 
       color: productChild?.color,
@@ -354,7 +371,11 @@ export default function CreatePost() {
       storage_type: parseInt(productChild?.storage_type) || 0,
       brand_id: parseInt(productChild?.brand_id),
       display_size: parseFloat(productChild?.display_size),
+      pin: parseInt(productChild?.pin),
+      resolution: productChild?.resolution,
     };
+
+    console.log(postData);
     mergePostData = { ...postData };
 
     const formData = appendArrayToFormData(mergePostData);
@@ -640,6 +661,81 @@ export default function CreatePost() {
                   </div>
                 </div>
               )}
+              {/* -----------------new------------------ */}
+              {Number(postInfor.category) == 1 && (
+                <div className="col">
+                  <div className="form-outline position-relative">
+                    <label className="form-label" htmlFor="post-pin">
+                      Dung lượng pin
+                    </label>
+                    <input
+                      type="number"
+                      id="post-pin"
+                      className="form-control"
+                      placeholder="Dung lượng pin"
+                      min={0}
+                      name="pin"
+                      onChange={(e) => handleOnChangeChild(e)}
+                      value={productChild?.pin || ""}
+                    />
+                    <p className="validate-form-text">{validatePost.pin}</p>
+                  </div>
+                </div>
+              )}
+              {Number(postInfor.category) < 3 && (
+                <div className="col">
+                  <div className="form-outline">
+                    <label className="form-label" htmlFor="post-resolution">
+                      Độ phân giải màn hình
+                    </label>
+                    <select
+                      className="form-select"
+                      aria-label="Disabled select example"
+                      name="resolution"
+                      id="post-resolution"
+                      onChange={(e) => handleOnChangeChild(e)}
+                    >
+                      <option value={0}>Độ phân giải màn hình</option>
+                      {resolutionData?.map((data, index) => (
+                        <option key={index} value={data.id}>
+                          {`${data.value}`}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="validate-form-text">{validatePost.storage}</p>
+                  </div>
+                </div>
+              )}
+              <div className="row mb-3">
+                <div className="col">
+                  <div className="form-outline">
+                    <label className="form-label" htmlFor="post-command">
+                      Nhu cầu sử dụng
+                    </label>
+                    <select
+                      className={
+                        validatePost.command
+                          ? "form-select is-invalid"
+                          : "form-select"
+                      }
+                      aria-label="Disabled select example"
+                      name="command"
+                      id="post-command"
+                      onChange={(e) => handleOnChange(e)}
+                    >
+                      <option>Nhu cầu sử dụng</option>
+                      {commandData &&
+                        commandData.map((data, index) => (
+                          <option key={index} value={data.id}>
+                            {data.value}
+                          </option>
+                        ))}
+                    </select>
+                    <p className="validate-form-text">{validatePost.command}</p>
+                  </div>
+                </div>
+              </div>
+              {/* ------------------------------------ */}
               <div className="row mb-3">
                 <div className="col">
                   <div className="form-outline">
@@ -667,25 +763,23 @@ export default function CreatePost() {
                     <p className="validate-form-text">{validatePost.status}</p>
                   </div>
                 </div>
-                {Number(postInfor.category) < 3 && (
-                  <div className="col">
-                    <div className="form-outline">
-                      <label className="form-label" htmlFor="post-guarantee">
-                        Bảo hành
-                      </label>
-                      <input
-                        type="number"
-                        id="post-guarantee"
-                        className="form-control"
-                        placeholder="Thời gian bảo hành"
-                        min={0}
-                        defaultValue={0}
-                        name="guarantee"
-                        onChange={(e) => handleOnChange(e)}
-                      />
-                    </div>
+                <div className="col">
+                  <div className="form-outline">
+                    <label className="form-label" htmlFor="post-guarantee">
+                      Bảo hành
+                    </label>
+                    <input
+                      type="number"
+                      id="post-guarantee"
+                      className="form-control"
+                      placeholder="Thời gian bảo hành"
+                      min={0}
+                      defaultValue={0}
+                      name="guarantee"
+                      onChange={(e) => handleOnChange(e)}
+                    />
                   </div>
-                )}
+                </div>
               </div>
               {Number(postInfor.category) > 1 && (
                 <div className="row mb-3">

@@ -116,6 +116,20 @@ export const storageTypeData = [
   { id: 2, value: "SSD", type: 2 },
   { id: 3, value: "SSHD", type: 3 },
 ];
+export const commandData = [
+  { id: 1, value: "Sử dụng cơ bản" },
+  { id: 2, value: "Sử dụng giải trí nhẹ nhàng" },
+  { id: 3, value: "Sử dụng để chơi game" },
+  { id: 4, value: "Sử dụng để làm các tác vụ nặng" },
+];
+export const resolutionData = [
+  { id: 1, value: "HD (1366x768)" },
+  { id: 2, value: "HD+ (1600x900)" },
+  { id: 3, value: "FullHD (1920x1080)" },
+  { id: 4, value: "2K (2560x1440)" },
+  { id: 5, value: "4K (3840x2160)" },
+  { id: 6, value: "5K (5120x2880)" },
+];
 export const categoryData = [
   { id: 1, value: "Mobile" },
   { id: 2, value: "Laptop" },
@@ -168,6 +182,44 @@ export const marksPrice = [
   {
     value: 100,
     label: "20tr",
+  },
+];
+export const pinStep = 100;
+export const marksPin = [
+  {
+    value: 0,
+    label: "0",
+  },
+  {
+    value: 10,
+  },
+  {
+    value: 20,
+  },
+  {
+    value: 30,
+  },
+  {
+    value: 40,
+  },
+  {
+    value: 50,
+  },
+  {
+    value: 60,
+  },
+  {
+    value: 70,
+  },
+  {
+    value: 80,
+  },
+  {
+    value: 90,
+  },
+  {
+    value: 100,
+    label: "10Kmah",
   },
 ];
 export const guaranteeStep = 0.3;

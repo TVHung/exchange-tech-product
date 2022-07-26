@@ -220,3 +220,7 @@ export const suggest = (value, array) => {
   }
   return matches;
 };
+
+export const getValueInArrayObjectWithId = (arr, id) => {
+  return arr.find((x) => x.id == id)?.value;
+};

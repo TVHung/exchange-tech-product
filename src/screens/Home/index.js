@@ -9,7 +9,7 @@ import banner1 from "../../assets/image/banner1.jpg";
 import banner2 from "../../assets/image/banner2.jpg";
 import banner3 from "../../assets/image/banner3.jpg";
 import axios from "axios";
-import { apiPostMostInterest, apiPostRecently } from "../../constants";
+import { apiPostMostInterest, apiPostRecently, headers } from "../../constants";
 import { setLinkDirect } from "../../utils/common";
 import { apiPostHasTrade } from "./../../constants/index";
 
@@ -53,9 +53,9 @@ export default function Home() {
     let URL2 = apiPostRecently;
     let URL3 = apiPostHasTrade;
 
-    const promise1 = axios.get(URL1);
-    const promise2 = axios.get(URL2);
-    const promise3 = axios.get(URL3);
+    const promise1 = axios.get(URL1, { headers: headers });
+    const promise2 = axios.get(URL2, { headers: headers });
+    const promise3 = axios.get(URL3, { headers: headers });
 
     Promise.all([promise1, promise2, promise3]).then(function (res) {
       setAllPostMostInterest(res[0].data.data);

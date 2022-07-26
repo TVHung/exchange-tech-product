@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./_compareView.scss";
 import img from "../../assets/image/product-default.png";
-import { apiProductCompare } from "./../../constants/index";
+import {
+  apiProductCompare,
+  commandData,
+  resolutionData,
+} from "./../../constants/index";
 import axios from "axios";
-import { formatPrice } from "./../../utils/common";
+import { formatPrice, getValueInArrayObjectWithId } from "./../../utils/common";
 import Loading from "./../../components/Loading";
 import { useDispatch, useSelector } from "react-redux";
 import { setListCompare } from "../../redux/actions/postActions";
@@ -285,6 +289,43 @@ export default function CompareView() {
                 )}
               </div>
             </div>
+            <div className="row">
+              <div className="col-4 product-detail-wrap col-not-center">
+                {compareProducts[0] && (
+                  <span>
+                    <b>Nhu cầu:</b>{" "}
+                    {getValueInArrayObjectWithId(
+                      commandData,
+                      compareProducts[0]?.command
+                    )}
+                  </span>
+                )}
+              </div>
+              <div className="col-4 product-detail-wrap col-center">
+                {compareProducts[1] && (
+                  <span>
+                    {" "}
+                    <b>Nhu cầu:</b>{" "}
+                    {getValueInArrayObjectWithId(
+                      commandData,
+                      compareProducts[1]?.command
+                    )}
+                  </span>
+                )}
+              </div>
+              <div className="col-4 product-detail-wrap col-not-center">
+                {compareProducts[2] && (
+                  <span>
+                    {" "}
+                    <b>Nhu cầu:</b>{" "}
+                    {getValueInArrayObjectWithId(
+                      commandData,
+                      compareProducts[2]?.command
+                    )}
+                  </span>
+                )}
+              </div>
+            </div>
             {parseInt(compareProducts[0]?.category_id) == 1 && (
               <>
                 <div className="row">
@@ -339,6 +380,71 @@ export default function CompareView() {
                         {" "}
                         <b>Hãng sản xuất:</b>{" "}
                         {compareProducts[2]?.productMobile?.brand}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-4 product-detail-wrap col-not-center">
+                    {compareProducts[0] && (
+                      <span>
+                        <b>Dung lượng pin:</b>{" "}
+                        {compareProducts[0]?.productMobile?.pin} mah
+                      </span>
+                    )}
+                  </div>
+                  <div className="col-4 product-detail-wrap col-center">
+                    {compareProducts[1] && (
+                      <span>
+                        {" "}
+                        <b>Dung lượng pin:</b>{" "}
+                        {compareProducts[1]?.productMobile?.pin} mah
+                      </span>
+                    )}
+                  </div>
+                  <div className="col-4 product-detail-wrap col-not-center">
+                    {compareProducts[2] && (
+                      <span>
+                        {" "}
+                        <b>Dung lượng pin:</b>{" "}
+                        {compareProducts[2]?.productMobile?.pin} mah
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-4 product-detail-wrap col-not-center">
+                    {compareProducts[0] && (
+                      <span>
+                        <b>Độ phân giải:</b>{" "}
+                        {getValueInArrayObjectWithId(
+                          resolutionData,
+                          compareProducts[0]?.productMobile?.resolution
+                        )}
+                      </span>
+                    )}
+                  </div>
+                  <div className="col-4 product-detail-wrap col-center">
+                    {compareProducts[1] && (
+                      <span>
+                        {" "}
+                        <b>Độ phân giải:</b>{" "}
+                        {getValueInArrayObjectWithId(
+                          resolutionData,
+                          compareProducts[1]?.productMobile?.resolution
+                        )}
+                      </span>
+                    )}
+                  </div>
+                  <div className="col-4 product-detail-wrap col-not-center">
+                    {compareProducts[2] && (
+                      <span>
+                        {" "}
+                        <b>Độ phân giải:</b>{" "}
+                        {getValueInArrayObjectWithId(
+                          resolutionData,
+                          compareProducts[2]?.productMobile?.resolution
+                        )}
                       </span>
                     )}
                   </div>
@@ -505,6 +611,43 @@ export default function CompareView() {
                         {" "}
                         <b>Kích thước màn hình:</b>{" "}
                         {compareProducts[2]?.productLaptop?.display_size} inch
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-4 product-detail-wrap col-not-center">
+                    {compareProducts[0] && (
+                      <span>
+                        <b>Độ phân giải:</b>{" "}
+                        {getValueInArrayObjectWithId(
+                          resolutionData,
+                          compareProducts[0]?.productLaptop?.resolution
+                        )}
+                      </span>
+                    )}
+                  </div>
+                  <div className="col-4 product-detail-wrap col-center">
+                    {compareProducts[1] && (
+                      <span>
+                        {" "}
+                        <b>Độ phân giải:</b>{" "}
+                        {getValueInArrayObjectWithId(
+                          resolutionData,
+                          compareProducts[1]?.productLaptop?.resolution
+                        )}
+                      </span>
+                    )}
+                  </div>
+                  <div className="col-4 product-detail-wrap col-not-center">
+                    {compareProducts[2] && (
+                      <span>
+                        {" "}
+                        <b>Độ phân giải:</b>{" "}
+                        {getValueInArrayObjectWithId(
+                          resolutionData,
+                          compareProducts[2]?.productLaptop?.resolution
+                        )}
                       </span>
                     )}
                   </div>

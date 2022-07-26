@@ -5,6 +5,7 @@ import SlideDetail from "../../components/SlideShow/SlideDetail";
 import {
   formatPrice,
   formatView,
+  getValueInArrayObjectWithId,
   handleCalculateTime,
   setLinkDirect,
 } from "../../utils/common";
@@ -31,6 +32,8 @@ import {
   apiUpView,
   categoryData,
   headers,
+  resolutionData,
+  commandData,
 } from "../../constants";
 import axios from "axios";
 import Breadcrumb from "../../components/Breadcrumb";
@@ -264,6 +267,18 @@ export default function Detail({ isAuth }) {
                     <div className="detail-properties">
                       <div className="row">
                         {/* common */}
+                        {postDetail?.command != null && (
+                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                            <i className="fas fa-bullseye"></i>
+                            <span>
+                              Phù hợp:{" "}
+                              {getValueInArrayObjectWithId(
+                                commandData,
+                                postDetail?.command
+                              )}
+                            </span>
+                          </div>
+                        )}
                         {postDetail?.ram > 0 && (
                           <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                             <i className="fas fa-memory"></i>
@@ -272,13 +287,13 @@ export default function Detail({ isAuth }) {
                         )}
                         {postDetail?.storage > 0 && (
                           <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                            <i className="fas fa-tags"></i>
+                            <i className="fas fa-database"></i>
                             <span>Dung lượng: {postDetail?.storage}GB</span>
                           </div>
                         )}
                         {postDetail?.status != null && (
                           <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                            <i className="fas fa-microchip"></i>
+                            <i className="fas fa-shield-alt"></i>
                             <span>Tình trạng: {postDetail?.status_value}</span>
                           </div>
                         )}
@@ -303,9 +318,29 @@ export default function Detail({ isAuth }) {
                             )}
                             {postDetail?.productMobile?.color && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                                <i className="fas fa-tags"></i>
+                                <i className="fas fa-palette"></i>
                                 <span>
                                   Màu sắc: {postDetail?.productMobile?.color}
+                                </span>
+                              </div>
+                            )}
+                            {postDetail?.productMobile?.pin && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-battery-full"></i>
+                                <span>
+                                  Pin: {postDetail?.productMobile?.pin} mah
+                                </span>
+                              </div>
+                            )}
+                            {postDetail?.productMobile?.resolution && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-tv"></i>
+                                <span>
+                                  Độ phân giải:{" "}
+                                  {getValueInArrayObjectWithId(
+                                    resolutionData,
+                                    postDetail?.productMobile?.resolution
+                                  )}
                                 </span>
                               </div>
                             )}
@@ -324,7 +359,7 @@ export default function Detail({ isAuth }) {
                             )}
                             {postDetail?.productLaptop?.color && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                                <i className="fas fa-tags"></i>
+                                <i className="fas fa-palette"></i>
                                 <span>
                                   Màu sắc: {postDetail?.productLaptop?.color}
                                 </span>
@@ -360,10 +395,22 @@ export default function Detail({ isAuth }) {
                             )}
                             {postDetail?.productLaptop?.display_size && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                                <i className="fas fa-hdd"></i>
+                                <i className="fas fa-tv"></i>
                                 <span>
                                   Màn hình:{" "}
                                   {postDetail?.productLaptop?.display_size} inch
+                                </span>
+                              </div>
+                            )}
+                            {postDetail?.productLaptop?.resolution && (
+                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                <i className="fas fa-tv"></i>
+                                <span>
+                                  Độ phân giải:{" "}
+                                  {getValueInArrayObjectWithId(
+                                    resolutionData,
+                                    postDetail?.productLaptop?.resolution
+                                  )}
                                 </span>
                               </div>
                             )}
@@ -395,7 +442,7 @@ export default function Detail({ isAuth }) {
                             )}
                             {postDetail?.productPc?.display_size && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                                <i className="fas fa-hdd"></i>
+                                <i className="fas fa-tv"></i>
                                 <span>
                                   Màn hình:{" "}
                                   {postDetail?.productPc?.display_size} inch
