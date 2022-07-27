@@ -1,10 +1,17 @@
 import React from "react";
 import { formatPrice, handleCalculateTime } from "../../../utils/common";
 import "./_itemSearch.scss";
+import notImage from "../../../assets/image/product-default.png";
 
 export default function ItemSearch({ data }) {
   const toDetail = () => {
     window.location.href = `/detail/${data.id}`;
+  };
+
+  const getBanner = (data_images) => {
+    if (data_images)
+      for (let i = 0; i < data_images.length; i++)
+        if (data_images[i].is_banner == 1) return data_images[i].image_url;
   };
 
   return (
@@ -14,7 +21,7 @@ export default function ItemSearch({ data }) {
           <div className="col-lg-3">
             {" "}
             <img
-              src="https://image.thanhnien.vn/w1024/Uploaded/2022/xdrkxrvekx/2022_01_26/ip-4546.png"
+              src={getBanner(data?.images) ? getBanner(data?.images) : notImage}
               alt=""
               className="post-result-img"
             />{" "}

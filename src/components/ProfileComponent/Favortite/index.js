@@ -19,7 +19,7 @@ export default function Favorite({ setPreload }) {
     getWishList();
   }, []);
 
-  console.log(get_wish_list);
+  console.log("favorite", get_wish_list);
 
   return (
     <div className="my-favorite-post">

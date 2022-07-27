@@ -70,6 +70,9 @@ export const apiGetCommentProduct = `${api}/comments/products`;
 export const apiGetSuggest = `${api}/products-feild-suggest`;
 export const apiGetNameSuggest = `${api}/products-name-suggest`;
 
+export const apiGetCategory = `${api}/categories`;
+export const apiGetFixedData = `${api}/fixed-data`;
+
 export const headers = {
   "Content-type": "application/json",
   Authorization: `Bearer ${getCookie("access_token")}`,
