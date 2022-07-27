@@ -18,6 +18,7 @@ import {
   getValuePercentFilter,
   scrollInViewDiv,
   scrollToTop,
+  filterArrayObjectWithCategoryId,
 } from "../../utils/common";
 import { searchPostByName } from "../../redux/actions/postActions";
 import { useHistory } from "react-router-dom";
@@ -26,29 +27,22 @@ import {
   marksPrice,
   marksGuarantee,
   marksRam,
-  ramStep,
   guaranteeStep,
-  categoryData,
   videoData,
-  displaySizeData,
   cardData,
   apiGetBrandByCategory,
-  statusData,
   marksStorage,
   marksStorageData,
-  storageTypeData,
   timeData,
-  typeProductData,
-  commandData,
   marksPin,
   pinStep,
-  resolutionData,
+  apiGetCategory,
+  apiGetFixedData,
 } from "../../constants";
 import { Box, Slider } from "@material-ui/core";
 import AddressSelectSearch from "./../../components/AddressSelectSearch";
 import Pagination from "react-js-pagination";
 import Loading from "../../components/Loading";
-import { useCallback } from "react";
 
 function valuetext(value) {
   return `${value}vnđ`;
@@ -73,6 +67,15 @@ export default function Search() {
   const [openPin, setOpenPin] = useState(false);
   const [openResolution, setOpenResolution] = useState(false);
   const [openCommand, setOpenCommand] = useState(false);
+
+  //fixed data
+  const [categoryData, setCategoryData] = useState([]);
+  const [statusData, setStatusData] = useState([]);
+  const [storageTypeData, setStorageTypeData] = useState([]);
+  const [typeProductData, setTypeProductData] = useState([]);
+  const [commandData, setCommandData] = useState([]);
+  const [resolutionData, setResolutionData] = useState([]);
+  const [displaySizeData, setDisplaySizeData] = useState([]);
 
   //value filter
   const [searchValue, setsearchValue] = useState("");
@@ -424,19 +427,27 @@ export default function Search() {
   // const get_brand_category = useSelector((state) => state.brand.brand_category);
   useEffect(() => {
     getBrandByCategory(categoryValue);
+    deleteParam("command");
+    setCommandValue("");
+    deleteParam("brand");
+    setBrandValue("");
     if (categoryValue == "1") {
       deleteParam("storage_type");
       deleteParam("display");
       deleteParam("card");
     } else if (categoryValue == "2") {
+      deleteParam("pin");
     } else if (categoryValue == "3") {
-      deleteParam("brand");
       deleteParam("display");
+      deleteParam("pin");
+      deleteParam("resolution");
     } else if (categoryValue == "0") {
       deleteParam("storage_type");
       deleteParam("display");
       deleteParam("card");
       deleteParam("brand");
+      deleteParam("pin");
+      deleteParam("resolution");
     }
     return () => {};
   }, [categoryValue]);
@@ -532,6 +543,7 @@ export default function Search() {
     setValueWhenReload();
     setLinkDirect();
     dispatch(searchPostByName(window.location.search));
+    fetchAllData();
     return () => {
       //clear data
       setsearchValue("");
@@ -555,8 +567,39 @@ export default function Search() {
       setPinValue("");
       setResolutionValue("");
       setCommandValue();
+      setCategoryData([]);
+      setStatusData([]);
+      setCommandData([]);
+      setStorageTypeData([]);
+      setResolutionData([]);
+      setDisplaySizeData([]);
+      setTypeProductData([]);
     };
   }, []);
+
+  const fetchAllData = async () => {
+    const requestCategory = axios.get(apiGetCategory);
+    const requestFixedData = axios.get(apiGetFixedData);
+    await axios
+      .all([requestCategory, requestFixedData])
+      .then(
+        axios.spread((...responses) => {
+          const categories = responses[0].data.data;
+          const fixedData = responses[1].data.data;
+          console.log("post", categories);
+          setCategoryData(categories);
+          setStatusData(fixedData?.status);
+          setCommandData(fixedData?.command);
+          setStorageTypeData(fixedData?.storageType);
+          setResolutionData(fixedData?.resolution);
+          setDisplaySizeData(fixedData?.display_size);
+          setTypeProductData(fixedData?.typeProductData);
+        })
+      )
+      .catch((errors) => {
+        console.error(errors);
+      });
+  };
 
   return (
     <div className="background-search">
@@ -682,19 +725,72 @@ export default function Search() {
                           <option value="0">Tất cả</option>
                           {categoryData.map((data, index) => (
                             <option key={index} value={data.id}>
-                              {data.value}
+                              {data.name}
                             </option>
                           ))}
                         </select>
                       </div>
                     </Collapse>
                   </div>
+                  {categoryValue == "1" || categoryValue == "2" ? (
+                    <div className="box border-bottom-custom">
+                      <div
+                        className="box-label text-uppercase d-flex align-items-center"
+                        onClick={() => showHideCollapse("brand")}
+                      >
+                        Hãng{" "}
+                        <button
+                          className="btn ms-auto collapse-filter"
+                          name="brand"
+                          onClick={() => showHideCollapse("brand")}
+                          aria-controls="collpase-brand-filter"
+                          aria-expanded={openBrand}
+                        >
+                          {" "}
+                          {openBrand ? (
+                            <i className="fas fa-minus"></i>
+                          ) : (
+                            <i className="fas fa-plus"></i>
+                          )}{" "}
+                        </button>
+                      </div>
+                      <Collapse in={openBrand}>
+                        <div id="collpase-brand-filter">
+                          {brandCategoryValue &&
+                            brandCategoryValue.map((data, index) => (
+                              <div className="my-1" key={index}>
+                                {" "}
+                                <label className="tick">
+                                  {data.name}{" "}
+                                  <input
+                                    type="checkbox"
+                                    value={data.id}
+                                    checked={
+                                      (brandValue?.length &&
+                                        brandValue
+                                          .split(".")
+                                          .map(function (item) {
+                                            return parseInt(item, 10);
+                                          })
+                                          .includes(data.id)) ||
+                                      false
+                                    }
+                                    onChange={onChangeBrand}
+                                  />{" "}
+                                  <span className="check"></span>{" "}
+                                </label>{" "}
+                              </div>
+                            ))}
+                        </div>
+                      </Collapse>
+                    </div>
+                  ) : null}
                   <div className="box border-bottom-custom">
                     <div
                       className="box-label text-uppercase d-flex align-items-center"
                       onClick={() => showHideCollapse("trade")}
                     >
-                      Kiểu sản phẩm{" "}
+                      Kiểu bài đăng{" "}
                       <button
                         className="btn ms-auto  collapse-filter"
                         name="trade"
@@ -713,7 +809,7 @@ export default function Search() {
                     <Collapse in={openTrade}>
                       <div id="collpase-trade-filter">
                         <label className="form-label" htmlFor="post-trade">
-                          Kiểu sản phẩm
+                          Kiểu bài đăng
                         </label>
                         <select
                           className="form-select"
@@ -735,57 +831,63 @@ export default function Search() {
                       </div>
                     </Collapse>
                   </div>
-                  <div className="box border-bottom-custom">
-                    <div
-                      className="box-label text-uppercase d-flex align-items-center"
-                      onClick={() => showHideCollapse("command")}
-                    >
-                      Nhu cầu sử dụng{" "}
-                      <button
-                        className="btn ms-auto collapse-filter"
-                        name="command"
+                  {filterArrayObjectWithCategoryId(commandData, categoryValue)
+                    ?.length > 0 && (
+                    <div className="box border-bottom-custom">
+                      <div
+                        className="box-label text-uppercase d-flex align-items-center"
                         onClick={() => showHideCollapse("command")}
-                        aria-controls="collpase-command-filter"
-                        aria-expanded={openCommand}
                       >
-                        {" "}
-                        {openCommand ? (
-                          <i className="fas fa-minus"></i>
-                        ) : (
-                          <i className="fas fa-plus"></i>
-                        )}{" "}
-                      </button>
-                    </div>
-                    <Collapse in={openCommand}>
-                      <div id="collpase-command-filter">
-                        {commandData &&
-                          commandData?.map((data, index) => (
-                            <div className="my-1" key={index}>
-                              {" "}
-                              <label className="tick">
-                                {data.value}
-                                <input
-                                  type="checkbox"
-                                  value={data.id}
-                                  onChange={onChangeCommand}
-                                  checked={
-                                    (commandValue?.length &&
-                                      commandValue
-                                        .split(".")
-                                        .map(function (item) {
-                                          return parseInt(item, 10);
-                                        })
-                                        .includes(data.id)) ||
-                                    false
-                                  }
-                                />{" "}
-                                <span className="check"></span>{" "}
-                              </label>{" "}
-                            </div>
-                          ))}
+                        Nhu cầu sử dụng{" "}
+                        <button
+                          className="btn ms-auto collapse-filter"
+                          name="command"
+                          onClick={() => showHideCollapse("command")}
+                          aria-controls="collpase-command-filter"
+                          aria-expanded={openCommand}
+                        >
+                          {" "}
+                          {openCommand ? (
+                            <i className="fas fa-minus"></i>
+                          ) : (
+                            <i className="fas fa-plus"></i>
+                          )}{" "}
+                        </button>
                       </div>
-                    </Collapse>
-                  </div>
+                      <Collapse in={openCommand}>
+                        <div id="collpase-command-filter">
+                          {commandData &&
+                            filterArrayObjectWithCategoryId(
+                              commandData,
+                              categoryValue
+                            )?.map((data, index) => (
+                              <div className="my-1" key={index}>
+                                {" "}
+                                <label className="tick">
+                                  {data.value}
+                                  <input
+                                    type="checkbox"
+                                    value={data.id}
+                                    onChange={onChangeCommand}
+                                    checked={
+                                      (commandValue?.length &&
+                                        commandValue
+                                          .split(".")
+                                          .map(function (item) {
+                                            return parseInt(item, 10);
+                                          })
+                                          .includes(data.id)) ||
+                                      false
+                                    }
+                                  />{" "}
+                                  <span className="check"></span>{" "}
+                                </label>{" "}
+                              </div>
+                            ))}
+                        </div>
+                      </Collapse>
+                    </div>
+                  )}
                   <div className="box border-bottom-custom">
                     <div
                       className="box-label text-uppercase d-flex align-items-center"
@@ -1259,62 +1361,12 @@ export default function Search() {
                       </Collapse>
                     </div>
                   ) : null}
-                  {categoryValue == "1" || categoryValue == "2" ? (
+                  {categoryValue == "2" ? (
                     <div className="box border-bottom-custom">
                       <div
                         className="box-label text-uppercase d-flex align-items-center"
-                        onClick={() => showHideCollapse("brand")}
+                        onClick={() => showHideCollapse("display_size")}
                       >
-                        Hãng{" "}
-                        <button
-                          className="btn ms-auto collapse-filter"
-                          name="brand"
-                          onClick={() => showHideCollapse("brand")}
-                          aria-controls="collpase-brand-filter"
-                          aria-expanded={openBrand}
-                        >
-                          {" "}
-                          {openBrand ? (
-                            <i className="fas fa-minus"></i>
-                          ) : (
-                            <i className="fas fa-plus"></i>
-                          )}{" "}
-                        </button>
-                      </div>
-                      <Collapse in={openBrand}>
-                        <div id="collpase-brand-filter">
-                          {brandCategoryValue &&
-                            brandCategoryValue.map((data, index) => (
-                              <div className="my-1" key={index}>
-                                {" "}
-                                <label className="tick">
-                                  {data.name}{" "}
-                                  <input
-                                    type="checkbox"
-                                    value={data.id}
-                                    checked={
-                                      (brandValue?.length &&
-                                        brandValue
-                                          .split(".")
-                                          .map(function (item) {
-                                            return parseInt(item, 10);
-                                          })
-                                          .includes(data.id)) ||
-                                      false
-                                    }
-                                    onChange={onChangeBrand}
-                                  />{" "}
-                                  <span className="check"></span>{" "}
-                                </label>{" "}
-                              </div>
-                            ))}
-                        </div>
-                      </Collapse>
-                    </div>
-                  ) : null}
-                  {categoryValue == "2" ? (
-                    <div className="box border-bottom-custom">
-                      <div className="box-label text-uppercase d-flex align-items-center">
                         Kích thước màn hình{" "}
                         <button
                           className="btn ms-auto collapse-filter"

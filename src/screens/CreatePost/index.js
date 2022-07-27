@@ -5,18 +5,14 @@ import MetaTag from "../../components/MetaTag";
 import Preloading from "../../components/Loading";
 import axios from "axios";
 import {
-  headers,
-  storageData,
-  statusData,
   apiPost,
   apiGetBrandByCategory,
-  storageTypeData,
   headerFiles,
   maxNumImage,
   maxSizeVideo,
   apiGetSuggest,
-  commandData,
-  resolutionData,
+  apiGetCategory,
+  apiGetFixedData,
 } from "./../../constants";
 import { toast } from "react-toastify";
 import Breadcrumb from "../../components/Breadcrumb";
@@ -38,6 +34,13 @@ export default function CreatePost() {
   const [isCreatePost, setIsCreatePost] = useState(false);
   const [videoFile, setVideoFile] = useState();
   const [address, setAddress] = useState("");
+
+  const [categoryData, setCategoryData] = useState([]);
+  const [statusData, setStatusData] = useState([]);
+  const [storageTypeData, setStorageTypeData] = useState([]);
+  const [storageData, setStorageData] = useState([]);
+  const [commandData, setCommandData] = useState([]);
+  const [resolutionData, setResolutionData] = useState([]);
 
   const [suggestName, setSuggestName] = useState([]);
   const [suggestNames, setSuggestNames] = useState([]);
@@ -94,6 +97,7 @@ export default function CreatePost() {
   useEffect(() => {
     setLinkDirect();
     fetchSuggest();
+    fetchAllData();
     return () => {
       setPostInfor({});
       setvalidatePost({});
@@ -111,6 +115,12 @@ export default function CreatePost() {
       setSuggestGpus([]);
       setSuggestDisplay([]);
       setSuggestDisplays([]);
+      setCategoryData([]);
+      setStatusData([]);
+      setCommandData([]);
+      setStorageTypeData([]);
+      setStorageData([]);
+      setResolutionData([]);
     };
   }, []);
 
@@ -420,6 +430,29 @@ export default function CreatePost() {
     });
   };
 
+  const fetchAllData = async () => {
+    const requestPost = axios.get(apiGetCategory);
+    const requestView = axios.get(apiGetFixedData);
+    await axios
+      .all([requestPost, requestView])
+      .then(
+        axios.spread((...responses) => {
+          const categories = responses[0].data.data;
+          const fixedData = responses[1].data.data;
+          console.log("post", categories);
+          setCategoryData(categories);
+          setStatusData(fixedData?.status);
+          setCommandData(fixedData?.command);
+          setStorageTypeData(fixedData?.storageType);
+          setStorageData(fixedData?.storage);
+          setResolutionData(fixedData?.resolution);
+        })
+      )
+      .catch((errors) => {
+        console.error(errors);
+      });
+  };
+
   return (
     <div className="createPostContainer container">
       <Breadcrumb arrLink={postBreadcrumb} />
@@ -449,7 +482,7 @@ export default function CreatePost() {
               </div>
               <div className="mt-3 view-preview row">
                 {file &&
-                  file.map((item, index) => {
+                  file?.map((item, index) => {
                     return (
                       <div
                         key={index}
@@ -524,9 +557,11 @@ export default function CreatePost() {
                 onChange={(e) => handleOnChange(e)}
                 placeholder="Loại sản phẩm"
               >
-                <option value="1">Mobile</option>
-                <option value="2">Laptop</option>
-                <option value="3">PC</option>
+                {categoryData?.map((data, index) => (
+                  <option key={index} value={data?.id}>
+                    {data?.name}
+                  </option>
+                ))}
               </select>
               <p className="validate-form-text">{validatePost.category}</p>
             </div>
@@ -610,7 +645,7 @@ export default function CreatePost() {
                       >
                         <option>Hãng sản xuất</option>
                         {brandCategory &&
-                          brandCategory.map((data, index) => (
+                          brandCategory?.map((data, index) => (
                             <option key={index} value={data.id}>
                               {data.name}
                             </option>
@@ -725,7 +760,7 @@ export default function CreatePost() {
                     >
                       <option>Nhu cầu sử dụng</option>
                       {commandData &&
-                        commandData.map((data, index) => (
+                        commandData?.map((data, index) => (
                           <option key={index} value={data.id}>
                             {data.value}
                           </option>
@@ -754,7 +789,7 @@ export default function CreatePost() {
                       onChange={(e) => handleOnChange(e)}
                     >
                       <option value={null}>Tình trạng</option>
-                      {statusData.map((data, index) => (
+                      {statusData?.map((data, index) => (
                         <option key={index} value={data.id}>
                           {data.value}
                         </option>
@@ -926,7 +961,7 @@ export default function CreatePost() {
                         onChange={(e) => handleOnChange(e)}
                       >
                         <option value={0}>Dung lượng bộ nhớ</option>
-                        {storageData.map((data, index) => (
+                        {storageData?.map((data, index) => (
                           <option key={index} value={data.value}>
                             {`${data.value}GB`}
                           </option>
@@ -951,10 +986,10 @@ export default function CreatePost() {
                         aria-label="Disabled select example"
                         name="storage_type"
                         id="post-storage-type"
-                        onChange={(e) => handleOnChange(e)}
+                        onChange={(e) => handleOnChangeChild(e)}
                       >
                         <option>Loại ổ cứng</option>
-                        {storageTypeData.map((data, index) => (
+                        {storageTypeData?.map((data, index) => (
                           <option key={index} value={data.id}>
                             {data.value}
                           </option>
@@ -975,10 +1010,10 @@ export default function CreatePost() {
                         aria-label="Disabled select example"
                         name="storage"
                         id="post-storage"
-                        onChange={(e) => handleOnChangeChild(e)}
+                        onChange={(e) => handleOnChange(e)}
                       >
                         <option value={0}>Dung lượng ổ cứng</option>
-                        {storageData.map((data, index) => (
+                        {storageData?.map((data, index) => (
                           <option key={index} value={data.value}>
                             {`${data.value}GB`}
                           </option>

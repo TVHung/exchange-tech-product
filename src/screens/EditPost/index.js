@@ -6,20 +6,16 @@ import Preloading from "../../components/Loading";
 import axios from "axios";
 import {
   headers,
-  storageData,
-  statusData,
   apiPost,
   apiGetBrandByCategory,
   apiFetchPostDetail,
-  categoryData,
-  storageTypeData,
   maxSizeVideo,
   headerFiles,
   maxNumImage,
   maxSizeImage,
   apiGetSuggest,
-  commandData,
-  resolutionData,
+  apiGetCategory,
+  apiGetFixedData,
 } from "./../../constants";
 import { toast } from "react-toastify";
 import Breadcrumb from "../../components/Breadcrumb";
@@ -42,6 +38,13 @@ export default function EditPost() {
   const [isCreatePost, setIsCreatePost] = useState(false);
   const [imageUrlEdit, setImageUrlEdit] = useState([]);
   const [videoFile, setVideoFile] = useState();
+
+  const [categoryData, setCategoryData] = useState([]);
+  const [statusData, setStatusData] = useState([]);
+  const [storageTypeData, setStorageTypeData] = useState([]);
+  const [storageData, setStorageData] = useState([]);
+  const [commandData, setCommandData] = useState([]);
+  const [resolutionData, setResolutionData] = useState([]);
 
   const [suggestName, setSuggestName] = useState([]);
   const [suggestNames, setSuggestNames] = useState([]);
@@ -140,6 +143,12 @@ export default function EditPost() {
       setSuggestGpus([]);
       setSuggestDisplay([]);
       setSuggestDisplays([]);
+      setCategoryData([]);
+      setStatusData([]);
+      setCommandData([]);
+      setStorageTypeData([]);
+      setStorageData([]);
+      setResolutionData([]);
     };
   }, []);
 
@@ -430,9 +439,11 @@ export default function EditPost() {
   const fetchAllData = async (postId) => {
     let apiPostDetail = `${apiFetchPostDetail}/${postId}`;
     const requestPost = axios.get(apiPostDetail, { headers: headers });
+    const requestCategory = axios.get(apiGetCategory);
+    const requestFixedData = axios.get(apiGetFixedData);
     setPreload(true);
     await axios
-      .all([requestPost])
+      .all([requestPost, requestCategory, requestFixedData])
       .then(
         axios.spread((...responses) => {
           const post = responses[0].data.data;
@@ -452,6 +463,17 @@ export default function EditPost() {
           }
           setPostInforData(post);
           setImageUrlEdit(post.images);
+
+          //fixed data
+          const categories = responses[1].data.data;
+          const fixedData = responses[2].data.data;
+          console.log("post", categories);
+          setCategoryData(categories);
+          setStatusData(fixedData?.status);
+          setCommandData(fixedData?.command);
+          setStorageTypeData(fixedData?.storageType);
+          setStorageData(fixedData?.storage);
+          setResolutionData(fixedData?.resolution);
         })
       )
       .catch((errors) => {

@@ -67,7 +67,7 @@ export default function Item({ data, status }) {
             </span>
           </div>
         </div>
-        <div className="itemDrop">
+        <div className="itemDrop" onClick={() => toDetail()}>
           <i
             className="fas fa-heart favorite-heart"
             onClick={() => toggleFavorite()}
@@ -75,14 +75,15 @@ export default function Item({ data, status }) {
           ></i>
           <div className="itemDrop-container">
             <div className="itemDrop-content">
+              <span>{data?.category}</span>
               <p>{data.description}</p>
             </div>
-            <div className="itemDrop-btn">
+            {/* <div className="itemDrop-btn">
               <Button className="item-btn-care" onClick={() => toDetail()}>
                 Chi tiết
               </Button>
               <Button className="item-btn-chat">Nhắn tin</Button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
