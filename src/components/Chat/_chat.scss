@@ -91,7 +91,8 @@
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-        max-width: calc(100% - 150px);
+        width: 300px;
+        color: $base-color-1;
     }
 
     .chat-dot-have-mess {

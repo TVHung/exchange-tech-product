@@ -8,3 +8,4 @@ export const MY_POSTS = "MY_POSTS";
 export const BRAND_CATEGORY = "BRAND_CATEGORY";
 export const PRODUCT_COMMENTS = "PRODUCT_COMMENTS";
 export const LIST_COMPARE = "LIST_COMPARE";
+export const MY_LIST_CHAT = "MY_LIST_CHAT";

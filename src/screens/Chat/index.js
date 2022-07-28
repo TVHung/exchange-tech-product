@@ -19,12 +19,14 @@ import Pusher from "pusher-js";
 import axios from "axios";
 import {
   apiGetMessage,
-  apiGetMyConversation,
   apiSendMessage,
   headerFiles,
   headers,
 } from "../../constants";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchConversations } from "../../redux/actions/chatAction";
+
 export default function Chat() {
   const [preload, setPreload] = useState(false);
   const [loadChat, setLoadChat] = useState(false);
@@ -58,6 +60,7 @@ export default function Chat() {
           setLatestMessage(res.data);
           addMessage(res.data);
           console.log("new message", res);
+          dispatch(fetchConversations());
         })
         .catch((error) => {
           console.error(error);
@@ -73,14 +76,12 @@ export default function Chat() {
 
   useEffect(() => {
     setLinkDirect();
-    getAllConversation();
     return () => {
       setPreload();
       setMessages([]);
       setIsStart();
       setUserActive();
       setUsers();
-      setLatestMessage();
       setPage();
     };
   }, []);
@@ -93,6 +94,18 @@ export default function Chat() {
     return () => {};
   }, [params.id]);
 
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchConversations());
+    return () => {};
+  }, []);
+  const userConversations = useSelector((state) => state.chat.myListChat);
+  useEffect(() => {
+    console.log("my post", userConversations);
+    setUsers(userConversations);
+    setPreload(true);
+  }, [userConversations]);
+
   useEffect(() => {
     Pusher.logToConsole = false;
 
@@ -102,12 +115,7 @@ export default function Chat() {
 
     const channel = pusher.subscribe("chat");
     channel.bind("message", function (data) {
-      console.log(
-        "show nhieu data",
-        data,
-        parseInt(data.user_id),
-        parseInt(params.id)
-      );
+      dispatch(fetchConversations());
       if (parseInt(data.user_id) == parseInt(params.id)) {
         addMessage(data);
       }
@@ -157,22 +165,6 @@ export default function Chat() {
       });
   };
 
-  const getAllConversation = async () => {
-    setPreload(false);
-    await axios
-      .get(apiGetMyConversation, {
-        headers: headers,
-      })
-      .then((res) => {
-        setUsers(res.data.data);
-        setPreload(true);
-      })
-      .catch((error) => {
-        console.error(error);
-        setPreload(true);
-      });
-  };
-
   const fetchMoreData = (e) => {
     // if (e.target.scrollTop == 0) {
     //   let pageCurent = page + 1;
@@ -190,19 +182,18 @@ export default function Chat() {
       ) : (
         <div className="row chatContainer">
           <div className="chat-left col-md-4">
-            {users.length > 0 ? (
+            {users?.length > 0 ? (
               <>
                 {users?.map((item) => (
-                  <div key={item.id}>
+                  <div key={item?.user?.id}>
                     <a
-                      href={`/chat/${item.id}`}
+                      href={`/chat/${item?.user?.id}`}
                       style={{ textDecoration: "none", color: "#000" }}
                     >
                       <ItemChat
                         item={item}
                         userActive={userActive}
                         setIsStart={setIsStart}
-                        latestMessage={latestMessage}
                       />
                     </a>
                   </div>
