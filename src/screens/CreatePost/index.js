@@ -20,6 +20,7 @@ import { postBreadcrumb } from "../../constants/breadcrumData";
 import { maxSizeImage } from "./../../constants/index";
 import {
   appendArrayToFormData,
+  filterArrayObjectWithCategoryId,
   scrollToTop,
   setLinkDirect,
   suggest,
@@ -760,7 +761,10 @@ export default function CreatePost() {
                     >
                       <option>Nhu cầu sử dụng</option>
                       {commandData &&
-                        commandData?.map((data, index) => (
+                        filterArrayObjectWithCategoryId(
+                          commandData,
+                          postInfor.category
+                        )?.map((data, index) => (
                           <option key={index} value={data.id}>
                             {data.value}
                           </option>

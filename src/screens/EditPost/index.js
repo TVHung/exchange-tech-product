@@ -23,6 +23,7 @@ import { editPostBreadcrumb } from "../../constants/breadcrumData";
 import { useParams } from "react-router-dom";
 import {
   appendArrayToFormData,
+  filterArrayObjectWithCategoryId,
   scrollToTop,
   setLinkDirect,
   suggest,
@@ -666,7 +667,6 @@ export default function EditPost() {
                 required
                 id="post-category"
                 name="category"
-                onChange={(e) => handleOnChange(e)}
                 placeholder="Loại sản phẩm"
                 disabled={true}
                 value={postInfor?.category || 0}
@@ -675,7 +675,7 @@ export default function EditPost() {
                 {categoryData &&
                   categoryData.map((data, index) => (
                     <option key={index} value={data.id}>
-                      {data.value}
+                      {data.name}
                     </option>
                   ))}
               </select>
@@ -876,7 +876,10 @@ export default function EditPost() {
                     >
                       <option>Nhu cầu sử dụng</option>
                       {commandData &&
-                        commandData.map((data, index) => (
+                        filterArrayObjectWithCategoryId(
+                          commandData,
+                          postInfor.category
+                        ).map((data, index) => (
                           <option key={index} value={data.id}>
                             {data.value}
                           </option>

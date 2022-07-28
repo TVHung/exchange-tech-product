@@ -3,12 +3,7 @@ import { Grid } from "@material-ui/core";
 import avt from "../../assets/image/avt.jpg";
 import "./_chat.scss";
 
-export default function ItemChat({
-  item,
-  userActive,
-  setIsStart,
-  latestMessage,
-}) {
+export default function ItemChat({ item, userActive, setIsStart }) {
   const onClickChat = () => {
     setIsStart(false);
   };
@@ -20,7 +15,7 @@ export default function ItemChat({
   return (
     <div
       className={
-        userActive == item.id
+        userActive == item?.user?.id
           ? "chat-item-container activeChat"
           : "chat-item-container"
       }
@@ -29,29 +24,29 @@ export default function ItemChat({
       <Grid container style={{ flexWrap: "nowrap" }}>
         <Grid item>
           <img
-            src={item?.profile?.avatar_url}
+            src={item?.user?.profile?.avatar_url}
             alt="avt"
             className="chat-account-avatar"
           />
         </Grid>
         <Grid item>
           <div className="chat-item-infor">
-            <span className="chat-item-name">{item?.profile?.name}</span>
+            <span className="chat-item-name">{item?.user?.profile?.name}</span>
             <span className="chat-item-online"></span>
           </div>
-          {/* <div>
+          <div>
             <span>
-              {item.id != latestMessage?.user_id ? (
+              {item?.user?.id != item?.lastMessage?.user_id ? (
                 <span className="chat-account-mess">
-                  Bạn: {latestMessage?.message}
+                  Bạn: {item?.lastMessage?.message}
                 </span>
               ) : (
                 <span className="chat-account-mess">
-                  {latestMessage?.message}
+                  {item?.lastMessage?.message}
                 </span>
               )}
             </span>
-          </div> */}
+          </div>
         </Grid>
       </Grid>
       {/* {true ? <div className="chat-dot-have-mess"></div> : null} */}
