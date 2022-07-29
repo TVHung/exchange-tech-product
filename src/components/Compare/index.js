@@ -103,7 +103,7 @@ export default function Compare() {
               <div className="product-infor text-center">
                 <div className="w-100 h-100 position-relative">
                   <img
-                    src={compareProducts[1]?.images[1]?.image_url}
+                    src={compareProducts[1]?.images[0]?.image_url || img}
                     alt="product-compare"
                   />
                   <p>{compareProducts[1]?.name}</p>
@@ -126,7 +126,7 @@ export default function Compare() {
               <div className="product-infor text-center">
                 <div className="w-100 h-100 position-relative">
                   <img
-                    src={compareProducts[2]?.images[2]?.image_url || img}
+                    src={compareProducts[2]?.images[0]?.image_url || img}
                     alt="product-compare"
                   />
                   <p>{compareProducts[2]?.name}</p>

@@ -224,3 +224,8 @@ export const suggest = (value, array) => {
 export const getValueInArrayObjectWithId = (arr, id) => {
   return arr.find((x) => x.id == id)?.value;
 };
+
+export const filterArrayObjectWithCategoryId = (arr, category_id) => {
+  if (arr?.length) return arr.filter((x) => x.category_id == category_id);
+  else return [];
+};

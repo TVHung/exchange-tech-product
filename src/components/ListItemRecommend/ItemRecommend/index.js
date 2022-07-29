@@ -78,7 +78,7 @@ export default function Item({ data, status }) {
             </span>
           </div>
         </div>
-        <div className="itemDrop">
+        <div className="itemDrop" onClick={() => toDetail()}>
           <i
             className="fas fa-heart favorite-heart"
             onClick={() => toggleFavorite()}

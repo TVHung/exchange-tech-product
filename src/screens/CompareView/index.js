@@ -82,10 +82,11 @@ export default function CompareView() {
               <div className="col-4 product-header-wrap">
                 {compareProducts[0] ? (
                   <div className="product-header position-relative">
-                    <div className="text-center">
+                    <div className="image-selected">
                       <img
                         src={compareProducts[0]?.images[0]?.image_url || img}
-                        alt="product-compare"
+                        alt=""
+                        width="100%"
                       />
                     </div>
                     <h5>{compareProducts[0]?.name}</h5>
@@ -107,10 +108,11 @@ export default function CompareView() {
               <div className="col-4 product-header-wrap col-center">
                 {compareProducts[1] ? (
                   <div className="product-header position-relative">
-                    <div className="text-center">
+                    <div className="image-selected">
                       <img
-                        src={compareProducts[1]?.images[1]?.image_url || img}
+                        src={compareProducts[1]?.images[0]?.image_url || img}
                         alt="product-compare"
+                        width="100%"
                       />
                     </div>
                     <h5>{compareProducts[1]?.name}</h5>
@@ -132,10 +134,17 @@ export default function CompareView() {
               <div className="col-4 product-header-wrap">
                 {compareProducts[2] ? (
                   <div className="product-header position-relative">
-                    <div className="text-center">
+                    {/* <div className="text-center">
                       <img
-                        src={compareProducts[2]?.images[2]?.image_url || img}
+                        src={compareProducts[2]?.images[0]?.image_url || img}
                         alt="product-compare"
+                      />
+                    </div> */}
+                    <div className="image-selected">
+                      <img
+                        src={compareProducts[2]?.images[0]?.image_url || img}
+                        alt="product-compare"
+                        width="100%"
                       />
                     </div>
                     <h5>{compareProducts[2]?.name}</h5>
