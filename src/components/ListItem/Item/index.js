@@ -6,7 +6,7 @@ import imgDefault from "../../../assets/image/product-default.png";
 import { useDispatch, useSelector } from "react-redux";
 import { addWishList } from "../../../redux/actions/postActions";
 
-export default function Item({ data, status }) {
+export default function Item({ data, status, isMatching }) {
   const [favorite, setfavorite] = useState(false);
 
   const toggleFavorite = () => {
@@ -34,7 +34,8 @@ export default function Item({ data, status }) {
   }, []);
 
   const toDetail = () => {
-    if (data?.image_url) window.location.href = `/detail/${data?.product_id}`;
+    if (isMatching) window.open(`/detail/${data?.id}`, "_blank");
+    //mở tab khác với sản phẩm là matching
     else window.location.href = `/detail/${data?.id}`;
   };
 
@@ -71,7 +72,7 @@ export default function Item({ data, status }) {
             </span>
           </div>
         </div>
-        <div className="itemDrop" onClick={() => toDetail()}>
+        <div className="itemDrop">
           <i
             className="fas fa-heart favorite-heart"
             onClick={() => toggleFavorite()}
@@ -82,12 +83,12 @@ export default function Item({ data, status }) {
               <span>{data?.category}</span>
               <p>{data?.description}</p>
             </div>
-            {/* <div className="itemDrop-btn"> */}
-            {/* <Button className="item-btn-care" onClick={() => toDetail()}>
+            <div className="itemDrop-btn">
+              <Button className="item-btn-care" onClick={() => toDetail()}>
                 Chi tiết
-              </Button> */}
-            {/* <Button className="item-btn-chat">Nhắn tin</Button> */}
-            {/* </div> */}
+              </Button>
+              {/* <Button className="item-btn-chat">Nhắn tin</Button> */}
+            </div>
           </div>
         </div>
       </div>

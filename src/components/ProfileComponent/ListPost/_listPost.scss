@@ -16,3 +16,18 @@
         }
     }
 }
+
+.product-matching-search {
+    min-height: 300px;
+    width: 100%;
+    .loading-matching,
+    .product-matching-detail {
+        width: 100%;
+        min-height: 300px;
+        @include makeCenter();
+        p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    }
+}
