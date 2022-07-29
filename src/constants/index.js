@@ -73,6 +73,9 @@ export const apiGetNameSuggest = `${api}/products-name-suggest`;
 export const apiGetCategory = `${api}/categories`;
 export const apiGetFixedData = `${api}/fixed-data`;
 
+//matching
+export const apiGetProductMatching = `${api}/product-matching`;
+
 export const headers = {
   "Content-type": "application/json",
   Authorization: `Bearer ${getCookie("access_token")}`,

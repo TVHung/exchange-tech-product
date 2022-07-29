@@ -4,7 +4,7 @@ import "./_myPostItem.scss";
 import imgDefault from "../../../../assets/image/product-default.png";
 import imgBlock from "../../../../assets/image/block.png";
 
-export default function MyPostItem({ data, handleShow }) {
+export default function MyPostItem({ data, handleShow, handleShowMatching }) {
   const toDetail = () => {
     window.location.href = `edit-post/${data.id}`;
   };
@@ -50,18 +50,28 @@ export default function MyPostItem({ data, handleShow }) {
               <div>
                 <i className="fas fa-info-circle"></i> {data?.description}
               </div>
+              <div>
+                <i className="fas fa-bullseye"></i> Nhu cầu:{" "}
+                {data?.is_trade == 1 ? <b>Mua</b> : <b>Bán</b>}
+              </div>
             </div>
           </div>
         </div>
         <div className="d-flex justify-content-end mt-1">
-          <div className="btn btn-danger mx-1" onClick={(e) => handleDelete(e)}>
-            <span>Xóa</span>
+          <div
+            className="btn btn-primary mx-1 btn-matching"
+            onClick={(e) => handleShowMatching(data?.id, data?.is_trade)}
+          >
+            <span>Tìm tương tự</span>
           </div>
           {data?.is_block !== 1 && (
             <div className="btn enquiry mx-1" onClick={(e) => handleEdit(e)}>
               <span>Chỉnh sửa</span>
             </div>
           )}
+          <div className="btn btn-danger mx-1" onClick={(e) => handleDelete(e)}>
+            <span>Xóa</span>
+          </div>
         </div>
         {data?.is_block == 1 && (
           <div

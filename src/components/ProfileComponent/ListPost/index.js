@@ -9,18 +9,22 @@ import "./_listPost.scss";
 import Pagination from "react-js-pagination";
 import { insertParam, getParam } from "../../../utils/common";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
+import { apiGetProductMatching, headers } from "../../../constants";
+import Item from "../../ListItem/Item";
 
 export default function ListPost({ setPreload }) {
   const [show, setShow] = useState(false);
+  const [loadingMatching, setLoadingMatching] = useState(false);
+  const [productMatching, setProductMatching] = useState([]);
+  const [showMatching, setShowMatching] = useState(false);
   const [postIdDelete, setPostIdDelete] = useState(null);
   const [filter, setFilter] = useState("all"); //1 tat ca , 2 chua ban, 3 da ban
   const [myPostFilter, setMyPostFilter] = useState([]); //1 tat ca , 2 chua ban, 3 da ban
+  const [isTrade, setIsTrade] = useState(null);
 
   const dispatch = useDispatch();
   const my_posts = useSelector((state) => state.post.my_posts);
-  const getAllMyPosts = () => {
-    dispatch(fetchMyPosts());
-  };
 
   const history = useHistory();
   const insertParams = (key, value) => {
@@ -34,7 +38,15 @@ export default function ListPost({ setPreload }) {
     if (getParam("filter")) setFilter(getParam("filter"));
     else insertParams("filter", "all");
     dispatch(fetchMyPosts(1, getParam("filter")));
+    return () => {
+      setLoadingMatching();
+      setShowMatching();
+      setPostIdDelete();
+      setFilter();
+      setMyPostFilter([]);
+    };
   }, []);
+
   useEffect(() => {
     console.log("my post", my_posts);
     setMyPostFilter(my_posts?.data);
@@ -59,6 +71,30 @@ export default function ListPost({ setPreload }) {
     dispatch(fetchMyPosts(1, name));
   };
 
+  const handleCloseMatching = () => {
+    setShowMatching(false);
+  };
+  const handleShowMatching = (id, is_trade = null) => {
+    setIsTrade(is_trade);
+    setShowMatching(true);
+    setLoadingMatching(true);
+    handleSearchMatching(id);
+  };
+  const handleSearchMatching = (id) => {
+    axios
+      .get(`${apiGetProductMatching}/${id}`, { headers: headers })
+      .then((res) => {
+        console.log("search product matching", res);
+        const data = res?.data;
+        setLoadingMatching(false);
+        setProductMatching(data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoadingMatching(false);
+      });
+  };
+
   return (
     <div style={{ paddingTop: 10 }}>
       <Modal show={show} onHide={() => handleClose()} centered>
@@ -81,6 +117,59 @@ export default function ListPost({ setPreload }) {
               onClick={(e) => handleDeletePost(e)}
             >
               Xác nhận
+            </div>
+          </div>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={showMatching}
+        onHide={() => handleCloseMatching()}
+        centered
+        className="modal-matching-product"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {isTrade == 1 ? (
+              <p className="text-center fs-18">
+                Sản phẩm của những người khác có nhu cầu bán sản phẩm bạn tìm
+              </p>
+            ) : (
+              <p className="text-center fs-18">
+                Sản phẩm của những người có nhu cầu mua sản phẩm của bạn
+              </p>
+            )}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="product-matching-search">
+            {loadingMatching ? (
+              <div className="loading-matching">
+                <p>Đang tìm sản phẩm phù hợp ...</p>
+              </div>
+            ) : (
+              <div className="product-matching-detail">
+                {productMatching?.length ? (
+                  <Grid container spacing={1} alignItems="stretch">
+                    {productMatching?.map((item) => (
+                      <Grid key={item.id} item xs={6}>
+                        <Item data={item} isMatching={true} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                ) : (
+                  <p>Không tìm thấy sản phẩm phù hợp</p>
+                )}
+              </div>
+            )}
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="d-flex justify-content-end mt-1">
+            <div
+              className="btn btn-primary mx-2"
+              onClick={() => handleCloseMatching()}
+            >
+              Đóng
             </div>
           </div>
         </Modal.Footer>
@@ -184,7 +273,11 @@ export default function ListPost({ setPreload }) {
               {myPostFilter &&
                 myPostFilter.map((item) => (
                   <Grid key={item.id} item xs={6}>
-                    <MyPostItem data={item} handleShow={handleShow} />
+                    <MyPostItem
+                      data={item}
+                      handleShow={handleShow}
+                      handleShowMatching={handleShowMatching}
+                    />
                   </Grid>
                 ))}
             </Grid>

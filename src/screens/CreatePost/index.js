@@ -381,16 +381,41 @@ export default function CreatePost() {
       gpu: productChild?.gpu,
       storage_type: parseInt(productChild?.storage_type) || 0,
       brand_id: parseInt(productChild?.brand_id),
-      display_size: parseFloat(productChild?.display_size),
-      pin: parseInt(productChild?.pin),
-      resolution: productChild?.resolution,
+      display_size: parseFloat(productChild?.display_size) || null,
+      pin: parseInt(productChild?.pin) || 0,
+      resolution: parseInt(productChild?.resolution) || 0,
     };
+    // const postData = {
+    //   address: "Xã Côn Lôn, Huyện Na Hang, Tỉnh Tuyên Quang",
+    //   brand_id: 16,
+    //   category_id: 1,
+    //   color: null,
+    //   command: 0,
+    //   cpu: null,
+    //   description: "sdfasdfsad",
+    //   display_size: null,
+    //   fileVideo: undefined,
+    //   gpu: null,
+    //   guarantee: 0,
+    //   is_trade: 0,
+    //   name: "Trương Văn Hùng",
+    //   pin: 0,
+    //   price: 1234123423,
+    //   public_status: 1,
+    //   ram: 0,
+    //   resolution: 0,
+    //   sold: 0,
+    //   status: 2,
+    //   storage: 0,
+    //   storage_type: 0,
+    //   title: "34213đgvdf",
+    // };
 
-    console.log(postData);
+    console.log("Product data", postData);
     mergePostData = { ...postData };
 
     const formData = appendArrayToFormData(mergePostData);
-    for (let i = 0; i < fileObject.length; i++) {
+    for (let i = 0; i < fileObject?.length; i++) {
       formData.append("fileImages[]", fileObject[i]);
     }
     setPreload(true);
@@ -441,7 +466,7 @@ export default function CreatePost() {
           const categories = responses[0].data.data;
           const fixedData = responses[1].data.data;
           console.log("post", categories);
-          setCategoryData(categories);
+          setCategoryData(categories, fixedData);
           setStatusData(fixedData?.status);
           setCommandData(fixedData?.command);
           setStorageTypeData(fixedData?.storageType);
@@ -1138,7 +1163,7 @@ export default function CreatePost() {
             </form>
             <div className="row mb-3">
               <div className="col"></div>
-              <div className="col-lg-6 col-sm-12">
+              <div className="col-12">
                 <button
                   type="submit"
                   className="btn btn-success btn-block btn-submit"

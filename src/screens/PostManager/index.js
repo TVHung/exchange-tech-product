@@ -42,7 +42,7 @@ export default function PostManager() {
   return (
     <div className="profile-container container">
       <MetaTag
-        title={"Thông tin người dùng"}
+        title={"Quản lý sản phẩm đã đăng"}
         description={"Trang web buôn bán, trao đổi sản phẩm cũ"}
       />
       {!preload ? (
