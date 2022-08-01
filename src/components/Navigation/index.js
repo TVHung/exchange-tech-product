@@ -161,7 +161,7 @@ export default function Navigation() {
             <li className="option" onClick={closeMobileMenu}>
               <a href="/post-manager" className="underline">
                 <i className="fas fa-user-cog icon-btn"></i>
-                Quản lý tin
+                Quản lý sản phẩm
               </a>
             </li>
             <li className="option" onClick={closeMobileMenu}>
@@ -174,12 +174,12 @@ export default function Navigation() {
                 Tin nhắn
               </a>
             </li>
-            <li className="option" onClick={closeMobileMenu}>
+            {/* <li className="option" onClick={closeMobileMenu}>
               <a href="/recommend" className="underline">
                 <i className="fa fa-star icon-btn" aria-hidden="true"></i>
                 Dành cho bạn
               </a>
-            </li>
+            </li> */}
             {!getCookie("access_token") ? (
               <>
                 <li className="option mobile-option" onClick={closeMobileMenu}>

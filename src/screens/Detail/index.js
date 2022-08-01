@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./_detail.scss";
 import Preloading from "../../components/Loading";
 import SlideDetail from "../../components/SlideShow/SlideDetail";
@@ -42,6 +42,7 @@ import NotPost from "../../components/NotPost";
 import { useDispatch, useSelector } from "react-redux";
 import { addWishList, setListCompare } from "../../redux/actions/postActions";
 import Comment from "../../components/Comment";
+import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 
 export default function Detail({ isAuth }) {
   const [preload, setPreload] = useState(false);
@@ -54,7 +55,7 @@ export default function Detail({ isAuth }) {
   const [breadcrumb, setBreadcrumb] = useState([]);
   const [isCompare, setIsCompare] = useState(false);
   const [show, setShow] = useState(false);
-
+  const textareaRef = useRef(null);
   const params = useParams();
   const list_compare = useSelector((state) => state.post.list_compare);
 
@@ -262,7 +263,13 @@ export default function Detail({ isAuth }) {
                     </div>
                     <div className="detail-left-description">
                       <p>{postDetail?.title}</p>
-                      <p>{postDetail?.description}</p>
+                      <TextareaAutosize
+                        aria-label="empty textarea"
+                        placeholder=""
+                        defaultValue={postDetail?.description}
+                        disabled={true}
+                        className="description-area"
+                      />
                     </div>
                     <div className="detail-properties">
                       <div className="row">
