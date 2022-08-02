@@ -28,7 +28,7 @@ export default function Comment({ product_id, isAuth }) {
   }, [product_comments]);
 
   useEffect(() => {
-    Pusher.logToConsole = true;
+    Pusher.logToConsole = false;
     var pusher = new Pusher("1bf1895dca0e9f4afb6a", {
       cluster: "ap1",
     });

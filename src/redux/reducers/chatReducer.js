@@ -1,7 +1,8 @@
-import { MY_LIST_CHAT } from "../case";
+import { MY_LIST_CHAT, NUM_CHAT } from "../case";
 
 const initialState = {
   myListChat: [],
+  numChat: localStorage.getItem("numChat"),
 };
 
 const chatReducer = (state = initialState, action) => {
@@ -10,6 +11,11 @@ const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         myListChat: action.payload,
+      };
+    case NUM_CHAT:
+      return {
+        ...state,
+        numChat: action.payload,
       };
     default:
       return state;

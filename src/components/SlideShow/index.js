@@ -17,7 +17,7 @@ export default function SlideShow({ dataSlides }) {
     <div className="slideShowContainer">
       <Slide {...properties}>
         {dataSlides.map((data) => (
-          <div key="{data.id}">
+          <div key={data.id}>
             <div
               style={{
                 backgroundImage: `url(${data.image})`,

@@ -5,9 +5,9 @@ import "./home.scss";
 import MetaTag from "../../components/MetaTag";
 import Preloading from "../../components/Loading";
 import Categories from "../../components/Categories";
-import banner1 from "../../assets/image/banner1.jpg";
-import banner2 from "../../assets/image/banner2.jpg";
-import banner3 from "../../assets/image/banner3.jpg";
+import banner1 from "../../assets/image/banner1.png";
+import banner2 from "../../assets/image/banner2.png";
+import banner3 from "../../assets/image/banner3.png";
 import axios from "axios";
 import { apiPostMostInterest, apiPostRecently, headers } from "../../constants";
 import { setLinkDirect } from "../../utils/common";
@@ -16,20 +16,14 @@ import { apiPostHasTrade } from "./../../constants/index";
 const dataSlides = [
   {
     id: 1,
-    tite: "We are team ssv",
-    bio: "Blog chia sẻ về những thông tin của nhóm và những kiến thức bổ ích khác",
     image: banner1,
   },
   {
     id: 2,
-    tite: "We are team ssv",
-    bio: "Blog chia sẻ về những thông tin của nhóm và những kiến thức bổ ích khác",
     image: banner2,
   },
   {
     id: 3,
-    tite: "We are team ssv",
-    bio: "Blog chia sẻ về những thông tin của nhóm và những kiến thức bổ ích khác",
     image: banner3,
   },
 ];
