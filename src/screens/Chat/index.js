@@ -34,7 +34,6 @@ export default function Chat() {
   const [userActive, setUserActive] = useState(null);
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
-  const [latestMessage, setLatestMessage] = useState({});
   const [page, setPage] = useState(1);
 
   const params = useParams();
@@ -57,7 +56,6 @@ export default function Chat() {
         })
         .then((res) => {
           // alert("Thành công");
-          setLatestMessage(res.data);
           addMessage(res.data);
           console.log("new message", res);
           dispatch(fetchConversations());
@@ -116,7 +114,12 @@ export default function Chat() {
     const channel = pusher.subscribe("chat");
     channel.bind("message", function (data) {
       dispatch(fetchConversations());
-      if (parseInt(data.user_id) == parseInt(params.id)) {
+      console.log("tin nhắn", data, JSON.parse(localStorage.getItem("user")));
+      if (
+        parseInt(data.user_id) == parseInt(params.id) &&
+        parseInt(data.target_user_id) ==
+          parseInt(JSON.parse(localStorage.getItem("user"))?.id)
+      ) {
         addMessage(data);
       }
     });
@@ -153,7 +156,8 @@ export default function Chat() {
         // let maxPage = res.data.data?.per_page;
         // if (maxPage && page <= maxPage) setPage(page);
         // setMessages((messages) => [...messages, ...res.data.data.data]);
-        setMessages(res.data.data);
+        var allMess = res.data.data;
+        setMessages(allMess);
         setLoadChat(false);
         setTimeout(() => {
           onScroll();

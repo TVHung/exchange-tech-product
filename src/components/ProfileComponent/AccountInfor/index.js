@@ -140,11 +140,11 @@ export default function AccountInfor() {
                       {converDate(userProfile?.created_at)}
                     </span>
                   </li>
-                  <li>
+                  {/* <li>
                     <i className="fas fa-comment-dots"></i>
                     <b>Phản hồi: </b>
                     <span className="infor-detail">Trong 1 giờ</span>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </Grid>

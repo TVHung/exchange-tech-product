@@ -10,6 +10,7 @@ import { postManagerBreadcrumb } from "../../constants/breadcrumData";
 import { setLinkDirect, insertParam } from "../../utils/common";
 import { useHistory } from "react-router-dom";
 import { getParam } from "./../../utils/common";
+import ManagerComment from "../../components/ProfileComponent/ManagerComment";
 
 export default function PostManager() {
   const [preload, setPreload] = useState(false);
@@ -67,6 +68,11 @@ export default function PostManager() {
                     value="post-favorite"
                     className="profile-tab"
                   />
+                  {/* <Tab
+                    label="Bình luận về sản phẩm"
+                    value="post-comment"
+                    className="profile-tab"
+                  /> */}
                 </TabList>
               </Box>
               <TabPanel value="profile">
@@ -75,6 +81,9 @@ export default function PostManager() {
               <TabPanel value="post-favorite">
                 <Favorite setPreload={setPreload} />
               </TabPanel>
+              {/* <TabPanel value="post-comment">
+                <ManagerComment setPreload={setPreload} />
+              </TabPanel> */}
             </TabContext>
           </Box>
         </div>

@@ -474,11 +474,11 @@ export default function AccountUserInfor() {
                           {converDate(user_profile?.created_at)}
                         </span>
                       </li>
-                      <li>
+                      {/* <li>
                         <i className="fas fa-comment-dots"></i>
                         <b>Phản hồi: </b>
                         <span className="infor-detail">Trong 1 giờ</span>
-                      </li>
+                      </li> */}
                       <li>
                         <i className="fas fa-check-circle"></i>
                         <b>Kết nối: </b>

@@ -7,7 +7,7 @@ import "./navigation.scss";
 import Search from "./Search";
 import { ReactComponent as CloseMenu } from "../../assets/image/x.svg";
 import { ReactComponent as MenuIcon } from "../../assets/image/menu.svg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
 import Menu from "@material-ui/core/Menu";
@@ -16,6 +16,8 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Divider from "@material-ui/core/Divider";
 import { getCookie, deleteCookie } from "../../utils/cookie";
 import { headers, apiLogout } from "../../constants";
+import Pusher from "pusher-js";
+import { fetchConversations } from "../../redux/actions/chatAction";
 
 function getWindowDimensions() {
   const { innerWidth: width, innerHeight: height } = window;
@@ -72,6 +74,7 @@ export default function Navigation() {
   const handleClickMobile = () => setClick(!click);
   const closeMobileMenu = () => setClick(false);
   const [isSmall, setIsSmall] = useState(false);
+  const [numChat, setNumChat] = useState(0);
   const [isScroll, setIsScroll] = useState({
     onTop: false,
   });
@@ -124,6 +127,25 @@ export default function Navigation() {
     return () => {};
   }, [isLogin]);
 
+  const dispatch = useDispatch();
+  useEffect(() => {
+    Pusher.logToConsole = false;
+
+    const pusher = new Pusher("1bf1895dca0e9f4afb6a", {
+      cluster: "ap1",
+    });
+
+    const channel = pusher.subscribe("chat");
+    channel.bind("message", function (data) {
+      dispatch(fetchConversations());
+    });
+  }, []);
+
+  const numNotReadChat = useSelector((state) => state.chat.numChat);
+  useEffect(() => {
+    setNumChat(numNotReadChat);
+  }, [numNotReadChat]);
+
   return (
     <div
       className="nav-container"
@@ -161,25 +183,27 @@ export default function Navigation() {
             <li className="option" onClick={closeMobileMenu}>
               <a href="/post-manager" className="underline">
                 <i className="fas fa-user-cog icon-btn"></i>
-                Quản lý tin
+                Quản lý sản phẩm
               </a>
             </li>
             <li className="option" onClick={closeMobileMenu}>
               <a href="/chat" className="underline">
                 <i className="fas fa-comments icon-btn">
-                  {/* <div className="nofi-dot">
-                    <p className="nofi-num">10</p>
-                  </div> */}
+                  {numChat > 0 && (
+                    <div className="nofi-dot">
+                      <p className="nofi-num">{numChat}</p>
+                    </div>
+                  )}
                 </i>
                 Tin nhắn
               </a>
             </li>
-            <li className="option" onClick={closeMobileMenu}>
+            {/* <li className="option" onClick={closeMobileMenu}>
               <a href="/recommend" className="underline">
                 <i className="fa fa-star icon-btn" aria-hidden="true"></i>
                 Dành cho bạn
               </a>
-            </li>
+            </li> */}
             {!getCookie("access_token") ? (
               <>
                 <li className="option mobile-option" onClick={closeMobileMenu}>

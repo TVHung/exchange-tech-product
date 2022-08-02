@@ -5,6 +5,9 @@
     margin-bottom: 10px;
     height: auto;
     width: 100%;
+    &:hover {
+        cursor: pointer;
+    }
     .avatar-comment {
         vertical-align: top;
         padding: 0px !important;

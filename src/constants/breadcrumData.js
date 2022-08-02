@@ -9,7 +9,7 @@ export const chatBreadcrumb = [
 ];
 export const postBreadcrumb = [
   { name: "Trang chủ", direct: "/" },
-  { name: "Tạo bài đăng", direct: "/create-post" },
+  { name: "Tạo sản phẩm mới", direct: "/create-post" },
 ];
 export const editPostBreadcrumb = [
   { name: "Trang chủ", direct: "/" },
@@ -25,5 +25,5 @@ export const gameBreadcrumb = [
 ];
 export const postManagerBreadcrumb = [
   { name: "Trang chủ", direct: "/" },
-  { name: "Quản lý bài viết", direct: "/post-manager" },
+  { name: "Quản lý sản phẩm", direct: "/post-manager" },
 ];

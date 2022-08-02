@@ -2,6 +2,7 @@ import axios from "axios";
 import {
   apiFetchMyPosts,
   apiGetAllPost,
+  apiGetCommentMyProduct,
   apiGetCommentProduct,
   apiPost,
   apiSearch,
@@ -14,6 +15,7 @@ import {
   SEARCH_POST_RESULT,
   WISH_LIST,
   LIST_COMPARE,
+  MY_PRODUCT_COMMENTS,
 } from "./../case";
 import { headers } from "./../../constants";
 import { toast } from "react-toastify";
@@ -66,6 +68,23 @@ export const getCommentProduct =
         });
     } catch (error) {
       dispatch({ type: PRODUCT_COMMENTS, payload: [] });
+      return { statusCode: 500, body: error.toString() };
+    }
+  };
+export const getCommentMyProduct =
+  (pageNumber = 1) =>
+  async (dispatch) => {
+    try {
+      await axios
+        .get(`${apiGetCommentMyProduct}?page=${pageNumber}`, {
+          headers: headers,
+        })
+        .then((res) => {
+          const productComments = res.data;
+          dispatch({ type: MY_PRODUCT_COMMENTS, payload: productComments });
+        });
+    } catch (error) {
+      dispatch({ type: MY_PRODUCT_COMMENTS, payload: [] });
       return { statusCode: 500, body: error.toString() };
     }
   };

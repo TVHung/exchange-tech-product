@@ -76,6 +76,11 @@ function App() {
     return () => {};
   }, [isLogin]);
 
+  const currentUser = useSelector((state) => state.user.user);
+  useEffect(() => {
+    localStorage.setItem("user", JSON.stringify(currentUser));
+  }, [currentUser]);
+
   return (
     <Fragment>
       <Router>

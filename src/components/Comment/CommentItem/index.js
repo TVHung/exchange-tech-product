@@ -6,7 +6,12 @@ import "./_commentItem.scss";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export default function CommentItem({ comment, product_id, isAuth }) {
+export default function CommentItem({
+  comment,
+  product_id,
+  isAuth,
+  isCommentManager,
+}) {
   const [isReply, setIsReply] = useState(false);
   const [commentContentReply, setCommentContentReply] = useState({
     content: "",
@@ -65,6 +70,12 @@ export default function CommentItem({ comment, product_id, isAuth }) {
     }
   };
 
+  const goDetail = () => {
+    if (isCommentManager) {
+      window.location.href = `/detail/${product_id}`;
+    }
+  };
+
   return (
     <div className="comment-item row">
       <div className="avatar-comment col-lg-2 col-md-1 col-sm-2">
@@ -75,7 +86,7 @@ export default function CommentItem({ comment, product_id, isAuth }) {
         />
       </div>
       <div className="comment-detail d-inline-block col-lg-10 col-md-11 col-sm-10">
-        <div className="comment-content">
+        <div className="comment-content" onClick={() => goDetail()}>
           <span className="bold">{comment?.user?.profile?.name}</span>
           <span>{comment?.content}</span>
           <span className="created-at">

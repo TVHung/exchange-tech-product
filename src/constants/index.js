@@ -61,10 +61,12 @@ export const apiSendMessage = `${api}/send-message`;
 export const apiGetMessage = `${api}/all-message`;
 export const apiGetMyConversation = `${api}/my-conversations`;
 export const apiDeleteConversation = `${api}/delete-conversation`;
+export const apiSetIsRead = `${api}/set-is-read-last-message`;
 
 //comment
 export const apiAddComment = `${api}/comments`;
 export const apiGetCommentProduct = `${api}/comments/products`;
+export const apiGetCommentMyProduct = `${api}/comments/my-product-comment`;
 
 //suggest
 export const apiGetSuggest = `${api}/products-feild-suggest`;

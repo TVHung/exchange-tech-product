@@ -117,6 +117,9 @@ export default function EditPost() {
     command: "",
     pin: "",
     resolution: "",
+    ram: "",
+    storage: "",
+    guarantee: "",
 
     nameTrade: "",
     titleTrade: "",
@@ -333,6 +336,12 @@ export default function EditPost() {
       description: "",
       fileImages: "",
       fileVideo: "",
+      command: "",
+      pin: "",
+      resolution: "",
+      ram: "",
+      storage: "",
+      guarantee: "",
     });
     updatePost();
   };
@@ -546,112 +555,119 @@ export default function EditPost() {
       ) : (
         <Grid container className="form-container">
           <Grid item xs={12} md={4} className="create-post-images">
-            <div className="image-post">
-              <div className="custom-file">
-                <label htmlFor="file-upload" className="custom-file-upload">
-                  <i className="fas fa-upload"></i> Thêm ảnh
-                </label>
-                <input
-                  type="file"
-                  className="custom-file-input"
-                  id="file-upload"
-                  multiple
-                  accept="image/*"
-                  onChange={(e) => uploadSingleFile(e)}
-                />
-              </div>
-              <div className="mt-3 view-preview row">
-                {imageUrlEdit &&
-                  imageUrlEdit.map((item, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="col-lg-6 col-md-3 col-sm-6 image-preview mb-2 "
-                      >
-                        <div className="image-selected">
-                          <img src={item.image_url} alt="" width="100%" />
-                          <i
-                            className="fas fa-times-circle fa delete-image"
-                            onClick={() => deleteImageUrl(item.id)}
-                          ></i>
-                          {index === 0 ? (
-                            <div className="title-cover-image">
-                              <p>Ảnh bìa</p>
+            {!postInfor?.is_trade && (
+              <>
+                <div className="image-post">
+                  <div className="custom-file">
+                    <label htmlFor="file-upload" className="custom-file-upload">
+                      <i className="fas fa-upload"></i> Thêm ảnh
+                    </label>
+                    <input
+                      type="file"
+                      className="custom-file-input"
+                      id="file-upload"
+                      multiple
+                      accept="image/*"
+                      onChange={(e) => uploadSingleFile(e)}
+                    />
+                  </div>
+                  <div className="mt-3 view-preview row">
+                    {imageUrlEdit &&
+                      imageUrlEdit.map((item, index) => {
+                        return (
+                          <div
+                            key={index}
+                            className="col-lg-6 col-md-3 col-sm-6 image-preview mb-2 "
+                          >
+                            <div className="image-selected">
+                              <img src={item.image_url} alt="" width="100%" />
+                              <i
+                                className="fas fa-times-circle fa delete-image"
+                                onClick={() => deleteImageUrl(item.id)}
+                              ></i>
+                              {index === 0 ? (
+                                <div className="title-cover-image">
+                                  <p>Ảnh bìa</p>
+                                </div>
+                              ) : null}
                             </div>
-                          ) : null}
-                        </div>
-                      </div>
-                    );
-                  })}
-                {file &&
-                  file.map((item, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="col-lg-6 col-md-3 col-sm-6 image-preview mb-2 "
-                      >
-                        <div className="image-selected">
-                          <img src={item} alt="" width="100%" />
-                          <i
-                            className="fas fa-times-circle fa delete-image"
-                            onClick={() => deleteFile(index)}
-                          ></i>
-                          {index === 0 && imageUrlEdit.length === 0 ? (
-                            <div className="title-cover-image">
-                              <p>Ảnh bìa</p>
+                          </div>
+                        );
+                      })}
+                    {file &&
+                      file.map((item, index) => {
+                        return (
+                          <div
+                            key={index}
+                            className="col-lg-6 col-md-3 col-sm-6 image-preview mb-2 "
+                          >
+                            <div className="image-selected">
+                              <img src={item} alt="" width="100%" />
+                              <i
+                                className="fas fa-times-circle fa delete-image"
+                                onClick={() => deleteFile(index)}
+                              ></i>
+                              {index === 0 && imageUrlEdit.length === 0 ? (
+                                <div className="title-cover-image">
+                                  <p>Ảnh bìa</p>
+                                </div>
+                              ) : null}
                             </div>
-                          ) : null}
-                        </div>
-                      </div>
-                    );
-                  })}
-              </div>
-              <div className="image-validate">
-                <p>{validatePost.fileImages}</p>
-              </div>
-            </div>
-            <div className="video-post">
-              <div className="custom-video">
-                <label htmlFor="video-upload" className="custom-video-upload">
-                  <i className="fas fa-upload"></i> Thêm video
-                </label>
-                <input
-                  type="file"
-                  className="custom-video-input"
-                  id="video-upload"
-                  // multiple
-                  accept="video/*"
-                  onChange={(e) => uploadSingleVideo(e)}
-                />
-              </div>
-              <div className="mt-3 view-preview row">
-                {postInfor?.video_url && !videoFile && (
-                  <>
-                    <video width="400" controls>
-                      <source src={postInfor?.video_url} />
-                    </video>
-                    <i
-                      className="fas fa-times-circle fa-2x fa delete-video-icon"
-                      onClick={() => deleteVideo()}
-                    ></i>
-                  </>
-                )}
-                {videoFile && (
-                  <>
-                    <video width="400" controls>
-                      <source src={URL.createObjectURL(videoFile)} />
-                    </video>
-                    <i
-                      className="fas fa-times-circle fa-2x fa delete-video-icon"
-                      onClick={() => deleteVideoNew()}
-                    ></i>
-                  </>
-                )}
-              </div>
-              <div className="image-validate">
-                <p>{validatePost.fileVideo}</p>
-              </div>
-            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                  <div className="image-validate">
+                    <p>{validatePost.fileImages}</p>
+                  </div>
+                </div>
+                <div className="video-post">
+                  <div className="custom-video">
+                    <label
+                      htmlFor="video-upload"
+                      className="custom-video-upload"
+                    >
+                      <i className="fas fa-upload"></i> Thêm video
+                    </label>
+                    <input
+                      type="file"
+                      className="custom-video-input"
+                      id="video-upload"
+                      // multiple
+                      accept="video/*"
+                      onChange={(e) => uploadSingleVideo(e)}
+                    />
+                  </div>
+                  <div className="mt-3 view-preview row">
+                    {postInfor?.video_url && !videoFile && (
+                      <>
+                        <video width="400" controls>
+                          <source src={postInfor?.video_url} />
+                        </video>
+                        <i
+                          className="fas fa-times-circle fa-2x fa delete-video-icon"
+                          onClick={() => deleteVideo()}
+                        ></i>
+                      </>
+                    )}
+                    {videoFile && (
+                      <>
+                        <video width="400" controls>
+                          <source src={URL.createObjectURL(videoFile)} />
+                        </video>
+                        <i
+                          className="fas fa-times-circle fa-2x fa delete-video-icon"
+                          onClick={() => deleteVideoNew()}
+                        ></i>
+                      </>
+                    )}
+                  </div>
+                  <div className="image-validate">
+                    <p>{validatePost.fileVideo}</p>
+                  </div>
+                </div>
+              </>
+            )}
           </Grid>
           <Grid item xs={12} md={8} className="create-post-detail">
             <div className="mb-3">
@@ -815,7 +831,7 @@ export default function EditPost() {
                 <div className="col">
                   <div className="form-outline position-relative">
                     <label className="form-label" htmlFor="post-pin">
-                      Dung lượng pin
+                      Dung lượng pin (mah)
                     </label>
                     <input
                       type="number"
@@ -852,7 +868,9 @@ export default function EditPost() {
                         </option>
                       ))}
                     </select>
-                    <p className="validate-form-text">{validatePost.storage}</p>
+                    <p className="validate-form-text">
+                      {validatePost.resolution}
+                    </p>
                   </div>
                 </div>
               )}
@@ -922,7 +940,7 @@ export default function EditPost() {
                   <div className="col">
                     <div className="form-outline">
                       <label className="form-label" htmlFor="post-guarantee">
-                        Bảo hành
+                        Bảo hành (Tháng)
                       </label>
                       <input
                         type="number"
@@ -934,6 +952,9 @@ export default function EditPost() {
                         name="guarantee"
                         onChange={(e) => handleOnChange(e)}
                       />
+                      <p className="validate-form-text">
+                        {validatePost.guarantee}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -1051,7 +1072,7 @@ export default function EditPost() {
                   <div className="col">
                     <div className="form-outline position-relative">
                       <label className="form-label" htmlFor="post-display-size">
-                        Kích thước màn hình
+                        Kích thước màn hình (Inch)
                       </label>
                       <input
                         type="number"
@@ -1093,7 +1114,7 @@ export default function EditPost() {
                   <div className="col">
                     <div className="form-outline">
                       <label className="form-label" htmlFor="post-storage">
-                        Dung lượng bộ nhớ
+                        Dung lượng bộ nhớ (GB)
                       </label>
                       <select
                         className="form-select"
@@ -1147,7 +1168,7 @@ export default function EditPost() {
                   <div className="col">
                     <div className="form-outline">
                       <label className="form-label" htmlFor="post-storage">
-                        Dung lượng ổ cứng
+                        Dung lượng ổ cứng (GB)
                       </label>
                       <select
                         className="form-select"
@@ -1197,7 +1218,7 @@ export default function EditPost() {
               {!isFree && (
                 <div className="form-outline mb-3">
                   <label className="form-label" htmlFor="post-price">
-                    Giá bán&nbsp;<span style={{ color: "red" }}>*</span>
+                    Giá bán (VNĐ)&nbsp;<span style={{ color: "red" }}>*</span>
                   </label>
                   <input
                     type="number"
