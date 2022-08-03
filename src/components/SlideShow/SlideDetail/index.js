@@ -15,7 +15,6 @@ export default function SlideDetail({ dataSlides, video_url }) {
 
   return (
     <div className="slideDetailContainer">
-      {console.log("datalisde", dataSlides)}
       <Slide {...properties}>
         {dataSlides ? (
           dataSlides.map((data) => (

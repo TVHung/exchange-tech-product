@@ -6,9 +6,8 @@ const messSuggest = [
   "Sản phẩm này còn không?",
   "Sản phẩm còn bảo hành không?",
   "Sản phẩm có lỗi không?",
-  "Sản phẩm này còn không?",
-  "Sản phẩm còn bảo hành không?",
-  "Sản phẩm có lỗi không?",
+  "Sản phẩm có giảm giá không?",
+  "Cảm ơn bạn",
 ];
 
 export default function MenuInput({ sendMessage }) {

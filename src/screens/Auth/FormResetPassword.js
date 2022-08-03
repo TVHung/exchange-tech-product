@@ -43,7 +43,6 @@ export default function FormResetPassword() {
           setshow(true);
         } else {
           setEmailValidate(res.data.message);
-          console.log(res.data);
         }
         setShowLoading(false);
       })

@@ -67,13 +67,11 @@ export default function Search() {
   const fetchSuggest = async () => {
     try {
       var nameSuggest = JSON.parse(sessionStorage.suggestAll);
-      console.log("suggest", nameSuggest);
       setSuggestNames(nameSuggest?.name);
     } catch (error) {
       await axios
         .get(apiGetSuggest)
         .then((res) => {
-          console.log(res.data.data);
           const data = res.data.data;
           setSuggestNames(data?.name);
           sessionStorage.setItem("suggestAll", JSON.stringify(data));

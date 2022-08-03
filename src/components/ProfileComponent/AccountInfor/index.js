@@ -51,7 +51,6 @@ export default function AccountInfor() {
         .then((res) => {
           const myPosts = res.data.data;
           setPaginateData(res?.data?.meta);
-          console.log(res);
           setUserPosts(myPosts);
         });
     } catch (error) {

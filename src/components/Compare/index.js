@@ -23,7 +23,6 @@ export default function Compare() {
   const list_compare = useSelector((state) => state.post.list_compare);
 
   useEffect(() => {
-    console.log("danh sach", list_compare);
     if (list_compare) {
       getAllProductCompare(list_compare);
     }
@@ -75,7 +74,6 @@ export default function Compare() {
       {isShow ? (
         <div className="compare-component row">
           <div className="col-3 compare-product">
-            {console.log("Danh sach compare", compareProducts)}
             {compareProducts[0] ? (
               <div className="product-infor text-center">
                 <div className="w-100 h-100 position-relative">

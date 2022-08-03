@@ -131,7 +131,6 @@ export default function CreatePost() {
       ...prevState,
       [name]: value,
     }));
-    console.log(name, value);
     if (name === "category") {
       setvalidatePost({
         name: "",
@@ -232,7 +231,6 @@ export default function CreatePost() {
   const fetchSuggest = async () => {
     try {
       var allSuggest = JSON.parse(sessionStorage.suggestAll);
-      console.log("suggest", allSuggest);
       setSuggestNames(allSuggest?.name);
       setSuggestColors(allSuggest?.color);
       setSuggestDisplays(allSuggest?.display_size);
@@ -242,7 +240,6 @@ export default function CreatePost() {
       await axios
         .get(apiGetSuggest)
         .then((res) => {
-          console.log(res.data.data);
           const data = res.data.data;
           setSuggestNames(data?.name);
           setSuggestColors(data?.color);
@@ -429,7 +426,6 @@ export default function CreatePost() {
     //   title: "34213đgvdf",
     // };
 
-    console.log("Product data", postData);
     mergePostData = { ...postData };
 
     const formData = appendArrayToFormData(mergePostData);
@@ -444,7 +440,6 @@ export default function CreatePost() {
       .then((res) => {
         const p = res.data.data;
         if (res.data.status === 1) {
-          console.log("post success", p);
           setIsCreatePost(false);
           toast.success(res.data.message);
           setTimeout(() => {
@@ -466,7 +461,6 @@ export default function CreatePost() {
 
   const handleValidate = (validateData) => {
     Object.keys(validateData).forEach(function (key) {
-      console.log(key, validateData[key]);
       setvalidatePost((prevState) => ({
         ...prevState,
         [key]: validateData[key][0],
@@ -483,7 +477,6 @@ export default function CreatePost() {
         axios.spread((...responses) => {
           const categories = responses[0].data.data;
           const fixedData = responses[1].data.data;
-          console.log("post", categories);
           setCategoryData(categories, fixedData);
           setStatusData(fixedData?.status);
           setCommandData(fixedData?.command);

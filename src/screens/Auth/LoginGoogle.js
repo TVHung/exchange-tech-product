@@ -34,7 +34,6 @@ export default function LoginGoogle() {
           setLoginSuccess(false);
         }
         setIsLoading(false);
-        console.log(res.data);
       })
       .catch((error) => {
         console.error(error);

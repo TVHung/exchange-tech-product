@@ -213,7 +213,6 @@ export default function EditPost() {
     await axios
       .get(apiGetSuggest)
       .then((res) => {
-        console.log(res.data.data);
         const data = res.data.data;
         setSuggestNames(data?.name);
         setSuggestColors(data?.color);
@@ -357,7 +356,6 @@ export default function EditPost() {
       try {
         await axios.get(`${apiGetBrandByCategory}/${id}`).then((res) => {
           const brands = res.data.data;
-          console.log("brands by category", res.data.data);
           setbrandCategory(brands);
         });
       } catch (error) {
@@ -399,7 +397,6 @@ export default function EditPost() {
 
     mergePostData = { ...postData };
 
-    console.log("post", mergePostData);
     const formData = appendArrayToFormData(mergePostData);
     for (let i = 0; i < fileObject.length; i++) {
       formData.append("fileImages[]", fileObject[i]);
@@ -418,7 +415,6 @@ export default function EditPost() {
         })
         .then((res) => {
           const p = res.data.data;
-          console.log("post success", p, res);
           if (res.data.status == 1) {
             setIsCreatePost(false);
             toast.success(res.data.message);
@@ -438,7 +434,6 @@ export default function EditPost() {
 
   const handleValidate = (validateData) => {
     Object.keys(validateData).forEach(function (key) {
-      console.log(key, validateData[key]);
       setvalidatePost((prevState) => ({
         ...prevState,
         [key]: validateData[key][0],
@@ -457,7 +452,6 @@ export default function EditPost() {
       .then(
         axios.spread((...responses) => {
           const post = responses[0].data.data;
-          console.log("post", post);
           setPreload(false);
           if (post.price == 0) setIsFree(true);
           const name = "category";
@@ -477,7 +471,6 @@ export default function EditPost() {
           //fixed data
           const categories = responses[1].data.data;
           const fixedData = responses[2].data.data;
-          console.log("post", categories);
           setCategoryData(categories);
           setStatusData(fixedData?.status);
           setCommandData(fixedData?.command);
@@ -530,7 +523,6 @@ export default function EditPost() {
   };
 
   const setPostTradeInforData = (data) => {
-    console.log("post trade", data);
     setPostTradeInfor({
       id: data.id,
       category: data.category_id,

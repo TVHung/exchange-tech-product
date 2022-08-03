@@ -19,9 +19,7 @@ export default function ItemChat({ item, userActive, setIsStart }) {
     if (id) {
       await axios
         .put(`${apiSetIsRead}/${id}`, {}, { headers: headers })
-        .then((res) => {
-          console.log(res);
-        })
+        .then((res) => {})
         .catch((error) => console.error(error));
     }
   };

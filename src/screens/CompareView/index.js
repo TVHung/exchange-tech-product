@@ -20,7 +20,6 @@ export default function CompareView() {
   const list_compare = useSelector((state) => state.post.list_compare);
 
   useEffect(() => {
-    console.log("danh sach", list_compare);
     if (list_compare) {
       getAllProductCompare();
     }
@@ -41,7 +40,6 @@ export default function CompareView() {
     axios
       .post(apiProductCompare, data)
       .then((res) => {
-        console.log("data", res.data.data);
         setCompareProducts(res.data.data);
         setIsLoading(false);
       })

@@ -29,13 +29,11 @@ export default function AddressSelectSearch({ addressValue, setAddress }) {
       ...prevState,
       [name]: value,
     }));
-    console.log(name, value);
     if (name === "city" && value !== "0") fetchDistrict(value); //lay gia tri de render ra quan, huyen
   };
 
   const handleOkAddress = () => {
     let city, district;
-    console.log(addressDetail.city);
     if (addressDetail.city !== "0")
       for (let i = 0; i < dataCity.length; i++) {
         if (dataCity[i].code == addressDetail.city) {

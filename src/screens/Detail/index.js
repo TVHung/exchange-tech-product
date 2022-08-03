@@ -109,7 +109,6 @@ export default function Detail({ isAuth }) {
           let status = responses[0].data?.status;
           if (status === 1) {
             const post = responses[0].data.data;
-            console.log("post", post);
             setPostDetail(post);
             setDataBreadcrumb(post?.category_id);
             fetchUserPost(post?.user_id);
@@ -146,14 +145,8 @@ export default function Detail({ isAuth }) {
     let current_category = localStorage.getItem("current_category");
     let arrId = [];
     if (current) arrId = current.split(",");
-    console.log(
-      "current",
-      parseInt(current_category),
-      parseInt(category),
-      parseInt(current_category) != parseInt(category) && arrId?.length > 0
-    );
+
     if (parseInt(current_category) != parseInt(category) && arrId?.length > 0) {
-      console.log("vao clear");
       localStorage.removeItem("array_id_compare");
       localStorage.removeItem("current_category");
       dispatch(setListCompare(""));
@@ -166,7 +159,6 @@ export default function Detail({ isAuth }) {
     } else {
       arrId.push(id);
       current = arrId.length > 1 ? arrId.join(",") : arrId.join("");
-      console.log("current", current, arrId);
       localStorage.setItem("array_id_compare", current);
       localStorage.setItem("current_category", category);
       dispatch(setListCompare(current));

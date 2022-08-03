@@ -37,7 +37,6 @@ export default function Item({ data, status }) {
   }, []);
 
   const toDetail = () => {
-    console.log("to detail");
     window.location.href = `/detail/${data.id}`;
   };
 

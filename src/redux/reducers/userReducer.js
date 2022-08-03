@@ -19,7 +19,6 @@ const userReducer = (state = initialState, action) => {
         user: action.payload,
       };
     case USER_PROFILE:
-      console.log("cap nhat profile");
       return {
         ...state,
         userProfile: action.payload,

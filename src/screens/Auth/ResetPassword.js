@@ -46,18 +46,15 @@ export default function ResetPassword() {
     setShowLoading(true);
     setUserValidate("");
     let token = getParam("token");
-    console.log(token);
     if (token) {
       //handle call api change password
       const dataPassword = {
         password: user?.password,
         password_confirmation: user?.password_confirmation,
       };
-      console.log(dataPassword);
       await axios
         .put(`${apiResetPass}/${token}`, dataPassword)
         .then((res) => {
-          console.log(res.data);
           if (res.data.status === 1) {
             toast.success(res.data.message);
             setShow(true);

@@ -81,7 +81,6 @@ export default function AccountUserInfor() {
     await axios
       .post(apiChangePass, newPass, { headers: headers })
       .then((res) => {
-        console.log(res);
         if (res.data?.status == 1) {
           document.getElementById("form-update-password").reset();
           toast.success(res.data?.message);
@@ -104,7 +103,6 @@ export default function AccountUserInfor() {
   };
 
   const handleSubmitProfile = () => {
-    console.log("data cap nhat", profile);
     updateUserProfile(profile);
   };
 
@@ -115,7 +113,6 @@ export default function AccountUserInfor() {
           headers: headers,
         })
         .then((res) => {
-          console.log("data cap nhat", res.data);
           if (res.data.status == 1) {
             toast.success("Cập nhật thành công");
             dispatch(fetchUserProfile());
@@ -133,7 +130,6 @@ export default function AccountUserInfor() {
 
   const handleValidate = (validateData, setState) => {
     Object.keys(validateData).forEach(function (key) {
-      console.log(key, validateData[key]);
       setState((prevState) => ({
         ...prevState,
         [key]: validateData[key][0],
@@ -180,7 +176,6 @@ export default function AccountUserInfor() {
       address: user_profile.address,
       facebook_url: user_profile.facebook_url,
     });
-    console.log("data", user_profile);
   }, [user_profile]);
 
   const getNameById = (id) => {
@@ -218,13 +213,11 @@ export default function AccountUserInfor() {
   const changeAvatar = async (fileImage) => {
     const formData = new FormData();
     formData.append("file", fileImage);
-    console.log("call api");
     await axios
       .post(apiChangeAvatar, formData, {
         headers: headerFiles,
       })
       .then((res) => {
-        console.log("post image", res.data);
         if (res.data.status == 1) {
           setfileImageUrl(res.data.data);
         } else {

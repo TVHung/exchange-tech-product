@@ -55,9 +55,7 @@ export default function Chat() {
           headers: headerFiles,
         })
         .then((res) => {
-          // alert("Thành công");
           addMessage(res.data);
-          console.log("new message", res);
           dispatch(fetchConversations());
         })
         .catch((error) => {
@@ -99,7 +97,6 @@ export default function Chat() {
   }, []);
   const userConversations = useSelector((state) => state.chat.myListChat);
   useEffect(() => {
-    console.log("my post", userConversations);
     setUsers(userConversations);
     setPreload(true);
   }, [userConversations]);
@@ -114,7 +111,6 @@ export default function Chat() {
     const channel = pusher.subscribe("chat");
     channel.bind("message", function (data) {
       dispatch(fetchConversations());
-      console.log("tin nhắn", data, JSON.parse(localStorage.getItem("user")));
       if (
         parseInt(data.user_id) == parseInt(params.id) &&
         parseInt(data.target_user_id) ==
@@ -152,7 +148,6 @@ export default function Chat() {
         headers: headers,
       })
       .then((res) => {
-        // console.log("Scroll top bottom", res.data.data?.per_page);
         // let maxPage = res.data.data?.per_page;
         // if (maxPage && page <= maxPage) setPage(page);
         // setMessages((messages) => [...messages, ...res.data.data.data]);
@@ -172,7 +167,6 @@ export default function Chat() {
   const fetchMoreData = (e) => {
     // if (e.target.scrollTop == 0) {
     //   let pageCurent = page + 1;
-    //   console.log("load to top", pageCurent);
     //   getAllMess(params.id, pageCurent);
     // }
   };

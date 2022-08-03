@@ -23,7 +23,6 @@ export default function Comment({ product_id, isAuth }) {
   }, []);
   const product_comments = useSelector((state) => state.post.commentsOfProduct);
   useEffect(() => {
-    console.log("my post", product_comments);
     setComments(product_comments?.data);
   }, [product_comments]);
 
@@ -48,7 +47,6 @@ export default function Comment({ product_id, isAuth }) {
       content: commentContent,
       comment_parent_id: null,
     };
-    console.log(commentData);
     try {
       await axios
         .post(`${apiAddComment}`, commentData, {

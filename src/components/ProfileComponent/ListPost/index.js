@@ -48,7 +48,6 @@ export default function ListPost({ setPreload }) {
   }, []);
 
   useEffect(() => {
-    console.log("my post", my_posts);
     setMyPostFilter(my_posts?.data);
   }, [my_posts]);
 
@@ -84,7 +83,6 @@ export default function ListPost({ setPreload }) {
     axios
       .get(`${apiGetProductMatching}/${id}`, { headers: headers })
       .then((res) => {
-        console.log("search product matching", res);
         const data = res?.data;
         setLoadingMatching(false);
         setProductMatching(data.data);

@@ -114,7 +114,6 @@ export default function Login({ type }) {
     await axios
       .post(apiGetGoogleUrl, {})
       .then((res) => {
-        console.log(res.data);
         if (res.data?.url) {
           window.location.href = res.data?.url;
         }
