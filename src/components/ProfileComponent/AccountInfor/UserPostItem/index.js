@@ -47,7 +47,12 @@ export default function UserPostItem({ data, handleShow }) {
                 đ
               </div>
               <div>
-                <i className="fas fa-info-circle"></i> {data.description}
+                <i className="fas fa-info-circle"></i>{" "}
+                <span className="description-my-item">{data.description}</span>
+              </div>
+              <div>
+                <i className="fas fa-bullseye"></i> Nhu cầu:{" "}
+                {data?.is_trade == 1 ? <b>Mua</b> : <b>Bán</b>}
               </div>
             </div>
           </div>

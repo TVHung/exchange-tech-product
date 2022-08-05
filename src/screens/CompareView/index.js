@@ -11,6 +11,7 @@ import { formatPrice, getValueInArrayObjectWithId } from "./../../utils/common";
 import Loading from "./../../components/Loading";
 import { useDispatch, useSelector } from "react-redux";
 import { setListCompare } from "../../redux/actions/postActions";
+import { TextareaAutosize } from "@material-ui/core";
 
 export default function CompareView() {
   const [compareProducts, setCompareProducts] = useState([]);
@@ -54,7 +55,10 @@ export default function CompareView() {
     let arrId = [];
     if (current) arrId = current.split(",");
     if (arrId.includes(id.toString())) {
-      arrId.pop(id);
+      const index = arrId.indexOf(id.toString());
+      if (index > -1) {
+        arrId.splice(index, 1);
+      }
       current = arrId.length > 1 ? arrId.join(",") : arrId.join("");
       localStorage.setItem("array_id_compare", current);
       dispatch(setListCompare(current));
@@ -87,7 +91,9 @@ export default function CompareView() {
                       />
                     </div>
                     <h5>{compareProducts[0]?.name}</h5>
-                    <p>{formatPrice(compareProducts[0]?.price)} vnđ</p>
+                    <p style={{ color: "red" }}>
+                      {formatPrice(compareProducts[0]?.price)} vnđ
+                    </p>
                     <div
                       className="position-absolute delete-product"
                       title="Xóa"
@@ -107,12 +113,14 @@ export default function CompareView() {
                   <div className="product-header position-relative">
                     <div className="text-center">
                       <img
-                        src={compareProducts[1]?.images[1]?.image_url || img}
+                        src={compareProducts[1]?.images[0]?.image_url || img}
                         alt="product-compare"
                       />
                     </div>
                     <h5>{compareProducts[1]?.name}</h5>
-                    <p>{formatPrice(compareProducts[1]?.price)} vnđ</p>
+                    <p style={{ color: "red" }}>
+                      {formatPrice(compareProducts[1]?.price)} vnđ
+                    </p>
                     <div
                       className="position-absolute delete-product"
                       title="Xóa"
@@ -132,12 +140,14 @@ export default function CompareView() {
                   <div className="product-header position-relative">
                     <div className="text-center">
                       <img
-                        src={compareProducts[2]?.images[2]?.image_url || img}
+                        src={compareProducts[2]?.images[0]?.image_url || img}
                         alt="product-compare"
                       />
                     </div>
                     <h5>{compareProducts[2]?.name}</h5>
-                    <p>{formatPrice(compareProducts[2]?.price)} vnđ</p>
+                    <p style={{ color: "red" }}>
+                      {formatPrice(compareProducts[2]?.price)} vnđ
+                    </p>
                     <div
                       className="position-absolute delete-product"
                       title="Xóa"
@@ -801,7 +811,14 @@ export default function CompareView() {
                 {compareProducts[0] && (
                   <span>
                     {" "}
-                    <b>Mô tả:</b> {compareProducts[0]?.description}
+                    <b>Mô tả:</b>
+                    <TextareaAutosize
+                      aria-label="empty textarea"
+                      placeholder=""
+                      defaultValue={compareProducts[0]?.description}
+                      disabled={true}
+                      className="description-area"
+                    />
                   </span>
                 )}
               </div>
@@ -809,7 +826,14 @@ export default function CompareView() {
                 {compareProducts[1] && (
                   <span>
                     {" "}
-                    <b>Mô tả:</b> {compareProducts[1]?.description}
+                    <b>Mô tả:</b>{" "}
+                    <TextareaAutosize
+                      aria-label="empty textarea"
+                      placeholder=""
+                      defaultValue={compareProducts[1]?.description}
+                      disabled={true}
+                      className="description-area"
+                    />
                   </span>
                 )}
               </div>
@@ -817,7 +841,14 @@ export default function CompareView() {
                 {compareProducts[2] && (
                   <span>
                     {" "}
-                    <b>Mô tả:</b> {compareProducts[2]?.description}
+                    <b>Mô tả:</b>{" "}
+                    <TextareaAutosize
+                      aria-label="empty textarea"
+                      placeholder=""
+                      defaultValue={compareProducts[2]?.description}
+                      disabled={true}
+                      className="description-area"
+                    />
                   </span>
                 )}
               </div>

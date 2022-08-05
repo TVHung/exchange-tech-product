@@ -42,28 +42,31 @@ export default function Comment({ product_id, isAuth }) {
 
   const addComment = async (e) => {
     e.preventDefault();
-    const commentData = {
-      product_id: parseInt(product_id),
-      content: commentContent,
-      comment_parent_id: null,
-    };
-    try {
-      await axios
-        .post(`${apiAddComment}`, commentData, {
-          headers: headers,
-        })
-        .then((res) => {
-          if (res.data.status == 1) {
-            const comment = res.data.data;
-            toast.success("Bình luận thành công");
-          } else {
-            toast.error(res.data.message);
-          }
-          setCommentContent("");
-        });
-    } catch (error) {
-      console.error(error);
-      toast.error("Có lỗi xảy ra, hãy thử lại");
+    if (commentContent == "") alert("Bạn chưa nhập nội dung bình luận");
+    else {
+      const commentData = {
+        product_id: parseInt(product_id),
+        content: commentContent,
+        comment_parent_id: null,
+      };
+      try {
+        await axios
+          .post(`${apiAddComment}`, commentData, {
+            headers: headers,
+          })
+          .then((res) => {
+            if (res.data.status == 1) {
+              const comment = res.data.data;
+              toast.success("Bình luận thành công");
+            } else {
+              toast.error(res.data.message);
+            }
+            setCommentContent("");
+          });
+      } catch (error) {
+        console.error(error);
+        toast.error("Có lỗi xảy ra, hãy thử lại");
+      }
     }
   };
 

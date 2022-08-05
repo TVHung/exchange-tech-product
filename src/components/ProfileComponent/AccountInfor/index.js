@@ -94,10 +94,20 @@ export default function AccountInfor() {
                           title="Facebook"
                           target="_blank"
                           rel="noreferrer"
+                          className="mx-2"
                         >
                           <i className="fab fa-facebook fa-2x social-icon"></i>
                         </a>
                       )}
+
+                      <a
+                        href={`/chat/${userProfile?.user_id}`}
+                        title="Chat"
+                        rel="noreferrer"
+                        className="mx-2"
+                      >
+                        <i className="fas fa-comments fa-2x"></i>
+                      </a>
                     </span>
                   </div>
                 </Grid>
@@ -117,11 +127,7 @@ export default function AccountInfor() {
                     <span className="infor-detail">{userProfile?.phone}</span>
                   </li>
                   <li>
-                    {userProfile?.sex === 0 && <i className="fas fa-male"></i>}
-                    {userProfile?.sex === 1 && (
-                      <i className="fas fa-female"></i>
-                    )}
-                    {userProfile?.sex === 2 && <i className="fas fa-user"></i>}
+                    <i className="fas fa-user"></i>
                     <b>Giới tính: </b>
                     <span className="infor-detail">
                       {getNameById(userProfile?.sex)}

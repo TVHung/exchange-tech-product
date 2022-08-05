@@ -27,13 +27,11 @@ import CheckMark from "../../components/CheckMark";
 import {
   apiFetchPostDetail,
   apiFetchRecommendPosts,
-  apiGetCommentProduct,
   apiGetUser,
   apiUpView,
   categoryData,
   headers,
-  resolutionData,
-  commandData,
+  apiGetFixedData,
 } from "../../constants";
 import axios from "axios";
 import Breadcrumb from "../../components/Breadcrumb";
@@ -55,6 +53,10 @@ export default function Detail({ isAuth }) {
   const [breadcrumb, setBreadcrumb] = useState([]);
   const [isCompare, setIsCompare] = useState(false);
   const [show, setShow] = useState(false);
+
+  const [commandData, setCommandData] = useState([]);
+  const [resolutionData, setResolutionData] = useState([]);
+
   const textareaRef = useRef(null);
   const params = useParams();
   const list_compare = useSelector((state) => state.post.list_compare);
@@ -93,6 +95,8 @@ export default function Detail({ isAuth }) {
       setPreload(false);
       setRecommendPost([]);
       setPostUser({});
+      setCommandData([]);
+      setResolutionData([]);
     };
   }, []);
 
@@ -101,18 +105,22 @@ export default function Detail({ isAuth }) {
     let apiView = `${apiUpView}/${postId}`;
     const requestPost = axios.get(apiPostDetail, { headers: headers });
     const requestView = axios.get(apiView);
+    const requestFixedData = axios.get(apiGetFixedData);
 
     await axios
-      .all([requestPost, requestView])
+      .all([requestPost, requestView, requestFixedData])
       .then(
         axios.spread((...responses) => {
           let status = responses[0].data?.status;
           if (status === 1) {
             const post = responses[0].data.data;
+            const fixedData = responses[2].data.data;
             setPostDetail(post);
             setDataBreadcrumb(post?.category_id);
             fetchUserPost(post?.user_id);
             setGetError(false);
+            setCommandData(fixedData.command);
+            setResolutionData(fixedData.resolution);
           } else {
             setPreload(true);
             //show notify
@@ -266,18 +274,19 @@ export default function Detail({ isAuth }) {
                     <div className="detail-properties">
                       <div className="row">
                         {/* common */}
-                        {postDetail?.command != null && (
-                          <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                            <i className="fas fa-bullseye"></i>
-                            <span>
-                              Phù hợp:{" "}
-                              {getValueInArrayObjectWithId(
-                                commandData,
-                                postDetail?.command
-                              )}
-                            </span>
-                          </div>
-                        )}
+                        {postDetail?.command != null &&
+                          postDetail?.command > 0 && (
+                            <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                              <i className="fas fa-bullseye"></i>
+                              <span>
+                                Phù hợp:{" "}
+                                {getValueInArrayObjectWithId(
+                                  commandData,
+                                  postDetail?.command
+                                )}
+                              </span>
+                            </div>
+                          )}
                         {postDetail?.ram > 0 && (
                           <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                             <i className="fas fa-memory"></i>
@@ -315,15 +324,16 @@ export default function Detail({ isAuth }) {
                                 </span>
                               </div>
                             )}
-                            {postDetail?.productMobile?.color && (
-                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                                <i className="fas fa-palette"></i>
-                                <span>
-                                  Màu sắc: {postDetail?.productMobile?.color}
-                                </span>
-                              </div>
-                            )}
-                            {postDetail?.productMobile?.pin && (
+                            {postDetail?.productMobile?.color != "null" &&
+                              postDetail?.productMobile?.color && (
+                                <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                  <i className="fas fa-palette"></i>
+                                  <span>
+                                    Màu sắc: {postDetail?.productMobile?.color}
+                                  </span>
+                                </div>
+                              )}
+                            {postDetail?.productMobile?.pin > 0 && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                 <i className="fas fa-battery-full"></i>
                                 <span>
@@ -331,7 +341,7 @@ export default function Detail({ isAuth }) {
                                 </span>
                               </div>
                             )}
-                            {postDetail?.productMobile?.resolution && (
+                            {postDetail?.productMobile?.resolution > 0 && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                 <i className="fas fa-tv"></i>
                                 <span>

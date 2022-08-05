@@ -374,7 +374,10 @@ export default function EditPost() {
       description: postInfor?.description,
       ram: parseInt(postInfor?.ram || 0),
       storage: parseInt(postInfor?.storage),
-      status: parseInt(postInfor?.status),
+      status:
+        postInfor?.status != null
+          ? parseInt(postInfor?.status)
+          : postInfor?.status,
       price: parseFloat(postInfor?.price),
       address: address,
       public_status: parseInt(postInfor?.public_status),
@@ -395,6 +398,7 @@ export default function EditPost() {
       resolution: productChild?.resolution,
     };
 
+    console.log(postData);
     mergePostData = { ...postData };
 
     const formData = appendArrayToFormData(mergePostData);
@@ -542,96 +546,93 @@ export default function EditPost() {
         description={"Đăng bán, trao đổi, tắng sản phẩm"}
       />
       {isCreatePost && <Preloading />}
-      {preload ? (
-        <Preloading />
-      ) : (
-        <Grid container className="form-container">
-          <Grid item xs={12} md={4} className="create-post-images">
-            {!postInfor?.is_trade && (
-              <>
-                <div className="image-post">
-                  <div className="custom-file">
-                    <label htmlFor="file-upload" className="custom-file-upload">
-                      <i className="fas fa-upload"></i> Thêm ảnh
-                    </label>
-                    <input
-                      type="file"
-                      className="custom-file-input"
-                      id="file-upload"
-                      multiple
-                      accept="image/*"
-                      onChange={(e) => uploadSingleFile(e)}
-                    />
-                  </div>
-                  <div className="mt-3 view-preview row">
-                    {imageUrlEdit &&
-                      imageUrlEdit.map((item, index) => {
-                        return (
-                          <div
-                            key={index}
-                            className="col-lg-6 col-md-3 col-sm-6 image-preview mb-2 "
-                          >
-                            <div className="image-selected">
-                              <img src={item.image_url} alt="" width="100%" />
-                              <i
-                                className="fas fa-times-circle fa delete-image"
-                                onClick={() => deleteImageUrl(item.id)}
-                              ></i>
-                              {index === 0 ? (
-                                <div className="title-cover-image">
-                                  <p>Ảnh bìa</p>
-                                </div>
-                              ) : null}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    {file &&
-                      file.map((item, index) => {
-                        return (
-                          <div
-                            key={index}
-                            className="col-lg-6 col-md-3 col-sm-6 image-preview mb-2 "
-                          >
-                            <div className="image-selected">
-                              <img src={item} alt="" width="100%" />
-                              <i
-                                className="fas fa-times-circle fa delete-image"
-                                onClick={() => deleteFile(index)}
-                              ></i>
-                              {index === 0 && imageUrlEdit.length === 0 ? (
-                                <div className="title-cover-image">
-                                  <p>Ảnh bìa</p>
-                                </div>
-                              ) : null}
-                            </div>
-                          </div>
-                        );
-                      })}
-                  </div>
-                  <div className="image-validate">
-                    <p>{validatePost.fileImages}</p>
-                  </div>
+
+      <Grid container className="form-container">
+        <Grid item xs={12} md={4} className="create-post-images">
+          {!postInfor?.is_trade && (
+            <>
+              <div className="image-post">
+                <div className="custom-file">
+                  <label htmlFor="file-upload" className="custom-file-upload">
+                    <i className="fas fa-upload"></i> Thêm ảnh
+                  </label>
+                  <input
+                    type="file"
+                    className="custom-file-input"
+                    id="file-upload"
+                    multiple
+                    accept="image/*"
+                    onChange={(e) => uploadSingleFile(e)}
+                  />
                 </div>
-                <div className="video-post">
-                  <div className="custom-video">
-                    <label
-                      htmlFor="video-upload"
-                      className="custom-video-upload"
-                    >
-                      <i className="fas fa-upload"></i> Thêm video
-                    </label>
-                    <input
-                      type="file"
-                      className="custom-video-input"
-                      id="video-upload"
-                      // multiple
-                      accept="video/*"
-                      onChange={(e) => uploadSingleVideo(e)}
-                    />
-                  </div>
-                  <div className="mt-3 view-preview row">
-                    {postInfor?.video_url && !videoFile && (
+                <div className="mt-3 view-preview row">
+                  {imageUrlEdit &&
+                    imageUrlEdit.map((item, index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="col-lg-6 col-md-3 col-sm-6 image-preview mb-2 "
+                        >
+                          <div className="image-selected">
+                            <img src={item.image_url} alt="" width="100%" />
+                            <i
+                              className="fas fa-times-circle fa delete-image"
+                              onClick={() => deleteImageUrl(item.id)}
+                            ></i>
+                            {index === 0 ? (
+                              <div className="title-cover-image">
+                                <p>Ảnh bìa</p>
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  {file &&
+                    file.map((item, index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="col-lg-6 col-md-3 col-sm-6 image-preview mb-2 "
+                        >
+                          <div className="image-selected">
+                            <img src={item} alt="" width="100%" />
+                            <i
+                              className="fas fa-times-circle fa delete-image"
+                              onClick={() => deleteFile(index)}
+                            ></i>
+                            {index === 0 && imageUrlEdit.length === 0 ? (
+                              <div className="title-cover-image">
+                                <p>Ảnh bìa</p>
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+                <div className="image-validate">
+                  <p>{validatePost.fileImages}</p>
+                </div>
+              </div>
+              <div className="video-post">
+                <div className="custom-video">
+                  <label htmlFor="video-upload" className="custom-video-upload">
+                    <i className="fas fa-upload"></i> Thêm video
+                  </label>
+                  <input
+                    type="file"
+                    className="custom-video-input"
+                    id="video-upload"
+                    // multiple
+                    accept="video/*"
+                    onChange={(e) => uploadSingleVideo(e)}
+                  />
+                </div>
+                <div className="mt-3 view-preview row">
+                  {postInfor?.video_url != "null" &&
+                    postInfor?.video_url &&
+                    !videoFile && (
                       <>
                         <video width="400" controls>
                           <source src={postInfor?.video_url} />
@@ -642,708 +643,704 @@ export default function EditPost() {
                         ></i>
                       </>
                     )}
-                    {videoFile && (
-                      <>
-                        <video width="400" controls>
-                          <source src={URL.createObjectURL(videoFile)} />
-                        </video>
-                        <i
-                          className="fas fa-times-circle fa-2x fa delete-video-icon"
-                          onClick={() => deleteVideoNew()}
-                        ></i>
-                      </>
-                    )}
-                  </div>
-                  <div className="image-validate">
-                    <p>{validatePost.fileVideo}</p>
-                  </div>
+                  {videoFile && (
+                    <>
+                      <video width="400" controls>
+                        <source src={URL.createObjectURL(videoFile)} />
+                      </video>
+                      <i
+                        className="fas fa-times-circle fa-2x fa delete-video-icon"
+                        onClick={() => deleteVideoNew()}
+                      ></i>
+                    </>
+                  )}
                 </div>
-              </>
-            )}
-          </Grid>
-          <Grid item xs={12} md={8} className="create-post-detail">
-            <div className="mb-3">
-              <h3>Thông tin sản phẩm đăng bán</h3>
-            </div>
-            <div className="form-outline mb-3">
-              <label className="form-label" htmlFor="post-category">
-                Loại sản phẩm
-              </label>
-              <select
-                className="form-select"
-                aria-label="Disabled select example"
-                required
-                id="post-category"
-                name="category"
-                placeholder="Loại sản phẩm"
-                disabled={true}
-                value={postInfor?.category || 0}
-              >
-                <option value={0}>Chọn loại sản phẩm</option>
-                {categoryData &&
-                  categoryData.map((data, index) => (
-                    <option key={index} value={data.id}>
-                      {data.name}
-                    </option>
-                  ))}
-              </select>
-              <p className="validate-form-text">{validatePost.category}</p>
-            </div>
-            <form
-              className="form-product"
-              id="form-create-post"
-              onSubmit={(e) => onSubmitForm(e)}
+                <div className="image-validate">
+                  <p>{validatePost.fileVideo}</p>
+                </div>
+              </div>
+            </>
+          )}
+        </Grid>
+        <Grid item xs={12} md={8} className="create-post-detail">
+          <div className="mb-3">
+            <h3>Thông tin sản phẩm đăng bán</h3>
+          </div>
+          <div className="form-outline mb-3">
+            <label className="form-label" htmlFor="post-category">
+              Loại sản phẩm
+            </label>
+            <select
+              className="form-select"
+              aria-label="Disabled select example"
+              required
+              id="post-category"
+              name="category"
+              placeholder="Loại sản phẩm"
+              disabled={true}
+              value={postInfor?.category || 0}
             >
-              <div className="mb-3 mt-4">
-                <h4>Thông tin chi tiết</h4>
-              </div>
-              <div className="form-outline mb-3 position-relative">
-                <label className="form-label" htmlFor="post-name">
-                  Tên sản phẩm&nbsp;<span style={{ color: "red" }}>*</span>
-                </label>
-                <input
-                  type="text"
-                  id="post-name"
-                  className={
-                    validatePost.name
-                      ? "form-control is-invalid"
-                      : "form-control"
-                  }
-                  placeholder="Tên sản phẩm"
-                  name="name"
-                  // defaultValue={postInfor?.name || ""}
-                  value={postInfor?.name || ""}
-                  onChange={(e) => handleOnChange(e)}
-                  onBlur={() =>
-                    setTimeout(() => {
-                      setSuggestName([]);
-                    }, 100)
-                  }
-                />
-                {suggestName?.length > 0 && (
-                  <div className="suggest-component">
-                    {suggestName?.map((name, index) => (
-                      <div
-                        key={index}
-                        onClick={() => onClickSuggest("name", name)}
-                      >
-                        <p>{name}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                <p className="validate-form-text">{validatePost.name}</p>
-              </div>
-              {Number(postInfor?.category) < 3 && (
-                <div className="row mb-3">
-                  <div className="col">
-                    <div className="form-outline">
-                      <label className="form-label" htmlFor="post-brand">
-                        Hãng sản xuất&nbsp;
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <select
-                        className={
-                          validatePost.brand_id
-                            ? "form-select is-invalid"
-                            : "form-select"
-                        }
-                        aria-label="Disabled select example"
-                        name="brand_id"
-                        id="post-brand"
-                        onChange={(e) => handleOnChangeChild(e)}
-                        value={productChild?.brand_id || 0}
-                      >
-                        <option value={0}>Hãng sản xuất</option>
-                        {brandCategory &&
-                          brandCategory.map((data, index) => (
-                            <option key={index} value={data.id}>
-                              {data.name}
-                            </option>
-                          ))}
-                      </select>
-                      <p className="validate-form-text">
-                        {validatePost.brand_id}
-                      </p>
+              <option value={0}>Chọn loại sản phẩm</option>
+              {categoryData &&
+                categoryData.map((data, index) => (
+                  <option key={index} value={data.id}>
+                    {data.name}
+                  </option>
+                ))}
+            </select>
+            <p className="validate-form-text">{validatePost.category}</p>
+          </div>
+          <form
+            className="form-product"
+            id="form-create-post"
+            onSubmit={(e) => onSubmitForm(e)}
+          >
+            <div className="mb-3 mt-4">
+              <h4>Thông tin chi tiết</h4>
+            </div>
+            <div className="form-outline mb-3 position-relative">
+              <label className="form-label" htmlFor="post-name">
+                Tên sản phẩm&nbsp;<span style={{ color: "red" }}>*</span>
+              </label>
+              <input
+                type="text"
+                id="post-name"
+                className={
+                  validatePost.name ? "form-control is-invalid" : "form-control"
+                }
+                placeholder="Tên sản phẩm"
+                name="name"
+                // defaultValue={postInfor?.name || ""}
+                value={postInfor?.name || ""}
+                onChange={(e) => handleOnChange(e)}
+                onBlur={() =>
+                  setTimeout(() => {
+                    setSuggestName([]);
+                  }, 100)
+                }
+              />
+              {suggestName?.length > 0 && (
+                <div className="suggest-component">
+                  {suggestName?.map((name, index) => (
+                    <div
+                      key={index}
+                      onClick={() => onClickSuggest("name", name)}
+                    >
+                      <p>{name}</p>
                     </div>
-                  </div>
-                  <div className="col">
-                    <div className="form-outline position-relative">
-                      <label className="form-label" htmlFor="post-color">
-                        Màu sắc
-                      </label>
-                      <input
-                        type="text"
-                        id="post-color"
-                        className={
-                          validatePost.color
-                            ? "form-control is-invalid"
-                            : "form-control"
-                        }
-                        placeholder="Màu sắc"
-                        name="color"
-                        // defaultValue={
-                        //   productChild?.color == "null"
-                        //     ? ""
-                        //     : productChild?.color
-                        // }
-                        value={
-                          productChild?.color == "null"
-                            ? ""
-                            : productChild?.color
-                            ? productChild?.color
-                            : ""
-                        }
-                        onChange={(e) => handleOnChangeChild(e)}
-                        onBlur={() =>
-                          setTimeout(() => {
-                            setSuggestColor([]);
-                          }, 100)
-                        }
-                      />
-                      {suggestColor?.length > 0 && (
-                        <div className="suggest-component">
-                          {suggestColor?.map((color, index) => (
-                            <div
-                              key={index}
-                              onClick={() => onClickSuggest("color", color)}
-                            >
-                              <p>{color}</p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      <p className="validate-form-text">{validatePost.color}</p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               )}
-              {/* -----------------new------------------ */}
-              {Number(postInfor.category) == 1 && (
+              <p className="validate-form-text">{validatePost.name}</p>
+            </div>
+            {Number(postInfor?.category) < 3 && (
+              <div className="row mb-3">
+                <div className="col">
+                  <div className="form-outline">
+                    <label className="form-label" htmlFor="post-brand">
+                      Hãng sản xuất&nbsp;
+                      <span style={{ color: "red" }}>*</span>
+                    </label>
+                    <select
+                      className={
+                        validatePost.brand_id
+                          ? "form-select is-invalid"
+                          : "form-select"
+                      }
+                      aria-label="Disabled select example"
+                      name="brand_id"
+                      id="post-brand"
+                      onChange={(e) => handleOnChangeChild(e)}
+                      value={productChild?.brand_id || 0}
+                    >
+                      <option value={0}>Hãng sản xuất</option>
+                      {brandCategory &&
+                        brandCategory.map((data, index) => (
+                          <option key={index} value={data.id}>
+                            {data.name}
+                          </option>
+                        ))}
+                    </select>
+                    <p className="validate-form-text">
+                      {validatePost.brand_id}
+                    </p>
+                  </div>
+                </div>
                 <div className="col">
                   <div className="form-outline position-relative">
-                    <label className="form-label" htmlFor="post-pin">
-                      Dung lượng pin (mah)
+                    <label className="form-label" htmlFor="post-color">
+                      Màu sắc
+                    </label>
+                    <input
+                      type="text"
+                      id="post-color"
+                      className={
+                        validatePost.color
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      placeholder="Màu sắc"
+                      name="color"
+                      // defaultValue={
+                      //   productChild?.color == "null"
+                      //     ? ""
+                      //     : productChild?.color
+                      // }
+                      value={
+                        productChild?.color == "null"
+                          ? ""
+                          : productChild?.color
+                          ? productChild?.color
+                          : ""
+                      }
+                      onChange={(e) => handleOnChangeChild(e)}
+                      onBlur={() =>
+                        setTimeout(() => {
+                          setSuggestColor([]);
+                        }, 100)
+                      }
+                    />
+                    {suggestColor?.length > 0 && (
+                      <div className="suggest-component">
+                        {suggestColor?.map((color, index) => (
+                          <div
+                            key={index}
+                            onClick={() => onClickSuggest("color", color)}
+                          >
+                            <p>{color}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <p className="validate-form-text">{validatePost.color}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+            {/* -----------------new------------------ */}
+            {Number(postInfor.category) == 1 && (
+              <div className="col">
+                <div className="form-outline position-relative">
+                  <label className="form-label" htmlFor="post-pin">
+                    Dung lượng pin (mah)
+                  </label>
+                  <input
+                    type="number"
+                    id="post-pin"
+                    className="form-control"
+                    placeholder="Dung lượng pin"
+                    min={0}
+                    name="pin"
+                    onChange={(e) => handleOnChangeChild(e)}
+                    value={productChild?.pin || ""}
+                  />
+                  <p className="validate-form-text">{validatePost.pin}</p>
+                </div>
+              </div>
+            )}
+            {Number(postInfor.category) < 3 && (
+              <div className="col">
+                <div className="form-outline">
+                  <label className="form-label" htmlFor="post-resolution">
+                    Độ phân giải màn hình
+                  </label>
+                  <select
+                    className="form-select"
+                    aria-label="Disabled select example"
+                    name="resolution"
+                    id="post-resolution"
+                    onChange={(e) => handleOnChangeChild(e)}
+                    value={productChild?.resolution || ""}
+                  >
+                    <option value={""}>Độ phân giải màn hình</option>
+                    {resolutionData?.map((data, index) => (
+                      <option key={index} value={data.id}>
+                        {`${data.value}`}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="validate-form-text">
+                    {validatePost.resolution}
+                  </p>
+                </div>
+              </div>
+            )}
+            <div className="row mb-3">
+              <div className="col">
+                <div className="form-outline">
+                  <label className="form-label" htmlFor="post-command">
+                    Nhu cầu sử dụng
+                  </label>
+                  <select
+                    className={
+                      validatePost.command
+                        ? "form-select is-invalid"
+                        : "form-select"
+                    }
+                    aria-label="Disabled select example"
+                    name="command"
+                    id="post-command"
+                    onChange={(e) => handleOnChange(e)}
+                    value={postInfor?.command || 0}
+                  >
+                    <option>Nhu cầu sử dụng</option>
+                    {commandData &&
+                      filterArrayObjectWithCategoryId(
+                        commandData,
+                        postInfor.category
+                      ).map((data, index) => (
+                        <option key={index} value={data.id}>
+                          {data.value}
+                        </option>
+                      ))}
+                  </select>
+                  <p className="validate-form-text">{validatePost.command}</p>
+                </div>
+              </div>
+            </div>
+            {/* ------------------------------------ */}
+            <div className="row mb-3">
+              <div className="col">
+                <div className="form-outline">
+                  <label className="form-label" htmlFor="post-status">
+                    Tình trạng&nbsp;<span style={{ color: "red" }}>*</span>
+                  </label>
+                  <select
+                    className={
+                      validatePost.status
+                        ? "form-select is-invalid"
+                        : "form-select"
+                    }
+                    aria-label="Disabled select example"
+                    name="status"
+                    id="post-status"
+                    onChange={(e) => handleOnChange(e)}
+                    value={postInfor?.status || 0}
+                  >
+                    <option value={null}>Tình trạng</option>
+                    {statusData.map((data, index) => (
+                      <option key={index} value={data.id}>
+                        {data.value}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="validate-form-text">{validatePost.status}</p>
+                </div>
+              </div>
+              {Number(postInfor?.category) < 3 && (
+                <div className="col">
+                  <div className="form-outline">
+                    <label className="form-label" htmlFor="post-guarantee">
+                      Bảo hành (Tháng)
                     </label>
                     <input
                       type="number"
-                      id="post-pin"
+                      id="post-guarantee"
                       className="form-control"
-                      placeholder="Dung lượng pin"
+                      placeholder="Thời gian bảo hành"
                       min={0}
-                      name="pin"
-                      onChange={(e) => handleOnChangeChild(e)}
-                      value={productChild?.pin || ""}
+                      defaultValue={postInfor?.guarantee}
+                      name="guarantee"
+                      onChange={(e) => handleOnChange(e)}
                     />
-                    <p className="validate-form-text">{validatePost.pin}</p>
-                  </div>
-                </div>
-              )}
-              {Number(postInfor.category) < 3 && (
-                <div className="col">
-                  <div className="form-outline">
-                    <label className="form-label" htmlFor="post-resolution">
-                      Độ phân giải màn hình
-                    </label>
-                    <select
-                      className="form-select"
-                      aria-label="Disabled select example"
-                      name="resolution"
-                      id="post-resolution"
-                      onChange={(e) => handleOnChangeChild(e)}
-                      value={productChild?.resolution || ""}
-                    >
-                      <option value={""}>Độ phân giải màn hình</option>
-                      {resolutionData?.map((data, index) => (
-                        <option key={index} value={data.id}>
-                          {`${data.value}`}
-                        </option>
-                      ))}
-                    </select>
                     <p className="validate-form-text">
-                      {validatePost.resolution}
+                      {validatePost.guarantee}
                     </p>
                   </div>
                 </div>
               )}
+            </div>
+            {Number(postInfor?.category) > 1 && (
               <div className="row mb-3">
                 <div className="col">
-                  <div className="form-outline">
-                    <label className="form-label" htmlFor="post-command">
-                      Nhu cầu sử dụng
+                  <div className="form-outline position-relative">
+                    <label className="form-label" htmlFor="post-cpu">
+                      Bộ vi xử lý (CPU)
                     </label>
-                    <select
-                      className={
-                        validatePost.command
-                          ? "form-select is-invalid"
-                          : "form-select"
+                    <input
+                      type="text"
+                      id="post-cpu"
+                      className="form-control"
+                      placeholder="Bộ vi xử lý"
+                      name="cpu"
+                      // defaultValue={
+                      //   productChild?.cpu == "null" ? "" : productChild?.cpu
+                      // }
+                      value={
+                        productChild?.cpu == "null"
+                          ? ""
+                          : productChild?.cpu
+                          ? productChild?.cpu
+                          : ""
                       }
-                      aria-label="Disabled select example"
-                      name="command"
-                      id="post-command"
-                      onChange={(e) => handleOnChange(e)}
-                      value={postInfor?.command || 0}
-                    >
-                      <option>Nhu cầu sử dụng</option>
-                      {commandData &&
-                        filterArrayObjectWithCategoryId(
-                          commandData,
-                          postInfor.category
-                        ).map((data, index) => (
-                          <option key={index} value={data.id}>
-                            {data.value}
-                          </option>
+                      onChange={(e) => handleOnChangeChild(e)}
+                      onBlur={() =>
+                        setTimeout(() => {
+                          setSuggestCpu([]);
+                        }, 100)
+                      }
+                    />
+                    {suggestCpu?.length > 0 && (
+                      <div className="suggest-component">
+                        {suggestCpu?.map((cpu, index) => (
+                          <div
+                            key={index}
+                            onClick={() => onClickSuggest("cpu", cpu)}
+                          >
+                            <p>{cpu}</p>
+                          </div>
                         ))}
-                    </select>
-                    <p className="validate-form-text">{validatePost.command}</p>
+                      </div>
+                    )}
+                    <p className="validate-form-text">{validatePost.cpu}</p>
+                  </div>
+                </div>
+                <div className="col">
+                  <div className="form-outline">
+                    <label className="form-label" htmlFor="post-gpu">
+                      Card đồ họa (GPU)
+                    </label>
+                    <input
+                      type="text"
+                      id="post-gpu"
+                      className="form-control"
+                      placeholder="Card đồ họa dời"
+                      name="gpu"
+                      // defaultValue={
+                      //   productChild?.gpu == "null" ? "" : productChild?.gpu
+                      // }
+                      value={
+                        productChild?.gpu == "null"
+                          ? ""
+                          : productChild?.gpu
+                          ? productChild?.gpu
+                          : ""
+                      }
+                      onChange={(e) => handleOnChangeChild(e)}
+                      onBlur={() =>
+                        setTimeout(() => {
+                          setSuggestGpu([]);
+                        }, 100)
+                      }
+                    />
+                    {suggestGpu?.length > 0 && (
+                      <div className="suggest-component">
+                        {suggestGpu?.map((gpu, index) => (
+                          <div
+                            key={index}
+                            onClick={() => onClickSuggest("gpu", gpu)}
+                          >
+                            <p>{gpu}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <p className="validate-form-text">{validatePost.gpu}</p>
                   </div>
                 </div>
               </div>
-              {/* ------------------------------------ */}
+            )}
+            <div className="row mb-3">
+              <div className="col">
+                <div className="form-outline">
+                  <label className="form-label" htmlFor="post-ram">
+                    Ram (GB)
+                  </label>
+                  <input
+                    type="number"
+                    id="post-ram"
+                    className="form-control"
+                    placeholder="Ram"
+                    min={0}
+                    defaultValue={postInfor?.ram == 0 ? null : postInfor?.ram}
+                    name="ram"
+                    onChange={(e) => handleOnChange(e)}
+                  />
+                  <p className="validate-form-text">{validatePost.ram}</p>
+                </div>
+              </div>
+              {Number(postInfor?.category) > 1 && (
+                <div className="col">
+                  <div className="form-outline position-relative">
+                    <label className="form-label" htmlFor="post-display-size">
+                      Kích thước màn hình (Inch)
+                    </label>
+                    <input
+                      type="number"
+                      id="post-display-size"
+                      className="form-control"
+                      placeholder="Kích thước màn hính"
+                      min={0}
+                      // defaultValue={productChild?.display_size || ""}
+                      value={productChild?.display_size || ""}
+                      name="display_size"
+                      onChange={(e) => handleOnChangeChild(e)}
+                      onBlur={() =>
+                        setTimeout(() => {
+                          setSuggestDisplay([]);
+                        }, 100)
+                      }
+                    />
+                    {suggestDisplay?.length > 0 && (
+                      <div className="suggest-component">
+                        {suggestDisplay?.map((display_size, index) => (
+                          <div
+                            key={index}
+                            onClick={() =>
+                              onClickSuggest("display_size", display_size)
+                            }
+                          >
+                            <p>{display_size}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <p className="validate-form-text">
+                      {validatePost.display_size}
+                    </p>
+                  </div>
+                </div>
+              )}
+              {Number(postInfor?.category) == 1 && (
+                <div className="col">
+                  <div className="form-outline">
+                    <label className="form-label" htmlFor="post-storage">
+                      Dung lượng bộ nhớ (GB)
+                    </label>
+                    <select
+                      className="form-select"
+                      aria-label="Disabled select example"
+                      name="storage"
+                      id="post-storage"
+                      onChange={(e) => handleOnChange(e)}
+                      value={postInfor?.storage || 0}
+                    >
+                      <option value={0}>Dung lượng bộ nhớ</option>
+                      {storageData.map((data, index) => (
+                        <option key={index} value={data.value}>
+                          {`${data.value}GB`}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="validate-form-text">{validatePost.storage}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+            {Number(postInfor?.category) > 1 && (
               <div className="row mb-3">
                 <div className="col">
                   <div className="form-outline">
-                    <label className="form-label" htmlFor="post-status">
-                      Tình trạng&nbsp;<span style={{ color: "red" }}>*</span>
+                    <label className="form-label" htmlFor="post-storage-type">
+                      Loại ổ cứng
                     </label>
                     <select
-                      className={
-                        validatePost.status
-                          ? "form-select is-invalid"
-                          : "form-select"
-                      }
+                      className="form-select"
                       aria-label="Disabled select example"
-                      name="status"
-                      id="post-status"
-                      onChange={(e) => handleOnChange(e)}
-                      value={postInfor?.status || 0}
+                      name="storage_type"
+                      id="post-storage-type"
+                      onChange={(e) => handleOnChangeChild(e)}
+                      value={productChild?.storage_type || 0}
                     >
-                      <option value={0}>Tình trạng</option>
-                      {statusData.map((data, index) => (
+                      <option value={0}>Loại ổ cứng</option>
+                      {storageTypeData.map((data, index) => (
                         <option key={index} value={data.id}>
                           {data.value}
                         </option>
                       ))}
                     </select>
-                    <p className="validate-form-text">{validatePost.status}</p>
+                    <p className="validate-form-text">
+                      {validatePost.storage_type}
+                    </p>
                   </div>
                 </div>
-                {Number(postInfor?.category) < 3 && (
-                  <div className="col">
-                    <div className="form-outline">
-                      <label className="form-label" htmlFor="post-guarantee">
-                        Bảo hành (Tháng)
-                      </label>
-                      <input
-                        type="number"
-                        id="post-guarantee"
-                        className="form-control"
-                        placeholder="Thời gian bảo hành"
-                        min={0}
-                        defaultValue={postInfor?.guarantee}
-                        name="guarantee"
-                        onChange={(e) => handleOnChange(e)}
-                      />
-                      <p className="validate-form-text">
-                        {validatePost.guarantee}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-              {Number(postInfor?.category) > 1 && (
-                <div className="row mb-3">
-                  <div className="col">
-                    <div className="form-outline position-relative">
-                      <label className="form-label" htmlFor="post-cpu">
-                        Bộ vi xử lý (CPU)
-                      </label>
-                      <input
-                        type="text"
-                        id="post-cpu"
-                        className="form-control"
-                        placeholder="Bộ vi xử lý"
-                        name="cpu"
-                        // defaultValue={
-                        //   productChild?.cpu == "null" ? "" : productChild?.cpu
-                        // }
-                        value={
-                          productChild?.cpu == "null"
-                            ? ""
-                            : productChild?.cpu
-                            ? productChild?.cpu
-                            : ""
-                        }
-                        onChange={(e) => handleOnChangeChild(e)}
-                        onBlur={() =>
-                          setTimeout(() => {
-                            setSuggestCpu([]);
-                          }, 100)
-                        }
-                      />
-                      {suggestCpu?.length > 0 && (
-                        <div className="suggest-component">
-                          {suggestCpu?.map((cpu, index) => (
-                            <div
-                              key={index}
-                              onClick={() => onClickSuggest("cpu", cpu)}
-                            >
-                              <p>{cpu}</p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      <p className="validate-form-text">{validatePost.cpu}</p>
-                    </div>
-                  </div>
-                  <div className="col">
-                    <div className="form-outline">
-                      <label className="form-label" htmlFor="post-gpu">
-                        Card đồ họa (GPU)
-                      </label>
-                      <input
-                        type="text"
-                        id="post-gpu"
-                        className="form-control"
-                        placeholder="Card đồ họa dời"
-                        name="gpu"
-                        // defaultValue={
-                        //   productChild?.gpu == "null" ? "" : productChild?.gpu
-                        // }
-                        value={
-                          productChild?.gpu == "null"
-                            ? ""
-                            : productChild?.gpu
-                            ? productChild?.gpu
-                            : ""
-                        }
-                        onChange={(e) => handleOnChangeChild(e)}
-                        onBlur={() =>
-                          setTimeout(() => {
-                            setSuggestGpu([]);
-                          }, 100)
-                        }
-                      />
-                      {suggestGpu?.length > 0 && (
-                        <div className="suggest-component">
-                          {suggestGpu?.map((gpu, index) => (
-                            <div
-                              key={index}
-                              onClick={() => onClickSuggest("gpu", gpu)}
-                            >
-                              <p>{gpu}</p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      <p className="validate-form-text">{validatePost.gpu}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div className="row mb-3">
                 <div className="col">
                   <div className="form-outline">
-                    <label className="form-label" htmlFor="post-ram">
-                      Ram (GB)
+                    <label className="form-label" htmlFor="post-storage">
+                      Dung lượng ổ cứng (GB)
                     </label>
-                    <input
-                      type="number"
-                      id="post-ram"
-                      className="form-control"
-                      placeholder="Ram"
-                      min={0}
-                      defaultValue={postInfor?.ram == 0 ? null : postInfor?.ram}
-                      name="ram"
+                    <select
+                      className="form-select"
+                      aria-label="Disabled select example"
+                      name="storage"
+                      id="post-storage"
                       onChange={(e) => handleOnChange(e)}
-                    />
-                    <p className="validate-form-text">{validatePost.ram}</p>
+                      value={postInfor?.storage || 0}
+                    >
+                      <option value={0}>Dung lượng ổ cứng cứng</option>
+                      {storageData.map((data, index) => (
+                        <option key={index} value={data.value}>
+                          {`${data.value}GB`}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="validate-form-text">{validatePost.storage}</p>
                   </div>
                 </div>
-                {Number(postInfor?.category) > 1 && (
-                  <div className="col">
-                    <div className="form-outline position-relative">
-                      <label className="form-label" htmlFor="post-display-size">
-                        Kích thước màn hình (Inch)
-                      </label>
-                      <input
-                        type="number"
-                        id="post-display-size"
-                        className="form-control"
-                        placeholder="Kích thước màn hính"
-                        min={0}
-                        // defaultValue={productChild?.display_size || ""}
-                        value={productChild?.display_size || ""}
-                        name="display_size"
-                        onChange={(e) => handleOnChangeChild(e)}
-                        onBlur={() =>
-                          setTimeout(() => {
-                            setSuggestDisplay([]);
-                          }, 100)
-                        }
-                      />
-                      {suggestDisplay?.length > 0 && (
-                        <div className="suggest-component">
-                          {suggestDisplay?.map((display_size, index) => (
-                            <div
-                              key={index}
-                              onClick={() =>
-                                onClickSuggest("display_size", display_size)
-                              }
-                            >
-                              <p>{display_size}</p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      <p className="validate-form-text">
-                        {validatePost.display_size}
-                      </p>
-                    </div>
-                  </div>
-                )}
-                {Number(postInfor?.category) == 1 && (
-                  <div className="col">
-                    <div className="form-outline">
-                      <label className="form-label" htmlFor="post-storage">
-                        Dung lượng bộ nhớ (GB)
-                      </label>
-                      <select
-                        className="form-select"
-                        aria-label="Disabled select example"
-                        name="storage"
-                        id="post-storage"
-                        onChange={(e) => handleOnChange(e)}
-                        value={postInfor?.storage || 0}
-                      >
-                        <option value={0}>Dung lượng bộ nhớ</option>
-                        {storageData.map((data, index) => (
-                          <option key={index} value={data.value}>
-                            {`${data.value}GB`}
-                          </option>
-                        ))}
-                      </select>
-                      <p className="validate-form-text">
-                        {validatePost.storage}
-                      </p>
-                    </div>
-                  </div>
-                )}
               </div>
-              {Number(postInfor?.category) > 1 && (
-                <div className="row mb-3">
-                  <div className="col">
-                    <div className="form-outline">
-                      <label className="form-label" htmlFor="post-storage-type">
-                        Loại ổ cứng
-                      </label>
-                      <select
-                        className="form-select"
-                        aria-label="Disabled select example"
-                        name="storage_type"
-                        id="post-storage-type"
-                        onChange={(e) => handleOnChangeChild(e)}
-                        value={productChild?.storage_type || 0}
-                      >
-                        <option value={0}>Loại ổ cứng</option>
-                        {storageTypeData.map((data, index) => (
-                          <option key={index} value={data.id}>
-                            {data.value}
-                          </option>
-                        ))}
-                      </select>
-                      <p className="validate-form-text">
-                        {validatePost.storage_type}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="col">
-                    <div className="form-outline">
-                      <label className="form-label" htmlFor="post-storage">
-                        Dung lượng ổ cứng (GB)
-                      </label>
-                      <select
-                        className="form-select"
-                        aria-label="Disabled select example"
-                        name="storage"
-                        id="post-storage"
-                        onChange={(e) => handleOnChange(e)}
-                        value={postInfor?.storage || 0}
-                      >
-                        <option value={0}>Dung lượng ổ cứng cứng</option>
-                        {storageData.map((data, index) => (
-                          <option key={index} value={data.value}>
-                            {`${data.value}GB`}
-                          </option>
-                        ))}
-                      </select>
-                      <p className="validate-form-text">
-                        {validatePost.storage}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
+            )}
+            <div className="form-outline mb-3">
+              <label className="form-label" htmlFor="post-address">
+                Địa chỉ&nbsp;<span style={{ color: "red" }}>*</span>
+              </label>
+              <AddressSelect
+                address={address}
+                setAddress={setAddress}
+                validateAddress={validatePost.address}
+              />
+              <p className="validate-form-text">{validatePost.address}</p>
+            </div>
+            <div className="mb-3 form-check">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id="freeCheckbox"
+                defaultChecked={isFree}
+                onChange={(e) => onClickFree(e)}
+              />
+              <label className="form-check-label" htmlFor="freeCheckbox">
+                Tặng miễn phí
+              </label>
+            </div>
+            {!isFree && (
               <div className="form-outline mb-3">
-                <label className="form-label" htmlFor="post-address">
-                  Địa chỉ&nbsp;<span style={{ color: "red" }}>*</span>
-                </label>
-                <AddressSelect
-                  address={address}
-                  setAddress={setAddress}
-                  validateAddress={validatePost.address}
-                />
-                <p className="validate-form-text">{validatePost.address}</p>
-              </div>
-              <div className="mb-3 form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="freeCheckbox"
-                  defaultChecked={isFree}
-                  onChange={(e) => onClickFree(e)}
-                />
-                <label className="form-check-label" htmlFor="freeCheckbox">
-                  Tặng miễn phí
-                </label>
-              </div>
-              {!isFree && (
-                <div className="form-outline mb-3">
-                  <label className="form-label" htmlFor="post-price">
-                    Giá bán (VNĐ)&nbsp;<span style={{ color: "red" }}>*</span>
-                  </label>
-                  <input
-                    type="number"
-                    id="post-price"
-                    min={0}
-                    className={
-                      validatePost.price
-                        ? "form-control is-invalid"
-                        : "form-control"
-                    }
-                    placeholder="Giá bán"
-                    name="price"
-                    defaultValue={postInfor?.price}
-                    onChange={(e) => handleOnChange(e)}
-                  />
-                  <p className="validate-form-text">{validatePost.price}</p>
-                </div>
-              )}
-              <div className="mb-3 mt-4">
-                <h4>Tiêu đề và mô tả</h4>
-              </div>
-              <div className="form-outline mb-3">
-                <label className="form-label" htmlFor="post-title">
-                  Tiêu đề&nbsp;<span style={{ color: "red" }}>*</span>
+                <label className="form-label" htmlFor="post-price">
+                  Giá bán (VNĐ)&nbsp;<span style={{ color: "red" }}>*</span>
                 </label>
                 <input
-                  type="text"
-                  id="post-title"
+                  type="number"
+                  id="post-price"
+                  min={0}
                   className={
-                    validatePost.title
+                    validatePost.price
                       ? "form-control is-invalid"
                       : "form-control"
                   }
-                  name="title"
-                  placeholder="Tiêu đề"
-                  defaultValue={postInfor?.title}
+                  placeholder="Giá bán"
+                  name="price"
+                  defaultValue={postInfor?.price}
                   onChange={(e) => handleOnChange(e)}
                 />
-                <p className="validate-form-text">{validatePost.title}</p>
+                <p className="validate-form-text">{validatePost.price}</p>
               </div>
-              <div className="form-outline mb-3">
-                <label className="form-label" htmlFor="post-description">
-                  Mô tả chi tiết&nbsp;<span style={{ color: "red" }}>*</span>
-                </label>
-                <textarea
-                  className={
-                    validatePost.description
-                      ? "form-control is-invalid"
-                      : "form-control"
-                  }
-                  id="post-description"
-                  rows="4"
-                  placeholder="Mô tả chi tiết
+            )}
+            <div className="mb-3 mt-4">
+              <h4>Tiêu đề và mô tả</h4>
+            </div>
+            <div className="form-outline mb-3">
+              <label className="form-label" htmlFor="post-title">
+                Tiêu đề&nbsp;<span style={{ color: "red" }}>*</span>
+              </label>
+              <input
+                type="text"
+                id="post-title"
+                className={
+                  validatePost.title
+                    ? "form-control is-invalid"
+                    : "form-control"
+                }
+                name="title"
+                placeholder="Tiêu đề"
+                defaultValue={postInfor?.title}
+                onChange={(e) => handleOnChange(e)}
+              />
+              <p className="validate-form-text">{validatePost.title}</p>
+            </div>
+            <div className="form-outline mb-3">
+              <label className="form-label" htmlFor="post-description">
+                Mô tả chi tiết&nbsp;<span style={{ color: "red" }}>*</span>
+              </label>
+              <textarea
+                className={
+                  validatePost.description
+                    ? "form-control is-invalid"
+                    : "form-control"
+                }
+                id="post-description"
+                rows="4"
+                placeholder="Mô tả chi tiết
                   - Mua khi nào
                   - Trải nghiệm ra sao
                   - Có vấn đề nào khi sử dụng hay không"
-                  name="description"
-                  defaultValue={postInfor?.description}
+                name="description"
+                defaultValue={postInfor?.description}
+                onChange={(e) => handleOnChange(e)}
+              ></textarea>
+              <p className="validate-form-text">{validatePost.description}</p>
+            </div>
+            <div className="row">
+              <div className="form-outline mb-3 col-sm-6 col-xs-12">
+                <label className="form-label" htmlFor="post-public">
+                  Chế độ bài viết
+                </label>
+                <select
+                  className="form-select"
+                  aria-label="Disabled select example"
+                  required
+                  name="public_status"
+                  id="post-public"
                   onChange={(e) => handleOnChange(e)}
-                ></textarea>
-                <p className="validate-form-text">{validatePost.description}</p>
-              </div>
-              <div className="row">
-                <div className="form-outline mb-3 col-sm-6 col-xs-12">
-                  <label className="form-label" htmlFor="post-public">
-                    Chế độ bài viết
-                  </label>
-                  <select
-                    className="form-select"
-                    aria-label="Disabled select example"
-                    required
-                    name="public_status"
-                    id="post-public"
-                    onChange={(e) => handleOnChange(e)}
-                    placeholder="Chế độ bài viết"
-                    value={postInfor?.public_status || 0}
-                  >
-                    <option value={1}>Công khai</option>
-                    <option value={0}>Riêng tư</option>
-                  </select>
-                  <p className="validate-form-text">
-                    {validatePost.public_status}
-                  </p>
-                </div>
-                <div className="form-outline mb-3 col-sm-6 col-xs-12">
-                  <label className="form-label" htmlFor="is-sold-product">
-                    Tình trạng sản phẩm
-                  </label>
-                  <select
-                    className="form-select"
-                    aria-label="Disabled select example"
-                    required
-                    name="sold"
-                    id="is-sold-product"
-                    onChange={(e) => handleOnChange(e)}
-                    placeholder="Tình trạng sản phẩm"
-                    value={postInfor?.sold || 0}
-                  >
-                    <option value={1}>Đã bán</option>
-                    <option value={0}>Chưa bán</option>
-                  </select>
-                </div>
-              </div>
-            </form>
-            <div className="row mb-3">
-              <div className="col">
-                <button
-                  type="button"
-                  className="btn btn-primary btn-block btn-preview"
-                  onClick={(e) => (window.location.href = "/profile")}
+                  placeholder="Chế độ bài viết"
+                  value={postInfor?.public_status || 0}
                 >
-                  Hủy
-                </button>
-              </div>
-              <div className="col">
-                <button
-                  type="submit"
-                  className="btn btn-success btn-block btn-submit"
-                  onClick={(e) => onSubmitForm(e)}
-                  disabled={postInfor?.is_block}
-                >
-                  Cập nhật
-                </button>
-                <p className="color-red">
-                  {postInfor?.is_block == 1
-                    ? "Bạn không thể chỉnh sửa sản phẩm bị khóa"
-                    : ""}
+                  <option value={1}>Công khai</option>
+                  <option value={0}>Riêng tư</option>
+                </select>
+                <p className="validate-form-text">
+                  {validatePost.public_status}
                 </p>
               </div>
+              <div className="form-outline mb-3 col-sm-6 col-xs-12">
+                <label className="form-label" htmlFor="is-sold-product">
+                  Tình trạng sản phẩm
+                </label>
+                <select
+                  className="form-select"
+                  aria-label="Disabled select example"
+                  required
+                  name="sold"
+                  id="is-sold-product"
+                  onChange={(e) => handleOnChange(e)}
+                  placeholder="Tình trạng sản phẩm"
+                  value={postInfor?.sold || 0}
+                >
+                  <option value={1}>Đã bán</option>
+                  <option value={0}>Chưa bán</option>
+                </select>
+              </div>
             </div>
-          </Grid>
+          </form>
+          <div className="row mb-3">
+            <div className="col">
+              <button
+                type="button"
+                className="btn btn-primary btn-block btn-preview"
+                onClick={(e) =>
+                  (window.location.href =
+                    "/post-manager?&tab=profile&filter=all")
+                }
+              >
+                Trở lại
+              </button>
+            </div>
+            <div className="col">
+              <button
+                type="submit"
+                className="btn btn-success btn-block btn-submit"
+                onClick={(e) => onSubmitForm(e)}
+                disabled={postInfor?.is_block || preload}
+              >
+                Cập nhật
+              </button>
+              <p className="color-red">
+                {postInfor?.is_block == 1
+                  ? "Bạn không thể chỉnh sửa sản phẩm bị khóa"
+                  : ""}
+              </p>
+            </div>
+          </div>
         </Grid>
-      )}
+      </Grid>
     </div>
   );
 }

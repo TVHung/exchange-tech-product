@@ -4,6 +4,8 @@ import avt from "../../assets/image/avt.jpg";
 import "./_chat.scss";
 import axios from "axios";
 import { apiSetIsRead, headers } from "../../constants";
+import { useDispatch } from "react-redux";
+import { fetchConversations } from "../../redux/actions/chatAction";
 
 export default function ItemChat({ item, userActive, setIsStart }) {
   const onClickChat = () => {
@@ -14,6 +16,7 @@ export default function ItemChat({ item, userActive, setIsStart }) {
     if (userActive) setIsStart(false);
     return () => {};
   }, []);
+  const dispatch = useDispatch();
 
   const setIsReadChat = async (id = null) => {
     if (id) {

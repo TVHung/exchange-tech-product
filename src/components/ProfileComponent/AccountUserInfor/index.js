@@ -439,15 +439,7 @@ export default function AccountUserInfor() {
                         </span>
                       </li>
                       <li>
-                        {user_profile?.sex === 0 && (
-                          <i className="fas fa-male"></i>
-                        )}
-                        {user_profile?.sex === 1 && (
-                          <i className="fas fa-female"></i>
-                        )}
-                        {user_profile?.sex === 2 && (
-                          <i className="fas fa-user"></i>
-                        )}
+                        <i className="fas fa-user"></i>
                         <b>Giới tính: </b>
                         <span className="infor-detail">
                           {getNameById(user_profile?.sex)}
