@@ -324,14 +324,12 @@ export default function Search() {
     const { value } = e.target;
     if (value == "0") deleteParam("category");
     else insertParams("category", value);
-    console.log("value", value);
     setCategoryValue(value);
   };
   const onChangeCheckTrade = (e) => {
     const { value } = e.target;
     if (value == "2") deleteParam("trade");
     else insertParams("trade", value);
-    console.log("value", value);
     setTradeValue(value);
   };
   const onChangeCheckVideo = (e) => {
@@ -342,7 +340,6 @@ export default function Search() {
   };
   const onChangeCheckCard = (e) => {
     const { value } = e.target;
-    console.log(value);
     if (value == "-1") deleteParam("card");
     else insertParams("card", value);
     setCardValue(value);
@@ -377,7 +374,6 @@ export default function Search() {
     if (paramVal != null) {
       insertParams("brand", paramVal);
     }
-    console.log(paramVal);
     setBrandValue(paramVal);
   };
   const onChangeAddress = (address) => {
@@ -472,7 +468,6 @@ export default function Search() {
     setValueStart(newValue[0] * priceStep);
     setValueEnd(newValue[1] * priceStep);
     setValue(newValue);
-    console.log("new value", newValue);
     insertParams(
       "price",
       `${newValue[0] * priceStep}_${newValue[1] * priceStep}`
@@ -521,7 +516,6 @@ export default function Search() {
   const [valueStorageStart, setValueStorageStart] = useState(0);
   const [valueStorageEnd, setValueStorageEnd] = useState(0);
   const handleChangeStorage = (event, newValue) => {
-    console.log(newValue);
     setValueStorage(newValue);
     setValueStorageStart(
       `${getValueListFilter(marksStorageData, newValue[0])}GB`
@@ -586,7 +580,6 @@ export default function Search() {
         axios.spread((...responses) => {
           const categories = responses[0].data.data;
           const fixedData = responses[1].data.data;
-          console.log("post", categories);
           setCategoryData(categories);
           setStatusData(fixedData?.status);
           setCommandData(fixedData?.command);

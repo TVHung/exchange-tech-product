@@ -48,7 +48,8 @@ export default function MyPostItem({ data, handleShow, handleShowMatching }) {
                 {formatPrice(data?.price)}đ
               </div>
               <div>
-                <i className="fas fa-info-circle"></i> {data?.description}
+                <i className="fas fa-info-circle"></i>{" "}
+                <span className="description-my-item">{data?.description}</span>
               </div>
               <div>
                 <i className="fas fa-bullseye"></i> Nhu cầu:{" "}

@@ -46,18 +46,15 @@ export default function ResetPassword() {
     setShowLoading(true);
     setUserValidate("");
     let token = getParam("token");
-    console.log(token);
     if (token) {
       //handle call api change password
       const dataPassword = {
         password: user?.password,
         password_confirmation: user?.password_confirmation,
       };
-      console.log(dataPassword);
       await axios
         .put(`${apiResetPass}/${token}`, dataPassword)
         .then((res) => {
-          console.log(res.data);
           if (res.data.status === 1) {
             toast.success(res.data.message);
             setShow(true);
@@ -87,100 +84,98 @@ export default function ResetPassword() {
         title="Lấy lại mật khẩu"
         description={"Đăng nhập, đăng kí để trao đổi, mua bán sản phẩm"}
       />
-      {showLoading ? (
-        <Loading />
-      ) : (
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
-          <div className="paperLogin">
-            {show ? (
-              <div className="text-center">
-                <p>Bạn đã đổi mật khẩu thành công</p>
-                <p>Bạn vui lòng đăng nhập lại để truy cập vào hệ thống</p>
-                <Link to="/login">
-                  <p>Quay lại trang nhập</p>
-                </Link>
-              </div>
-            ) : (
-              <>
-                <p className="titleLogin">Thay đổi mật khẩu mới</p>
-                <form className="formLogin" noValidate>
-                  <TextField
-                    error={userValidate != "" ? true : false}
-                    margin="normal"
-                    required
+
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className="paperLogin">
+          {show ? (
+            <div className="text-center">
+              <p>Bạn đã đổi mật khẩu thành công</p>
+              <p>Bạn vui lòng đăng nhập lại để truy cập vào hệ thống</p>
+              <Link to="/login">
+                <p>Quay lại trang nhập</p>
+              </Link>
+            </div>
+          ) : (
+            <>
+              <p className="titleLogin">Thay đổi mật khẩu mới</p>
+              <form className="formLogin" noValidate>
+                <TextField
+                  error={userValidate != "" ? true : false}
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  autoComplete="current-password"
+                  onChange={(e) => handleOnChange(e)}
+                  className="inputLogin"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={() => handleClickShowPassword()}
+                          onMouseDown={() => handleMouseDownPassword()}
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <p id="validateEmail" className="nofiLogin">
+                  {userValidate}
+                </p>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password_confirmation"
+                  label="Confirm password"
+                  type={showPasswordConfirm ? "text" : "password"}
+                  id="password-confirm"
+                  autoComplete="current-password"
+                  onChange={(e) => handleOnChange(e)}
+                  className="inputLogin"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={() => handleClickShowPasswordConfirm()}
+                          onMouseDown={() => handleMouseDownPasswordConfirm()}
+                        >
+                          {showPasswordConfirm ? (
+                            <Visibility />
+                          ) : (
+                            <VisibilityOff />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <div style={{ marginTop: 10 }}>
+                  <Button
+                    type="submit"
                     fullWidth
-                    name="password"
-                    label="Password"
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    autoComplete="current-password"
-                    onChange={(e) => handleOnChange(e)}
-                    className="inputLogin"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={() => handleClickShowPassword()}
-                            onMouseDown={() => handleMouseDownPassword()}
-                          >
-                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                  <p id="validateEmail" className="nofiLogin">
-                    {userValidate}
-                  </p>
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="password_confirmation"
-                    label="Confirm password"
-                    type={showPasswordConfirm ? "text" : "password"}
-                    id="password-confirm"
-                    autoComplete="current-password"
-                    onChange={(e) => handleOnChange(e)}
-                    className="inputLogin"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={() => handleClickShowPasswordConfirm()}
-                            onMouseDown={() => handleMouseDownPasswordConfirm()}
-                          >
-                            {showPasswordConfirm ? (
-                              <Visibility />
-                            ) : (
-                              <VisibilityOff />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                  <div style={{ marginTop: 10 }}>
-                    <Button
-                      type="submit"
-                      fullWidth
-                      variant="contained"
-                      color="primary"
-                      className="submitLogin"
-                      onClick={(e) => handleSubmitNewPassword(e)}
-                    >
-                      Cập nhật
-                    </Button>
-                  </div>
-                </form>
-              </>
-            )}
-          </div>
-        </Container>
-      )}
+                    variant="contained"
+                    color="primary"
+                    className="submitLogin"
+                    onClick={(e) => handleSubmitNewPassword(e)}
+                    disabled={showLoading}
+                  >
+                    Cập nhật
+                  </Button>
+                </div>
+              </form>
+            </>
+          )}
+        </div>
+      </Container>
     </div>
   );
 }

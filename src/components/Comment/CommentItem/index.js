@@ -46,7 +46,6 @@ export default function CommentItem({
       content: commentContentReply?.content,
       comment_parent_id: parseInt(commentContentReply?.comment_parent_id),
     };
-    console.log(commentData);
     try {
       await axios
         .post(`${apiAddComment}`, commentData, {

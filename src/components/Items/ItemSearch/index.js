@@ -5,7 +5,11 @@ import notImage from "../../../assets/image/product-default.png";
 
 export default function ItemSearch({ data }) {
   const toDetail = () => {
-    window.location.href = `/detail/${data.id}`;
+    window.location.href = `/detail/${data?.id}`;
+  };
+
+  const toContact = () => {
+    if (data?.user_id) window.location.href = `/profile/${data?.user_id}`;
   };
 
   const getBanner = (data_images) => {
@@ -13,11 +17,11 @@ export default function ItemSearch({ data }) {
       for (let i = 0; i < data_images.length; i++)
         if (data_images[i].is_banner == 1) return data_images[i].image_url;
   };
-
+  console.log("item", data);
   return (
-    <div onClick={() => toDetail()}>
+    <div>
       <div className="post-result py-2 px-2 pb-2">
-        <div className="row">
+        <div className="row" onClick={() => toDetail()}>
           <div className="col-lg-3">
             {" "}
             <img
@@ -43,14 +47,23 @@ export default function ItemSearch({ data }) {
                 đ
               </div>
               <div>
-                <i className="fas fa-info-circle"></i> {data.description}
+                <i className="fas fa-info-circle"></i>{" "}
+                <span className="description-my-item">{data.description}</span>
+              </div>
+              <div>
+                <i className="fas fa-bullseye"></i> Nhu cầu:{" "}
+                {data?.is_trade == 1 ? <b>Mua</b> : <b>Bán</b>}
               </div>
             </div>
           </div>
         </div>
         <div className="d-flex justify-content-end mt-1">
-          <div className="btn enquiry  mx-2">Liện hệ</div>
-          <div className="btn btn-primary ">Chi tiết</div>
+          <div className="btn enquiry  mx-2" onClick={() => toContact()}>
+            Liện hệ
+          </div>
+          <div className="btn btn-primary" onClick={() => toDetail()}>
+            Chi tiết
+          </div>
         </div>
       </div>
     </div>

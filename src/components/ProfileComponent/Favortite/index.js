@@ -19,8 +19,6 @@ export default function Favorite({ setPreload }) {
     getWishList();
   }, []);
 
-  console.log("favorite", get_wish_list);
-
   return (
     <div className="my-favorite-post">
       <h3>Bài đăng quan tâm</h3>

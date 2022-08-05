@@ -49,6 +49,15 @@
         .product-detail-wrap {
             padding-top: 5px;
             padding-bottom: 5px;
+            .description-area {
+                display: block;
+                overflow: hidden;
+                resize: none;
+                width: 100%;
+                border: none;
+                background-color: transparent;
+                margin-bottom: 10px;
+            }
         }
     }
     .col-center {

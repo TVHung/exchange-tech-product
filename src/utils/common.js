@@ -172,8 +172,6 @@ export const setLinkDirect = () => {
 export const appendArrayToFormData = (object) => {
   var formData = new FormData();
   Object.keys(object).forEach(function (key) {
-    // console.log(key, object[key]);
-    // if (object[key])
     formData.append(key, object[key]);
   });
   return formData;

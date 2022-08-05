@@ -19,7 +19,6 @@ export default function ManagerComment({ setPreload }) {
     (state) => state.post.commentsOfMyProduct
   );
   useEffect(() => {
-    console.log("my post", product_comments);
     setComments(product_comments?.data);
   }, [product_comments]);
 

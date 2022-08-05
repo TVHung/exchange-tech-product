@@ -55,9 +55,8 @@ export default function Chat() {
           headers: headerFiles,
         })
         .then((res) => {
-          // alert("Thành công");
+          console.log("new message", res.data);
           addMessage(res.data);
-          console.log("new message", res);
           dispatch(fetchConversations());
         })
         .catch((error) => {
@@ -99,7 +98,6 @@ export default function Chat() {
   }, []);
   const userConversations = useSelector((state) => state.chat.myListChat);
   useEffect(() => {
-    console.log("my post", userConversations);
     setUsers(userConversations);
     setPreload(true);
   }, [userConversations]);
@@ -114,7 +112,6 @@ export default function Chat() {
     const channel = pusher.subscribe("chat");
     channel.bind("message", function (data) {
       dispatch(fetchConversations());
-      console.log("tin nhắn", data, JSON.parse(localStorage.getItem("user")));
       if (
         parseInt(data.user_id) == parseInt(params.id) &&
         parseInt(data.target_user_id) ==
@@ -152,10 +149,6 @@ export default function Chat() {
         headers: headers,
       })
       .then((res) => {
-        // console.log("Scroll top bottom", res.data.data?.per_page);
-        // let maxPage = res.data.data?.per_page;
-        // if (maxPage && page <= maxPage) setPage(page);
-        // setMessages((messages) => [...messages, ...res.data.data.data]);
         var allMess = res.data.data;
         setMessages(allMess);
         setLoadChat(false);
@@ -167,14 +160,6 @@ export default function Chat() {
         console.error(error);
         setLoadChat(false);
       });
-  };
-
-  const fetchMoreData = (e) => {
-    // if (e.target.scrollTop == 0) {
-    //   let pageCurent = page + 1;
-    //   console.log("load to top", pageCurent);
-    //   getAllMess(params.id, pageCurent);
-    // }
   };
 
   return (
@@ -217,38 +202,7 @@ export default function Chat() {
             ) : (
               <>
                 <Header userActive={userActive} users={users} />
-                {/* <div
-                  id="scrollableDiv"
-                  style={{
-                    height: 300,
-                    overflow: "auto",
-                    display: "flex",
-                    flexDirection: "column-reverse",
-                  }}
-                >
-                  <InfiniteScroll
-                    dataLength={messages?.length}
-                    next={fetchMoreData()}
-                    hasMore={true}
-                    loader={<p>Đang tải tin nhắn...</p>}
-                    style={{ display: "flex", flexDirection: "column-reverse" }} //To put endMessage and loader to the top
-                    inverse={true} //
-                    scrollableTarget="scrollableDiv"
-                  >
-                    {messages?.map((mess, index) => (
-                      <Message
-                        userActive={userActive}
-                        key={index}
-                        message={mess}
-                      />
-                    ))}
-                  </InfiniteScroll>
-                </div> */}
-                <div
-                  className="chat-mess-content"
-                  ref={listInnerRef}
-                  onScroll={(e) => fetchMoreData(e)}
-                >
+                <div className="chat-mess-content" ref={listInnerRef}>
                   {!loadChat ? (
                     messages?.map((mess, index) => (
                       <Message

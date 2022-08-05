@@ -44,6 +44,13 @@
     &:hover {
         cursor: pointer;
     }
+    .description-my-item {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* number of lines to show */
+        -webkit-box-orient: vertical;
+    }
 }
 
 @media (max-width: 1199.5px) {

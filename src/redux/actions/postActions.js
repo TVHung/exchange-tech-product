@@ -28,7 +28,6 @@ export const fetchAllPost = () => async (dispatch) => {
       })
       .then((res) => {
         const posts = res.data.data;
-        console.log(res.data);
         dispatch({ type: ALL_POST, payload: posts });
       });
   } catch (error) {
@@ -47,7 +46,6 @@ export const fetchMyPosts =
         })
         .then((res) => {
           const myPosts = res.data;
-          console.log(res.data);
           dispatch({ type: MY_POSTS, payload: myPosts });
         });
     } catch (error) {
@@ -119,7 +117,6 @@ export const searchPostByName =
         })
         .then((res) => {
           const namePosts = res.data;
-          console.log(res.data);
           dispatch({ type: SEARCH_POST_RESULT, payload: namePosts });
         });
     } catch (error) {
@@ -167,7 +164,6 @@ export const addWishList = (product_id) => async (dispatch) => {
     await axios
       .post(`${apiWishList}`, data, { headers: headers })
       .then((res) => {
-        console.log(res.data);
         if (res.data.status == 1) toast.success(res.data.message);
         else toast.error(res.data.message);
       })

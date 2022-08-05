@@ -32,11 +32,9 @@ export default function Header({ userActive, users }) {
   }, [params.id]);
 
   const deleteConversation = () => {
-    console.log("delete chat");
     axios
       .delete(`${apiDeleteConversation}/${params.id}`, { headers: headers })
       .then((res) => {
-        console.log(res);
         handleClose();
         if (res.data.status == 1) {
           toast.success(res.data.message);

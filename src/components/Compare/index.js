@@ -23,7 +23,6 @@ export default function Compare() {
   const list_compare = useSelector((state) => state.post.list_compare);
 
   useEffect(() => {
-    console.log("danh sach", list_compare);
     if (list_compare) {
       getAllProductCompare(list_compare);
     }
@@ -35,7 +34,10 @@ export default function Compare() {
     let arrId = [];
     if (current) arrId = current.split(",");
     if (arrId.includes(id.toString())) {
-      arrId.pop(id);
+      const index = arrId.indexOf(id.toString());
+      if (index > -1) {
+        arrId.splice(index, 1);
+      }
       current = arrId.length > 1 ? arrId.join(",") : arrId.join("");
       localStorage.setItem("array_id_compare", current);
       dispatch(setListCompare(current));
@@ -75,7 +77,6 @@ export default function Compare() {
       {isShow ? (
         <div className="compare-component row">
           <div className="col-3 compare-product">
-            {console.log("Danh sach compare", compareProducts)}
             {compareProducts[0] ? (
               <div className="product-infor text-center">
                 <div className="w-100 h-100 position-relative">
@@ -103,7 +104,7 @@ export default function Compare() {
               <div className="product-infor text-center">
                 <div className="w-100 h-100 position-relative">
                   <img
-                    src={compareProducts[1]?.images[1]?.image_url}
+                    src={compareProducts[1]?.images[0]?.image_url || img}
                     alt="product-compare"
                   />
                   <p>{compareProducts[1]?.name}</p>
@@ -126,7 +127,7 @@ export default function Compare() {
               <div className="product-infor text-center">
                 <div className="w-100 h-100 position-relative">
                   <img
-                    src={compareProducts[2]?.images[2]?.image_url || img}
+                    src={compareProducts[2]?.images[0]?.image_url || img}
                     alt="product-compare"
                   />
                   <p>{compareProducts[2]?.name}</p>

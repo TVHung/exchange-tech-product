@@ -41,9 +41,10 @@ export default function FormResetPassword() {
         if (res.data.status === 1) {
           toast.success(res.data.message);
           setshow(true);
-        } else {
+        } else if (res.data.status == -1) {
           setEmailValidate(res.data.message);
-          console.log(res.data);
+        } else {
+          handleValidate(res.data);
         }
         setShowLoading(false);
       })
@@ -54,6 +55,12 @@ export default function FormResetPassword() {
         );
         setShowLoading(false);
       });
+  };
+
+  const handleValidate = (validateData) => {
+    Object.keys(validateData).forEach(function (key) {
+      setEmailValidate(validateData[key][0]);
+    });
   };
 
   return (

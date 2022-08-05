@@ -114,7 +114,6 @@ export default function Login({ type }) {
     await axios
       .post(apiGetGoogleUrl, {})
       .then((res) => {
-        console.log(res.data);
         if (res.data?.url) {
           window.location.href = res.data?.url;
         }
@@ -132,166 +131,159 @@ export default function Login({ type }) {
         title="Đăng ký"
         description={"Đăng nhập, đăng kí để trao đổi, mua bán sản phẩm"}
       />
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
-          <div className="paperLogin">
-            <p className="titleLogin">Đăng ký</p>
-            <form className="formLogin" noValidate>
-              <TextField
-                error={userValidate?.name != "" ? true : false}
-                margin="normal"
-                required
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className="paperLogin">
+          <p className="titleLogin">Đăng ký</p>
+          <form className="formLogin" noValidate>
+            <TextField
+              error={userValidate?.name != "" ? true : false}
+              margin="normal"
+              required
+              fullWidth
+              name="name"
+              label="Username"
+              type="text"
+              id="name"
+              onChange={(e) => handleOnChange(e)}
+              className="inputLogin"
+            />
+            <p id="validateEmail" className="nofiLogin">
+              {userValidate?.name}
+            </p>
+            <TextField
+              error={userValidate?.email != "" ? true : false}
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              onChange={(e) => handleOnChange(e)}
+              className="inputLogin"
+              inputProps={{
+                style: {},
+              }}
+            />
+            <p id="validateEmail" className="nofiLogin">
+              {userValidate?.email}
+            </p>
+            <TextField
+              error={userValidate?.password != "" ? true : false}
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              id="password"
+              autoComplete="current-password"
+              onChange={(e) => handleOnChange(e)}
+              className="inputLogin"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => handleClickShowPassword()}
+                      onMouseDown={() => handleMouseDownPassword()}
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <p id="validateEmail" className="nofiLogin">
+              {userValidate?.password}
+            </p>
+            <TextField
+              error={userValidate?.password_confirmation != "" ? true : false}
+              margin="normal"
+              required
+              fullWidth
+              name="password_confirmation"
+              label="Confirm password"
+              type={showPasswordConfirm ? "text" : "password"}
+              id="password-confirm"
+              autoComplete="current-password"
+              onChange={(e) => handleOnChange(e)}
+              className="inputLogin"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => handleClickShowPasswordConfirm()}
+                      onMouseDown={() => handleMouseDownPasswordConfirm()}
+                    >
+                      {showPasswordConfirm ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <p id="validateEmail" className="nofiLogin">
+              {userValidate?.password_confirmation}
+            </p>
+            <div style={{ marginTop: 10 }}>
+              <Button
+                type="submit"
                 fullWidth
-                name="name"
-                label="Username"
-                type="text"
-                id="name"
-                onChange={(e) => handleOnChange(e)}
-                className="inputLogin"
-              />
-              <p id="validateEmail" className="nofiLogin">
-                {userValidate?.name}
-              </p>
-              <TextField
-                error={userValidate?.email != "" ? true : false}
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                onChange={(e) => handleOnChange(e)}
-                className="inputLogin"
-                inputProps={{
-                  style: {},
-                }}
-              />
-              <p id="validateEmail" className="nofiLogin">
-                {userValidate?.email}
-              </p>
-              <TextField
-                error={userValidate?.password != "" ? true : false}
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type={showPassword ? "text" : "password"}
-                id="password"
-                autoComplete="current-password"
-                onChange={(e) => handleOnChange(e)}
-                className="inputLogin"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={() => handleClickShowPassword()}
-                        onMouseDown={() => handleMouseDownPassword()}
-                      >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <p id="validateEmail" className="nofiLogin">
-                {userValidate?.password}
-              </p>
-              <TextField
-                error={userValidate?.password_confirmation != "" ? true : false}
-                margin="normal"
-                required
-                fullWidth
-                name="password_confirmation"
-                label="Confirm password"
-                type={showPasswordConfirm ? "text" : "password"}
-                id="password-confirm"
-                autoComplete="current-password"
-                onChange={(e) => handleOnChange(e)}
-                className="inputLogin"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={() => handleClickShowPasswordConfirm()}
-                        onMouseDown={() => handleMouseDownPasswordConfirm()}
-                      >
-                        {showPasswordConfirm ? (
-                          <Visibility />
-                        ) : (
-                          <VisibilityOff />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <p id="validateEmail" className="nofiLogin">
-                {userValidate?.password_confirmation}
-              </p>
-              <div style={{ marginTop: 10 }}>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className="submitLogin"
-                  onClick={(e) => handleSubmitSignup(e)}
-                >
-                  Sign up
-                </Button>
-              </div>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <GoogleLogin
-                    clientId={
-                      "943683537472-djj3f68jb2spj4f7vgrr7hevsd28u7tk.apps.googleusercontent.com"
-                    }
-                    isSignedIn={true}
-                    render={(renderProps) => (
-                      <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        className="submitLogin"
-                        style={{
-                          marginTop: 20,
-                          color: "#05042c",
-                          background: "#fafafa",
-                        }}
-                        startIcon={
-                          <img
-                            alt="googleIcon"
-                            src={logoGoogle}
-                            width="20px"
-                            height="20px"
-                          />
-                        }
-                        onClick={(e) => handleLoginGoogle(e)}
-                      >
-                        Tiếp tục với Google
-                      </Button>
-                    )}
-                  ></GoogleLogin>
-                </Grid>
+                variant="contained"
+                color="primary"
+                className="submitLogin"
+                onClick={(e) => handleSubmitSignup(e)}
+                disabled={isLoading}
+              >
+                Sign up
+              </Button>
+            </div>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <GoogleLogin
+                  clientId={
+                    "943683537472-djj3f68jb2spj4f7vgrr7hevsd28u7tk.apps.googleusercontent.com"
+                  }
+                  isSignedIn={true}
+                  render={(renderProps) => (
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      className="submitLogin"
+                      style={{
+                        marginTop: 20,
+                        color: "#05042c",
+                        background: "#fafafa",
+                      }}
+                      startIcon={
+                        <img
+                          alt="googleIcon"
+                          src={logoGoogle}
+                          width="20px"
+                          height="20px"
+                        />
+                      }
+                      onClick={(e) => handleLoginGoogle(e)}
+                    >
+                      Tiếp tục với Google
+                    </Button>
+                  )}
+                ></GoogleLogin>
               </Grid>
-              <hr style={{ marginTop: 20, opacity: 0.5 }} />
-              <Grid container>
-                <a href="/login" className="textLogin">
-                  Bạn đã có tài khoản? Login
-                </a>
-              </Grid>
-            </form>
-          </div>
-        </Container>
-      )}
+            </Grid>
+            <hr style={{ marginTop: 20, opacity: 0.5 }} />
+            <Grid container>
+              <a href="/login" className="textLogin">
+                Bạn đã có tài khoản? Login
+              </a>
+            </Grid>
+          </form>
+        </div>
+      </Container>
     </div>
   );
 }

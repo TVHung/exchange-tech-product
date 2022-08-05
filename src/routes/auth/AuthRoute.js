@@ -6,24 +6,6 @@ import { getCookie } from "../../utils/cookie";
 
 export default function AuthRoute({ component: Com, isAuth, ...rest }) {
   const location = useLocation();
-  // const dispatch = useDispatch();
-
-  // const [isAuth, setIsAuth] = useState(false);
-
-  // const isAuthenticated = () => {
-  //   dispatch(fetchUser());
-  // };
-
-  // useEffect(() => {
-  //   isAuthenticated();
-  // }, []);
-
-  // const isLogin = useSelector((state) => state.user.isLogin);
-
-  // useEffect(() => {
-  //   setIsAuth(isLogin);
-  //   return () => {};
-  // }, [isLogin]);
 
   return (
     <Route
