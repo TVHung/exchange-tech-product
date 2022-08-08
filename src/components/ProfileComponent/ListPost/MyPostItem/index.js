@@ -59,12 +59,12 @@ export default function MyPostItem({ data, handleShow, handleShowMatching }) {
           </div>
         </div>
         <div className="d-flex justify-content-end mt-1">
-          <div
+          {/* <div
             className="btn btn-primary mx-1 btn-matching"
             onClick={(e) => handleShowMatching(data?.id, data?.is_trade)}
           >
             <span>Tìm tương tự</span>
-          </div>
+          </div> */}
           {data?.is_block !== 1 && (
             <div className="btn enquiry mx-1" onClick={(e) => handleEdit(e)}>
               <span>Chỉnh sửa</span>
