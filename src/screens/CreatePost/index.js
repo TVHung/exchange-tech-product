@@ -211,6 +211,7 @@ export default function CreatePost() {
   };
 
   const onClickSuggest = (type, value) => {
+    console.log("suggest", type, value);
     if (
       type == "color" ||
       type == "cpu" ||
@@ -508,83 +509,81 @@ export default function CreatePost() {
 
       <Grid container className="form-container">
         <Grid item xs={12} md={4} className="create-post-images">
-          {!isTrade && (
-            <>
-              <div className="image-post">
-                <div className="custom-file">
-                  <label htmlFor="file-upload" className="custom-file-upload">
-                    <i className="fas fa-upload"></i> Thêm ảnh
-                  </label>
-                  <input
-                    type="file"
-                    className="custom-file-input"
-                    id="file-upload"
-                    multiple
-                    accept="image/*"
-                    onChange={(e) => uploadSingleFile(e)}
-                  />
-                </div>
-                <div className="mt-3 view-preview row">
-                  {file &&
-                    file?.map((item, index) => {
-                      return (
-                        <div
-                          key={index}
-                          className="col-lg-6 col-md-4 col-sm-6 image-preview mb-2 "
-                        >
-                          <div className="image-selected">
-                            <img src={item} alt="" width="100%" />
-                            <i
-                              className="fas fa-times-circle fa delete-image"
-                              onClick={() => deleteFile(index)}
-                            ></i>
-                            {index === 0 ? (
-                              <div className="title-cover-image">
-                                <p>Ảnh bìa</p>
-                              </div>
-                            ) : null}
-                          </div>
+          <>
+            <div className="image-post">
+              <div className="custom-file">
+                <label htmlFor="file-upload" className="custom-file-upload">
+                  <i className="fas fa-upload"></i> Thêm ảnh
+                </label>
+                <input
+                  type="file"
+                  className="custom-file-input"
+                  id="file-upload"
+                  multiple
+                  accept="image/*"
+                  onChange={(e) => uploadSingleFile(e)}
+                />
+              </div>
+              <div className="mt-3 view-preview row">
+                {file &&
+                  file?.map((item, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="col-lg-6 col-md-4 col-sm-6 image-preview mb-2 "
+                      >
+                        <div className="image-selected">
+                          <img src={item} alt="" width="100%" />
+                          <i
+                            className="fas fa-times-circle fa delete-image"
+                            onClick={() => deleteFile(index)}
+                          ></i>
+                          {index === 0 ? (
+                            <div className="title-cover-image">
+                              <p>Ảnh bìa</p>
+                            </div>
+                          ) : null}
                         </div>
-                      );
-                    })}
-                </div>
-                <div className="image-validate">
-                  <p>{validatePost.fileImages}</p>
-                </div>
+                      </div>
+                    );
+                  })}
               </div>
-              <div className="video-post">
-                <div className="custom-video">
-                  <label htmlFor="video-upload" className="custom-video-upload">
-                    <i className="fas fa-upload"></i> Thêm video
-                  </label>
-                  <input
-                    type="file"
-                    className="custom-video-input"
-                    id="video-upload"
-                    // multiple
-                    accept="video/*"
-                    onChange={(e) => uploadSingleVideo(e)}
-                  />
-                </div>
-                <div className="mt-3 view-preview row">
-                  {videoFile && (
-                    <>
-                      <video width="400" controls>
-                        <source src={URL.createObjectURL(videoFile)} />
-                      </video>
-                      <i
-                        className="fas fa-times-circle fa-2x fa delete-video-icon"
-                        onClick={() => deleteVideoNew()}
-                      ></i>
-                    </>
-                  )}
-                </div>
-                <div className="image-validate">
-                  <p>{validatePost.fileVideo}</p>
-                </div>
+              <div className="image-validate">
+                <p>{validatePost.fileImages}</p>
               </div>
-            </>
-          )}
+            </div>
+            <div className="video-post">
+              <div className="custom-video">
+                <label htmlFor="video-upload" className="custom-video-upload">
+                  <i className="fas fa-upload"></i> Thêm video
+                </label>
+                <input
+                  type="file"
+                  className="custom-video-input"
+                  id="video-upload"
+                  // multiple
+                  accept="video/*"
+                  onChange={(e) => uploadSingleVideo(e)}
+                />
+              </div>
+              <div className="mt-3 view-preview row">
+                {videoFile && (
+                  <>
+                    <video width="400" controls>
+                      <source src={URL.createObjectURL(videoFile)} />
+                    </video>
+                    <i
+                      className="fas fa-times-circle fa-2x fa delete-video-icon"
+                      onClick={() => deleteVideoNew()}
+                    ></i>
+                  </>
+                )}
+              </div>
+              <div className="image-validate">
+                <p>{validatePost.fileVideo}</p>
+              </div>
+            </div>
+          </>
         </Grid>
         <Grid item xs={12} md={8} className="create-post-detail">
           <div className="mb-3">
@@ -651,14 +650,14 @@ export default function CreatePost() {
                 onBlur={() =>
                   setTimeout(() => {
                     setSuggestName([]);
-                  }, 100)
+                  }, 300)
                 }
               />
               {suggestName?.length > 0 && (
                 <div className="suggest-component">
                   {suggestName?.map((name, index) => (
                     <div
-                      key={index}
+                      key={name}
                       onClick={() => onClickSuggest("name", name)}
                     >
                       <p>{name}</p>
@@ -720,7 +719,7 @@ export default function CreatePost() {
                       onBlur={() =>
                         setTimeout(() => {
                           setSuggestColor([]);
-                        }, 100)
+                        }, 300)
                       }
                     />
                     {suggestColor?.length > 0 && (
@@ -883,7 +882,7 @@ export default function CreatePost() {
                       onBlur={() =>
                         setTimeout(() => {
                           setSuggestCpu([]);
-                        }, 100)
+                        }, 300)
                       }
                     />
                     {suggestCpu?.length > 0 && (
@@ -917,7 +916,7 @@ export default function CreatePost() {
                       onBlur={() =>
                         setTimeout(() => {
                           setSuggestGpu([]);
-                        }, 100)
+                        }, 300)
                       }
                     />
                     {suggestGpu?.length > 0 && (
@@ -973,7 +972,7 @@ export default function CreatePost() {
                       onBlur={() =>
                         setTimeout(() => {
                           setSuggestDisplay([]);
-                        }, 100)
+                        }, 300)
                       }
                     />
                     {suggestDisplay?.length > 0 && (
