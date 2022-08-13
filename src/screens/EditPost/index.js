@@ -387,15 +387,15 @@ export default function EditPost() {
       brand_id: parseInt(productChild?.brand_id),
       cpu: productChild?.cpu,
       gpu: productChild?.gpu,
-      storage_type: parseInt(productChild?.storage_type),
+      storage_type: parseInt(productChild?.storage_type) || 0,
       display_size: parseFloat(productChild?.display_size || 0),
       fileVideo: videoFile,
       video_url: postInfor?.video_url,
       is_delete_video: isDeleteVideo,
       is_delete_image: deleteImageId,
       command: parseInt(postInfor?.command || 0),
-      pin: parseInt(productChild?.pin),
-      resolution: productChild?.resolution,
+      pin: parseInt(productChild?.pin) || 0,
+      resolution: productChild?.resolution || 0,
     };
 
     console.log(postData);
@@ -408,11 +408,12 @@ export default function EditPost() {
     let fileImages = "fileImages";
     if (
       !((file && file.length) || imageUrlEdit.length) &&
-      postData?.is_trade == 0
+      parseInt(postData?.is_trade) == 0
     ) {
+      console.log(file.length, imageUrlEdit.length);
       setvalidatePost((prevState) => ({
         ...prevState,
-        [fileImages]: "Bạn cần đăng ít nhất 1 hình ảnh",
+        [fileImages]: "Bạn phải thêm ít nhất 1 hình ảnh",
       }));
     } else {
       setPreload(true);
@@ -1079,7 +1080,11 @@ export default function EditPost() {
                       placeholder="Kích thước màn hính"
                       min={0}
                       // defaultValue={productChild?.display_size || ""}
-                      value={productChild?.display_size || ""}
+                      value={
+                        productChild?.display_size > 0
+                          ? productChild?.display_size
+                          : ""
+                      }
                       name="display_size"
                       onChange={(e) => handleOnChangeChild(e)}
                       onBlur={() =>

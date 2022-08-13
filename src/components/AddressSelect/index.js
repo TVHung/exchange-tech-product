@@ -195,7 +195,8 @@ export default function AddressSelect({
             <form>
               <div className="form-outline mb-3">
                 <label className="form-label" htmlFor="post-city">
-                  <b>Tỉnh, thành phố*</b>
+                  <b>Tỉnh, thành phố</b>
+                  <span style={{ color: "red", marginLeft: 5 }}>*</span>
                 </label>
                 <select
                   className="form-select"
@@ -217,7 +218,8 @@ export default function AddressSelect({
               </div>
               <div className="form-outline mb-3">
                 <label className="form-label" htmlFor="post-district">
-                  <b>Quận, huyện, thị xã*</b>
+                  <b>Quận, huyện, thị xã</b>
+                  <span style={{ color: "red", marginLeft: 5 }}>*</span>
                 </label>
                 <select
                   className="form-select"
@@ -241,7 +243,8 @@ export default function AddressSelect({
               </div>
               <div className="form-outline mb-3">
                 <label className="form-label" htmlFor="post-ward">
-                  <b>Phường, xã, thị trấn*</b>
+                  <b>Phường, xã, thị trấn</b>
+                  <span style={{ color: "red", marginLeft: 5 }}>*</span>
                 </label>
                 <select
                   className="form-select"

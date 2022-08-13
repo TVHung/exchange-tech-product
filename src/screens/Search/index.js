@@ -495,6 +495,7 @@ export default function Search() {
       "guarantee",
       `${newValue[0] * guaranteeStep}_${newValue[1] * guaranteeStep}`
     );
+    if (newValue[1] == 0) deleteParam("guarantee");
   };
 
   //slider step ram
@@ -824,6 +825,10 @@ export default function Search() {
                       </div>
                     </Collapse>
                   </div>
+                  {console.log(
+                    "Danh sach",
+                    filterArrayObjectWithCategoryId(commandData, categoryValue)
+                  )}
                   {filterArrayObjectWithCategoryId(commandData, categoryValue)
                     ?.length > 0 && (
                     <div className="box border-bottom-custom">
@@ -881,57 +886,6 @@ export default function Search() {
                       </Collapse>
                     </div>
                   )}
-                  <div className="box border-bottom-custom">
-                    <div
-                      className="box-label text-uppercase d-flex align-items-center"
-                      onClick={() => showHideCollapse("resolution")}
-                    >
-                      Độ phân giải{" "}
-                      <button
-                        className="btn ms-auto collapse-filter"
-                        name="resolution"
-                        onClick={() => showHideCollapse("resolution")}
-                        aria-controls="collpase-resolution-filter"
-                        aria-expanded={openResolution}
-                      >
-                        {" "}
-                        {openResolution ? (
-                          <i className="fas fa-minus"></i>
-                        ) : (
-                          <i className="fas fa-plus"></i>
-                        )}{" "}
-                      </button>
-                    </div>
-                    <Collapse in={openResolution}>
-                      <div id="collpase-resolution-filter">
-                        {resolutionData &&
-                          resolutionData?.map((data, index) => (
-                            <div className="my-1" key={index}>
-                              {" "}
-                              <label className="tick">
-                                {data.value}
-                                <input
-                                  type="checkbox"
-                                  value={data.id}
-                                  onChange={onChangeResolution}
-                                  checked={
-                                    (resolutionValue?.length &&
-                                      resolutionValue
-                                        .split(".")
-                                        .map(function (item) {
-                                          return parseInt(item, 10);
-                                        })
-                                        .includes(data.id)) ||
-                                    false
-                                  }
-                                />{" "}
-                                <span className="check"></span>{" "}
-                              </label>{" "}
-                            </div>
-                          ))}
-                      </div>
-                    </Collapse>
-                  </div>
                   <div className="box border-bottom-custom">
                     <div
                       className="box-label text-uppercase d-flex align-items-center"
@@ -1046,7 +1000,7 @@ export default function Search() {
                           required
                           id="rangeVideo"
                           name="video"
-                          value={Number(videoValue)}
+                          value={videoValue}
                           onChange={(e) => onChangeCheckVideo(e)}
                         >
                           <option value="-1">Tất cả</option>
@@ -1295,6 +1249,59 @@ export default function Search() {
                               readOnly
                             />
                           </div>
+                        </div>
+                      </Collapse>
+                    </div>
+                  ) : null}
+                  {categoryValue == "1" || categoryValue == "2" ? (
+                    <div className="box border-bottom-custom">
+                      <div
+                        className="box-label text-uppercase d-flex align-items-center"
+                        onClick={() => showHideCollapse("resolution")}
+                      >
+                        Độ phân giải{" "}
+                        <button
+                          className="btn ms-auto collapse-filter"
+                          name="resolution"
+                          onClick={() => showHideCollapse("resolution")}
+                          aria-controls="collpase-resolution-filter"
+                          aria-expanded={openResolution}
+                        >
+                          {" "}
+                          {openResolution ? (
+                            <i className="fas fa-minus"></i>
+                          ) : (
+                            <i className="fas fa-plus"></i>
+                          )}{" "}
+                        </button>
+                      </div>
+                      <Collapse in={openResolution}>
+                        <div id="collpase-resolution-filter">
+                          {resolutionData &&
+                            resolutionData?.map((data, index) => (
+                              <div className="my-1" key={index}>
+                                {" "}
+                                <label className="tick">
+                                  {data.value}
+                                  <input
+                                    type="checkbox"
+                                    value={data.id}
+                                    onChange={onChangeResolution}
+                                    checked={
+                                      (resolutionValue?.length &&
+                                        resolutionValue
+                                          .split(".")
+                                          .map(function (item) {
+                                            return parseInt(item, 10);
+                                          })
+                                          .includes(data.id)) ||
+                                      false
+                                    }
+                                  />{" "}
+                                  <span className="check"></span>{" "}
+                                </label>{" "}
+                              </div>
+                            ))}
                         </div>
                       </Collapse>
                     </div>

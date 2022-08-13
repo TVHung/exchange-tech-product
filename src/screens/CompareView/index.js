@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./_compareView.scss";
 import img from "../../assets/image/product-default.png";
-import {
-  apiProductCompare,
-  commandData,
-  resolutionData,
-} from "./../../constants/index";
+import { apiGetFixedData, apiProductCompare } from "./../../constants/index";
 import axios from "axios";
 import { formatPrice, getValueInArrayObjectWithId } from "./../../utils/common";
 import Loading from "./../../components/Loading";
@@ -16,6 +12,8 @@ import { TextareaAutosize } from "@material-ui/core";
 export default function CompareView() {
   const [compareProducts, setCompareProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [commandData, setCommandData] = useState([]);
+  const [resolutionData, setResolutionData] = useState([]);
 
   const dispatch = useDispatch();
   const list_compare = useSelector((state) => state.post.list_compare);
@@ -28,6 +26,7 @@ export default function CompareView() {
   }, [list_compare]);
 
   useEffect(() => {
+    fetchAllData();
     return () => {
       setCompareProducts([]);
       setIsLoading();
@@ -66,6 +65,24 @@ export default function CompareView() {
     }
   };
 
+  const fetchAllData = async () => {
+    const requestFixedData = axios.get(apiGetFixedData);
+    await axios
+      .all([requestFixedData])
+      .then(
+        axios.spread((...responses) => {
+          const fixedData = responses[0].data.data;
+          if (fixedData) {
+            setCommandData(fixedData?.command);
+            setResolutionData(fixedData?.resolution);
+          }
+        })
+      )
+      .catch((errors) => {
+        console.error(errors);
+      });
+  };
+
   return (
     <div className="compare-container container">
       {isLoading ? (
@@ -88,6 +105,7 @@ export default function CompareView() {
                       <img
                         src={compareProducts[0]?.images[0]?.image_url || img}
                         alt="product-compare"
+                        style={{ maxWidth: 350 }}
                       />
                     </div>
                     <h5>{compareProducts[0]?.name}</h5>
@@ -115,6 +133,7 @@ export default function CompareView() {
                       <img
                         src={compareProducts[1]?.images[0]?.image_url || img}
                         alt="product-compare"
+                        style={{ maxWidth: 350 }}
                       />
                     </div>
                     <h5>{compareProducts[1]?.name}</h5>
@@ -142,6 +161,7 @@ export default function CompareView() {
                       <img
                         src={compareProducts[2]?.images[0]?.image_url || img}
                         alt="product-compare"
+                        style={{ maxWidth: 350 }}
                       />
                     </div>
                     <h5>{compareProducts[2]?.name}</h5>
@@ -201,7 +221,10 @@ export default function CompareView() {
               <div className="col-4 product-detail-wrap col-not-center">
                 {compareProducts[0] && (
                   <span>
-                    <b>Ram:</b> {compareProducts[0]?.ram}GB
+                    <b>Ram:</b>{" "}
+                    {compareProducts[0]?.ram > 0
+                      ? `${compareProducts[0]?.ram}GB`
+                      : "Không có thông tin"}
                   </span>
                 )}
               </div>
@@ -209,7 +232,10 @@ export default function CompareView() {
                 {compareProducts[1] && (
                   <span>
                     {" "}
-                    <b>Ram:</b> {compareProducts[1]?.ram}GB
+                    <b>Ram:</b>{" "}
+                    {compareProducts[1]?.ram > 0
+                      ? `${compareProducts[1]?.ram}GB`
+                      : "Không có thông tin"}
                   </span>
                 )}
               </div>
@@ -217,7 +243,10 @@ export default function CompareView() {
                 {compareProducts[2] && (
                   <span>
                     {" "}
-                    <b>Ram:</b> {compareProducts[2]?.ram}GB
+                    <b>Ram:</b>{" "}
+                    {compareProducts[2]?.ram > 0
+                      ? `${compareProducts[2]?.ram}GB`
+                      : "Không có thông tin"}
                   </span>
                 )}
               </div>
@@ -226,7 +255,10 @@ export default function CompareView() {
               <div className="col-4 product-detail-wrap col-not-center">
                 {compareProducts[0] && (
                   <span>
-                    <b>Dung lượng bộ nhớ:</b> {compareProducts[0]?.storage}GB
+                    <b>Dung lượng bộ nhớ:</b>{" "}
+                    {compareProducts[0]?.storage > 0
+                      ? `${compareProducts[0]?.storage}GB`
+                      : "Không có thông tin"}
                   </span>
                 )}
               </div>
@@ -234,7 +266,10 @@ export default function CompareView() {
                 {compareProducts[1] && (
                   <span>
                     {" "}
-                    <b>Dung lượng bộ nhớ:</b> {compareProducts[1]?.storage}GB
+                    <b>Dung lượng bộ nhớ:</b>{" "}
+                    {compareProducts[1]?.storage > 0
+                      ? `${compareProducts[1]?.storage}GB`
+                      : "Không có thông tin"}
                   </span>
                 )}
               </div>
@@ -242,7 +277,10 @@ export default function CompareView() {
                 {compareProducts[2] && (
                   <span>
                     {" "}
-                    <b>Dung lượng bộ nhớ:</b> {compareProducts[2]?.storage}GB
+                    <b>Dung lượng bộ nhớ:</b>{" "}
+                    {compareProducts[2]?.storage > 0
+                      ? `${compareProducts[2]?.storage}GB`
+                      : "Không có thông tin"}
                   </span>
                 )}
               </div>
@@ -276,7 +314,10 @@ export default function CompareView() {
               <div className="col-4 product-detail-wrap col-not-center">
                 {compareProducts[0] && (
                   <span>
-                    <b>Bảo hành:</b> {compareProducts[0]?.guarantee} tháng
+                    <b>Bảo hành:</b>{" "}
+                    {compareProducts[0]?.guarantee > 0
+                      ? `${compareProducts[0]?.guarantee} tháng`
+                      : "Không bảo hành"}
                   </span>
                 )}
               </div>
@@ -284,7 +325,10 @@ export default function CompareView() {
                 {compareProducts[1] && (
                   <span>
                     {" "}
-                    <b>Bảo hành:</b> {compareProducts[1]?.guarantee} tháng
+                    <b>Bảo hành:</b>{" "}
+                    {compareProducts[1]?.guarantee > 0
+                      ? `${compareProducts[1]?.guarantee} tháng`
+                      : "Không bảo hành"}
                   </span>
                 )}
               </div>
@@ -292,7 +336,10 @@ export default function CompareView() {
                 {compareProducts[2] && (
                   <span>
                     {" "}
-                    <b>Bảo hành:</b> {compareProducts[2]?.guarantee} tháng
+                    <b>Bảo hành:</b>{" "}
+                    {compareProducts[2]?.guarantee > 0
+                      ? `${compareProducts[2]?.guarantee} tháng`
+                      : "Không bảo hành"}
                   </span>
                 )}
               </div>
@@ -305,7 +352,12 @@ export default function CompareView() {
                     {getValueInArrayObjectWithId(
                       commandData,
                       compareProducts[0]?.command
-                    )}
+                    )?.length > 0
+                      ? getValueInArrayObjectWithId(
+                          commandData,
+                          compareProducts[0]?.command
+                        )
+                      : "Không có thông tin"}
                   </span>
                 )}
               </div>
@@ -317,7 +369,12 @@ export default function CompareView() {
                     {getValueInArrayObjectWithId(
                       commandData,
                       compareProducts[1]?.command
-                    )}
+                    )?.length > 0
+                      ? getValueInArrayObjectWithId(
+                          commandData,
+                          compareProducts[1]?.command
+                        )
+                      : "Không có thông tin"}
                   </span>
                 )}
               </div>
@@ -329,7 +386,12 @@ export default function CompareView() {
                     {getValueInArrayObjectWithId(
                       commandData,
                       compareProducts[2]?.command
-                    )}
+                    )?.length > 0
+                      ? getValueInArrayObjectWithId(
+                          commandData,
+                          compareProducts[2]?.command
+                        )
+                      : "Không có thông tin"}
                   </span>
                 )}
               </div>
@@ -341,7 +403,10 @@ export default function CompareView() {
                     {compareProducts[0] && (
                       <span>
                         <b>Màu sắc:</b>{" "}
-                        {compareProducts[0]?.productMobile?.color}
+                        {compareProducts[0]?.productMobile?.color?.length > 0 &&
+                        compareProducts[0]?.productMobile?.color != "null"
+                          ? compareProducts[0]?.productMobile?.color
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -350,7 +415,10 @@ export default function CompareView() {
                       <span>
                         {" "}
                         <b>Màu sắc:</b>{" "}
-                        {compareProducts[1]?.productMobile?.color}
+                        {compareProducts[1]?.productMobile?.color?.length > 0 &&
+                        compareProducts[1]?.productMobile?.color != "null"
+                          ? compareProducts[1]?.productMobile?.color
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -359,7 +427,10 @@ export default function CompareView() {
                       <span>
                         {" "}
                         <b>Màu sắc:</b>{" "}
-                        {compareProducts[2]?.productMobile?.color}
+                        {compareProducts[2]?.productMobile?.color?.length > 0 &&
+                        compareProducts[2]?.productMobile?.color != "null"
+                          ? compareProducts[2]?.productMobile?.color
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -397,7 +468,9 @@ export default function CompareView() {
                     {compareProducts[0] && (
                       <span>
                         <b>Dung lượng pin:</b>{" "}
-                        {compareProducts[0]?.productMobile?.pin} mah
+                        {compareProducts[0]?.productMobile?.pin > 0
+                          ? `${compareProducts[0]?.productMobile?.pin} mah`
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -406,7 +479,9 @@ export default function CompareView() {
                       <span>
                         {" "}
                         <b>Dung lượng pin:</b>{" "}
-                        {compareProducts[1]?.productMobile?.pin} mah
+                        {compareProducts[1]?.productMobile?.pin > 0
+                          ? `${compareProducts[1]?.productMobile?.pin} mah`
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -415,7 +490,9 @@ export default function CompareView() {
                       <span>
                         {" "}
                         <b>Dung lượng pin:</b>{" "}
-                        {compareProducts[2]?.productMobile?.pin} mah
+                        {compareProducts[2]?.productMobile?.pin > 0
+                          ? `${compareProducts[2]?.productMobile?.pin} mah`
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -428,7 +505,12 @@ export default function CompareView() {
                         {getValueInArrayObjectWithId(
                           resolutionData,
                           compareProducts[0]?.productMobile?.resolution
-                        )}
+                        )?.length > 0
+                          ? getValueInArrayObjectWithId(
+                              resolutionData,
+                              compareProducts[0]?.productMobile?.resolution
+                            )
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -440,7 +522,12 @@ export default function CompareView() {
                         {getValueInArrayObjectWithId(
                           resolutionData,
                           compareProducts[1]?.productMobile?.resolution
-                        )}
+                        )?.length > 0
+                          ? getValueInArrayObjectWithId(
+                              resolutionData,
+                              compareProducts[1]?.productMobile?.resolution
+                            )
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -452,7 +539,12 @@ export default function CompareView() {
                         {getValueInArrayObjectWithId(
                           resolutionData,
                           compareProducts[2]?.productMobile?.resolution
-                        )}
+                        )?.length > 0
+                          ? getValueInArrayObjectWithId(
+                              resolutionData,
+                              compareProducts[2]?.productMobile?.resolution
+                            )
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -466,7 +558,10 @@ export default function CompareView() {
                     {compareProducts[0] && (
                       <span>
                         <b>Màu sắc:</b>{" "}
-                        {compareProducts[0]?.productLaptop?.color}
+                        {compareProducts[0]?.productLaptop?.color?.length > 0 &&
+                        compareProducts[0]?.productLaptop?.color != "null"
+                          ? compareProducts[0]?.productLaptop?.color
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -475,7 +570,10 @@ export default function CompareView() {
                       <span>
                         {" "}
                         <b>Màu sắc:</b>{" "}
-                        {compareProducts[1]?.productLaptop?.color}
+                        {compareProducts[1]?.productLaptop?.color?.length > 0 &&
+                        compareProducts[1]?.productLaptop?.color != "null"
+                          ? compareProducts[1]?.productLaptop?.color
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -484,7 +582,10 @@ export default function CompareView() {
                       <span>
                         {" "}
                         <b>Màu sắc:</b>{" "}
-                        {compareProducts[2]?.productLaptop?.color}
+                        {compareProducts[2]?.productLaptop?.color?.length > 0 &&
+                        compareProducts[2]?.productLaptop?.color != "null"
+                          ? compareProducts[2]?.productLaptop?.color
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -521,7 +622,11 @@ export default function CompareView() {
                   <div className="col-4 product-detail-wrap col-not-center">
                     {compareProducts[0] && (
                       <span>
-                        <b>CPU:</b> {compareProducts[0]?.productLaptop?.cpu}
+                        <b>CPU:</b>{" "}
+                        {compareProducts[0]?.productLaptop?.cpu != "null" &&
+                        compareProducts[0]?.productLaptop?.cpu?.length > 0
+                          ? compareProducts[0]?.productLaptop?.cpu
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -529,7 +634,11 @@ export default function CompareView() {
                     {compareProducts[1] && (
                       <span>
                         {" "}
-                        <b>CPU:</b> {compareProducts[1]?.productLaptop?.cpu}
+                        <b>CPU:</b>{" "}
+                        {compareProducts[1]?.productLaptop?.cpu != "null" &&
+                        compareProducts[1]?.productLaptop?.cpu?.length > 0
+                          ? compareProducts[1]?.productLaptop?.cpu
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -537,7 +646,11 @@ export default function CompareView() {
                     {compareProducts[2] && (
                       <span>
                         {" "}
-                        <b>CPU:</b> {compareProducts[2]?.productLaptop?.cpu}
+                        <b>CPU:</b>{" "}
+                        {compareProducts[1]?.productLaptop?.cpu != "null" &&
+                        compareProducts[1]?.productLaptop?.cpu?.length > 0
+                          ? compareProducts[1]?.productLaptop?.cpu
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -546,7 +659,11 @@ export default function CompareView() {
                   <div className="col-4 product-detail-wrap col-not-center">
                     {compareProducts[0] && (
                       <span>
-                        <b>GPU:</b> {compareProducts[0]?.productLaptop?.gpu}
+                        <b>GPU:</b>{" "}
+                        {compareProducts[0]?.productLaptop?.gpu != "null" &&
+                        compareProducts[0]?.productLaptop?.gpu?.length > 0
+                          ? compareProducts[0]?.productLaptop?.gpu
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -554,7 +671,11 @@ export default function CompareView() {
                     {compareProducts[1] && (
                       <span>
                         {" "}
-                        <b>GPU:</b> {compareProducts[1]?.productLaptop?.gpu}
+                        <b>GPU:</b>{" "}
+                        {compareProducts[1]?.productLaptop?.gpu != "null" &&
+                        compareProducts[1]?.productLaptop?.gpu?.length > 0
+                          ? compareProducts[1]?.productLaptop?.gpu
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -562,7 +683,11 @@ export default function CompareView() {
                     {compareProducts[2] && (
                       <span>
                         {" "}
-                        <b>GPU:</b> {compareProducts[2]?.productLaptop?.gpu}
+                        <b>GPU:</b>{" "}
+                        {compareProducts[2]?.productLaptop?.gpu != "null" &&
+                        compareProducts[2]?.productLaptop?.gpu?.length > 0
+                          ? compareProducts[2]?.productLaptop?.gpu
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -572,7 +697,9 @@ export default function CompareView() {
                     {compareProducts[0] && (
                       <span>
                         <b>Loại ổ cứng:</b>{" "}
-                        {compareProducts[0]?.productLaptop?.storage_type}
+                        {compareProducts[0]?.productLaptop?.storage_type > 0
+                          ? compareProducts[0]?.productLaptop?.storage_type
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -581,7 +708,9 @@ export default function CompareView() {
                       <span>
                         {" "}
                         <b>Loại ổ cứng:</b>{" "}
-                        {compareProducts[1]?.productLaptop?.storage_type}
+                        {compareProducts[1]?.productLaptop?.storage_type > 0
+                          ? compareProducts[1]?.productLaptop?.storage_type
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -590,7 +719,9 @@ export default function CompareView() {
                       <span>
                         {" "}
                         <b>Loại ổ cứng:</b>{" "}
-                        {compareProducts[2]?.productLaptop?.storage_type}
+                        {compareProducts[2]?.productLaptop?.storage_type > 0
+                          ? compareProducts[2]?.productLaptop?.storage_type
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -600,7 +731,9 @@ export default function CompareView() {
                     {compareProducts[0] && (
                       <span>
                         <b>Kích thước màn hình:</b>{" "}
-                        {compareProducts[0]?.productLaptop?.display_size} inch
+                        {compareProducts[0]?.productLaptop?.display_size > 0
+                          ? `${compareProducts[0]?.productLaptop?.display_size} inch`
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -609,7 +742,9 @@ export default function CompareView() {
                       <span>
                         {" "}
                         <b>Kích thước màn hình:</b>{" "}
-                        {compareProducts[1]?.productLaptop?.display_size} inch
+                        {compareProducts[1]?.productLaptop?.display_size > 0
+                          ? `${compareProducts[1]?.productLaptop?.display_size} inch`
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -618,7 +753,9 @@ export default function CompareView() {
                       <span>
                         {" "}
                         <b>Kích thước màn hình:</b>{" "}
-                        {compareProducts[2]?.productLaptop?.display_size} inch
+                        {compareProducts[1]?.productLaptop?.display_size > 0
+                          ? `${compareProducts[1]?.productLaptop?.display_size} inch`
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -631,7 +768,12 @@ export default function CompareView() {
                         {getValueInArrayObjectWithId(
                           resolutionData,
                           compareProducts[0]?.productLaptop?.resolution
-                        )}
+                        )?.length > 0
+                          ? getValueInArrayObjectWithId(
+                              resolutionData,
+                              compareProducts[0]?.productLaptop?.resolution
+                            )
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -643,7 +785,12 @@ export default function CompareView() {
                         {getValueInArrayObjectWithId(
                           resolutionData,
                           compareProducts[1]?.productLaptop?.resolution
-                        )}
+                        )?.length > 0
+                          ? getValueInArrayObjectWithId(
+                              resolutionData,
+                              compareProducts[1]?.productLaptop?.resolution
+                            )
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -655,7 +802,12 @@ export default function CompareView() {
                         {getValueInArrayObjectWithId(
                           resolutionData,
                           compareProducts[2]?.productLaptop?.resolution
-                        )}
+                        )?.length > 0
+                          ? getValueInArrayObjectWithId(
+                              resolutionData,
+                              compareProducts[2]?.productLaptop?.resolution
+                            )
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -668,7 +820,11 @@ export default function CompareView() {
                   <div className="col-4 product-detail-wrap col-not-center">
                     {compareProducts[0] && (
                       <span>
-                        <b>CPU:</b> {compareProducts[0]?.productPc?.cpu}
+                        <b>CPU:</b>{" "}
+                        {compareProducts[0]?.productPc?.cpu != "null" &&
+                        compareProducts[0]?.productPc?.cpu?.length > 0
+                          ? compareProducts[0]?.productPc?.cpu
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -676,7 +832,11 @@ export default function CompareView() {
                     {compareProducts[1] && (
                       <span>
                         {" "}
-                        <b>CPU:</b> {compareProducts[1]?.productPc?.cpu}
+                        <b>CPU:</b>{" "}
+                        {compareProducts[1]?.productPc?.cpu != "null" &&
+                        compareProducts[1]?.productPc?.cpu?.length > 0
+                          ? compareProducts[1]?.productPc?.cpu
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -684,7 +844,11 @@ export default function CompareView() {
                     {compareProducts[2] && (
                       <span>
                         {" "}
-                        <b>CPU:</b> {compareProducts[2]?.productPc?.cpu}
+                        <b>CPU:</b>{" "}
+                        {compareProducts[2]?.productPc?.cpu != "null" &&
+                        compareProducts[2]?.productPc?.cpu?.length > 0
+                          ? compareProducts[2]?.productPc?.cpu
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -693,7 +857,11 @@ export default function CompareView() {
                   <div className="col-4 product-detail-wrap col-not-center">
                     {compareProducts[0] && (
                       <span>
-                        <b>GPU:</b> {compareProducts[0]?.productPc?.gpu}
+                        <b>GPU:</b>{" "}
+                        {compareProducts[0]?.productPc?.gpu != "null" &&
+                        compareProducts[0]?.productPc?.gpu?.length > 0
+                          ? compareProducts[0]?.productPc?.gpu
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -701,7 +869,11 @@ export default function CompareView() {
                     {compareProducts[1] && (
                       <span>
                         {" "}
-                        <b>GPU:</b> {compareProducts[1]?.productPc?.gpu}
+                        <b>GPU:</b>{" "}
+                        {compareProducts[1]?.productPc?.gpu != "null" &&
+                        compareProducts[1]?.productPc?.gpu?.length > 0
+                          ? compareProducts[1]?.productPc?.gpu
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -709,7 +881,11 @@ export default function CompareView() {
                     {compareProducts[2] && (
                       <span>
                         {" "}
-                        <b>GPU:</b> {compareProducts[2]?.productPc?.gpu}
+                        <b>GPU:</b>{" "}
+                        {compareProducts[2]?.productPc?.gpu != "null" &&
+                        compareProducts[2]?.productPc?.gpu?.length > 0
+                          ? compareProducts[2]?.productPc?.gpu
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -719,7 +895,9 @@ export default function CompareView() {
                     {compareProducts[0] && (
                       <span>
                         <b>Loại ổ cứng:</b>{" "}
-                        {compareProducts[0]?.productPc?.storage_type}
+                        {compareProducts[0]?.productPc?.storage_type > 0
+                          ? compareProducts[0]?.productPc?.storage_type
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -728,7 +906,9 @@ export default function CompareView() {
                       <span>
                         {" "}
                         <b>Loại ổ cứng:</b>{" "}
-                        {compareProducts[1]?.productPc?.storage_type}
+                        {compareProducts[1]?.productPc?.storage_type > 0
+                          ? compareProducts[1]?.productPc?.storage_type
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -737,7 +917,9 @@ export default function CompareView() {
                       <span>
                         {" "}
                         <b>Loại ổ cứng:</b>{" "}
-                        {compareProducts[2]?.productPc?.storage_type}
+                        {compareProducts[2]?.productPc?.storage_type > 0
+                          ? compareProducts[2]?.productPc?.storage_type
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -747,7 +929,9 @@ export default function CompareView() {
                     {compareProducts[0] && (
                       <span>
                         <b>Kích thước màn hình:</b>{" "}
-                        {compareProducts[0]?.productPc?.display_size} inch
+                        {compareProducts[0]?.productPc?.display_size > 0
+                          ? `${compareProducts[0]?.productPc?.display_size} inch`
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -756,7 +940,9 @@ export default function CompareView() {
                       <span>
                         {" "}
                         <b>Kích thước màn hình:</b>{" "}
-                        {compareProducts[1]?.productPc?.display_size} inch
+                        {compareProducts[1]?.productPc?.display_size > 0
+                          ? `${compareProducts[1]?.productPc?.display_size} inch`
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
@@ -765,7 +951,9 @@ export default function CompareView() {
                       <span>
                         {" "}
                         <b>Kích thước màn hình:</b>{" "}
-                        {compareProducts[2]?.productPc?.display_size} inch
+                        {compareProducts[2]?.productPc?.display_size > 0
+                          ? `${compareProducts[2]?.productPc?.display_size} inch`
+                          : "Không có thông tin"}
                       </span>
                     )}
                   </div>
