@@ -260,7 +260,7 @@ export default function ListPost({ setPreload }) {
                 checked={filter === "trade"}
               />
               <label className="form-check-label" htmlFor="my-post-trade">
-                Bài viết trao đổi/mua
+                Sản phẩm muốn mua
               </label>
             </div>
           </div>

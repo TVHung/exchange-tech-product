@@ -71,11 +71,11 @@ export default function Home() {
         <div className="home-posts">
           <SlideShow dataSlides={dataSlides} />
           <Categories />
-          <h3>Tin mới đăng</h3>
+          <h3>Sản phẩm mới đăng</h3>
           <ListItem dataList={postRecently} />
-          <h3>Bài viết được nhiều người quan tâm</h3>
+          <h3>Sản phẩm được nhiều người quan tâm</h3>
           <ListItem dataList={allPostMostInterest} />
-          <h3>Bài viết đổi sản phẩm</h3>
+          <h3>Sản phẩm muốn mua</h3>
           <ListItem dataList={postHasTrade} />
         </div>
       )}

@@ -83,6 +83,7 @@ export default function Search() {
   };
 
   const onClickSuggest = (value) => {
+    console.log("search", value);
     setInputVal(value);
   };
 
@@ -98,7 +99,7 @@ export default function Search() {
         onBlur={() =>
           setTimeout(() => {
             setSuggestName([]);
-          }, 100)
+          }, 300)
         }
       />
       {suggestName?.length > 0 && (

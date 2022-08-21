@@ -169,12 +169,12 @@ export default function AccountUserInfor() {
   };
   useEffect(() => {
     setProfile({
-      name: user_profile.name,
-      sex: user_profile.sex,
-      avatar_url: user_profile.avatar_url,
-      phone: user_profile.phone,
-      address: user_profile.address,
-      facebook_url: user_profile.facebook_url,
+      name: user_profile?.name,
+      sex: user_profile?.sex,
+      avatar_url: user_profile?.avatar_url,
+      phone: user_profile?.phone,
+      address: user_profile?.address,
+      facebook_url: user_profile?.facebook_url,
     });
   }, [user_profile]);
 

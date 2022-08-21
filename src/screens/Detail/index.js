@@ -325,7 +325,7 @@ export default function Detail({ isAuth }) {
                               </div>
                             )}
                             {postDetail?.productMobile?.color != "null" &&
-                              postDetail?.productMobile?.color && (
+                              postDetail?.productMobile?.color?.length > 0 && (
                                 <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                   <i className="fas fa-palette"></i>
                                   <span>
@@ -366,30 +366,33 @@ export default function Detail({ isAuth }) {
                                 </span>
                               </div>
                             )}
-                            {postDetail?.productLaptop?.color && (
-                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                                <i className="fas fa-palette"></i>
-                                <span>
-                                  Màu sắc: {postDetail?.productLaptop?.color}
-                                </span>
-                              </div>
-                            )}
-                            {postDetail?.productLaptop?.cpu && (
-                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                                <i className="fas fa-microchip"></i>
-                                <span>
-                                  CPU: {postDetail?.productLaptop?.cpu}
-                                </span>
-                              </div>
-                            )}
-                            {postDetail?.productLaptop?.gpu && (
-                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                                <i className="fas fa-microchip"></i>
-                                <span>
-                                  GPU: {postDetail?.productLaptop?.gpu}
-                                </span>
-                              </div>
-                            )}
+                            {postDetail?.productLaptop?.color != "null" &&
+                              postDetail?.productLaptop?.color?.length > 0 && (
+                                <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                  <i className="fas fa-palette"></i>
+                                  <span>
+                                    Màu sắc: {postDetail?.productLaptop?.color}
+                                  </span>
+                                </div>
+                              )}
+                            {postDetail?.productLaptop?.cpu != "null" &&
+                              postDetail?.productLaptop?.cpu?.length > 0 && (
+                                <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                  <i className="fas fa-microchip"></i>
+                                  <span>
+                                    CPU: {postDetail?.productLaptop?.cpu}
+                                  </span>
+                                </div>
+                              )}
+                            {postDetail?.productLaptop?.gpu != "null" &&
+                              postDetail?.productLaptop?.gpu?.length > 0 && (
+                                <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                  <i className="fas fa-microchip"></i>
+                                  <span>
+                                    GPU: {postDetail?.productLaptop?.gpu}
+                                  </span>
+                                </div>
+                              )}
                             {postDetail?.productLaptop?.storage_type_value && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                 <i className="fas fa-hdd"></i>
@@ -402,7 +405,7 @@ export default function Detail({ isAuth }) {
                                 </span>
                               </div>
                             )}
-                            {postDetail?.productLaptop?.display_size && (
+                            {postDetail?.productLaptop?.display_size > 0 && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                 <i className="fas fa-tv"></i>
                                 <span>
@@ -411,7 +414,7 @@ export default function Detail({ isAuth }) {
                                 </span>
                               </div>
                             )}
-                            {postDetail?.productLaptop?.resolution && (
+                            {postDetail?.productLaptop?.resolution > 0 && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                 <i className="fas fa-tv"></i>
                                 <span>
@@ -428,18 +431,20 @@ export default function Detail({ isAuth }) {
                         {/* pc */}
                         {postDetail?.category_id === 3 && (
                           <>
-                            {postDetail?.productPc?.cpu && (
-                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                                <i className="fas fa-microchip"></i>
-                                <span>CPU: {postDetail?.productPc?.cpu}</span>
-                              </div>
-                            )}
-                            {postDetail?.productPc?.gpu && (
-                              <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
-                                <i className="fas fa-microchip"></i>
-                                <span>GPU: {postDetail?.productPc?.gpu}</span>
-                              </div>
-                            )}
+                            {postDetail?.productPc?.cpu != "null" &&
+                              postDetail?.productPc?.cpu?.length > 0 && (
+                                <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                  <i className="fas fa-microchip"></i>
+                                  <span>CPU: {postDetail?.productPc?.cpu}</span>
+                                </div>
+                              )}
+                            {postDetail?.productPc?.gpu != "null" &&
+                              postDetail?.productPc?.gpu?.length > 0 && (
+                                <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
+                                  <i className="fas fa-microchip"></i>
+                                  <span>GPU: {postDetail?.productPc?.gpu}</span>
+                                </div>
+                              )}
                             {postDetail?.productPc?.storage_type_value && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                 <i className="fas fa-hdd"></i>
@@ -449,7 +454,7 @@ export default function Detail({ isAuth }) {
                                 </span>
                               </div>
                             )}
-                            {postDetail?.productPc?.display_size && (
+                            {postDetail?.productPc?.display_size > 0 && (
                               <div className="col-xs-12 col-sm-6 col-lg-4 itemt-property">
                                 <i className="fas fa-tv"></i>
                                 <span>

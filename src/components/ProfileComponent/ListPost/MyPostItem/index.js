@@ -48,8 +48,9 @@ export default function MyPostItem({ data, handleShow, handleShowMatching }) {
                 {formatPrice(data?.price)}đ
               </div>
               <div>
-                <i className="fas fa-info-circle"></i>{" "}
-                <span className="description-my-item">{data?.description}</span>
+                <span className="description-my-item">
+                  <i className="fas fa-info-circle"></i> {data?.description}
+                </span>
               </div>
               <div>
                 <i className="fas fa-bullseye"></i> Nhu cầu:{" "}
@@ -59,12 +60,12 @@ export default function MyPostItem({ data, handleShow, handleShowMatching }) {
           </div>
         </div>
         <div className="d-flex justify-content-end mt-1">
-          <div
+          {/* <div
             className="btn btn-primary mx-1 btn-matching"
             onClick={(e) => handleShowMatching(data?.id, data?.is_trade)}
           >
             <span>Tìm tương tự</span>
-          </div>
+          </div> */}
           {data?.is_block !== 1 && (
             <div className="btn enquiry mx-1" onClick={(e) => handleEdit(e)}>
               <span>Chỉnh sửa</span>

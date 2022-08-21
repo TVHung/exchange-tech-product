@@ -55,7 +55,6 @@ export default function Chat() {
           headers: headerFiles,
         })
         .then((res) => {
-          console.log("new message", res.data);
           addMessage(res.data);
           dispatch(fetchConversations());
         })
@@ -112,12 +111,13 @@ export default function Chat() {
     const channel = pusher.subscribe("chat");
     channel.bind("message", function (data) {
       dispatch(fetchConversations());
+      console.log("nhan", data?.message);
       if (
-        parseInt(data.user_id) == parseInt(params.id) &&
-        parseInt(data.target_user_id) ==
+        parseInt(data?.message.user_id) == parseInt(params.id) &&
+        parseInt(data?.message.target_user_id) ==
           parseInt(JSON.parse(localStorage.getItem("user"))?.id)
       ) {
-        addMessage(data);
+        addMessage(data?.message);
       }
     });
   }, []);
@@ -128,12 +128,12 @@ export default function Chat() {
       message: data?.message,
       target_user_id: data?.target_user_id,
       user_id: data?.user_id,
-      created_at: null,
+      created_at: data?.created_at,
       id: null,
-      updated_at: null,
+      updated_at: data?.updated_at,
     };
-    setMessages((messages) => [...messages, newMess]);
     setTimeout(() => {
+      setMessages((messages) => [...messages, newMess]);
       onScroll();
     }, 100);
   };

@@ -224,5 +224,6 @@ export const getValueInArrayObjectWithId = (arr, id) => {
 };
 
 export const filterArrayObjectWithCategoryId = (arr, category_id) => {
+  console.log("Mang", category_id);
   return arr.filter((x) => x.category_id == category_id);
 };

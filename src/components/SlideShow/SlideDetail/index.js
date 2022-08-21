@@ -35,13 +35,13 @@ export default function SlideDetail({ dataSlides, video_url }) {
             />
           </div>
         )}
-        {video_url && (
+        {video_url && video_url?.length > 0 && video_url != "null" ? (
           <div className="slide-container">
             <video controls className="slide-detail-video">
               <source src={video_url} type="video/mp4" />
             </video>
           </div>
-        )}
+        ) : null}
       </Slide>
     </div>
   );
