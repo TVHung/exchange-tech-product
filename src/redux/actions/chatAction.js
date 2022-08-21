@@ -2,6 +2,7 @@ import axios from "axios";
 import { apiGetMyConversation } from "../../constants";
 import { MY_LIST_CHAT, NUM_CHAT } from "./../case";
 import { headers } from "./../../constants";
+import { getCookie } from "../../utils/cookie";
 
 export const fetchConversations = () => async (dispatch) => {
   try {
@@ -36,5 +37,8 @@ const getNumChat = (userConversations) => (dispatch) => {
       totalChat++;
   }
   localStorage.setItem("numChat", totalChat);
-  dispatch({ type: NUM_CHAT, payload: totalChat });
+  console.log("accesstken", getCookie("access_token"));
+  if (getCookie("access_token")?.length > 0)
+    dispatch({ type: NUM_CHAT, payload: totalChat });
+  else dispatch({ type: NUM_CHAT, payload: 0 });
 };
